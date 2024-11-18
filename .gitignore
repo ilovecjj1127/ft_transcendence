@@ -1,0 +1,7 @@
+__pycache__/
+.env
+.idea/
+*.sqlite3
+.venv/
+.vscode/
+db/postgres/
