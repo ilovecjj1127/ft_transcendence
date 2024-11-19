@@ -9,13 +9,13 @@ services:
       - "5432:5432"
     env_file:
       - db/.env
-    volumes:
-      - ./db/postgres:/var/lib/postgresql/data
+    # volumes:
+    #   - ./db/postgres:/var/lib/postgresql/data
 
   backend:
     container_name: django_app
     image: transcendence_backend
-    command: python manage.py runserver 0.0.0.0:8000
+    command: ./wait_db.sh python manage.py runserver 0.0.0.0:8000
     build:
       context: backend
     ports:
