@@ -22,5 +22,6 @@ from django.urls import include, path
 
 urlpatterns = [
     path('pong/', include('pong.urls')),
+    path('api/users/', include('users.urls')),
     path('admin/', admin.site.urls),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Need to be replaced with Nginx
