@@ -2,13 +2,18 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, JsonResponse
 from django.views import View
+import json
 
 from .forms import LoginForm, RegisterForm
 
 
 class RegisterView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
-        form = RegisterForm(data=request.POST)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        form = RegisterForm(data)
         if form.is_valid():
             user = form.save()
             return JsonResponse(
@@ -21,10 +26,16 @@ class RegisterView(View):
 
 class LoginView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
-        form = LoginForm(request.POST)
+        try:
+            data = json.loads(request.body)
+        except json.JSONDecodeError:
+            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
+        form = LoginForm(data)
         if not form.is_valid():
             return JsonResponse({'error': form.errors}, status=400)
-        user = authenticate(request, username=form.username, password=form.password)
+        username = form.cleaned_data["username"]
+        password = form.cleaned_data["password"]
+        user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
             return JsonResponse({'message': 'Login successful'}, status=200)

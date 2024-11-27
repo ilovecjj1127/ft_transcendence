@@ -22,8 +22,8 @@ class UserProfileService:
             raise ValueError('These users are not friends')
         user.friends.remove(friend)
 
-    def is_friend(self, friend):
-        return self.friends.filter(id=friend.id).exists()
+    def is_friend(user: UserProfile, friend: UserProfile) -> bool:
+        return user.friends.filter(id=friend.id).exists()
 
 
 class FriendshipRequestService:
