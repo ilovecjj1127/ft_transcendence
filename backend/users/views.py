@@ -2,9 +2,24 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpRequest, JsonResponse
 from django.views import View
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.request import Request
+from rest_framework.views import APIView
 import json
 
 from .forms import LoginForm, RegisterForm
+from .serializers import RegistrationSerializer
+
+
+class RegistrationView(APIView):
+    def post(self, request: Request) -> Response:
+        serializer = RegistrationSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            return Response({'message': 'User registered successfully'},
+                            status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RegisterView(View):
@@ -32,7 +47,7 @@ class LoginView(View):
             return JsonResponse({'error': 'Invalid JSON format'}, status=400)
         form = LoginForm(data)
         if not form.is_valid():
-            return JsonResponse({'error': form.errors}, status=400)
+            return JsonResponse({'errors': form.errors}, status=400)
         username = form.cleaned_data["username"]
         password = form.cleaned_data["password"]
         user = authenticate(request, username=username, password=password)
@@ -47,3 +62,4 @@ class LogoutView(LoginRequiredMixin, View):
     def post(self, request: HttpRequest) -> JsonResponse:
         logout(request)
         return JsonResponse({'message': 'Logout successful'}, status=200)
+
