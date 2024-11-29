@@ -6,17 +6,24 @@ const playerPaddle = new Paddle(document.getElementById("player-paddle"))
 const computerPaddle = new Paddle(document.getElementById("computer-paddle"))
 const playerScoreElem = document.getElementById("player-score")
 const computerScoreElem = document.getElementById("computer-score")
+const keysPressed = {}
+const paddleSpeed = 0.05
 
 let lastTime
 function update(time) {
 	if (lastTime != null) {
 		const delta = time - lastTime
 		ball.update(delta, [playerPaddle.rect(), computerPaddle.rect()])
-		computerPaddle.update(delta, ball.y)
+		computerPaddle.update(delta, ball.y)		
 		// const hue = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hue"))
 
 		// document.documentElement.style.setProperty("--hue", hue + delta * 0.01)
-
+        if (keysPressed["ArrowUp"]) {
+            playerPaddle.position = Math.max(0, playerPaddle.position - paddleSpeed * delta);
+        }
+        if (keysPressed["ArrowDown"]) {
+            playerPaddle.position = Math.min(100, playerPaddle.position + paddleSpeed * delta);
+        }
 		if (isLose()) handleLose()
 	}
 	lastTime = time
@@ -37,11 +44,16 @@ function handleLose() {
 	}
 	ball.reset()
 	computerPaddle.reset()
+	playerPaddle.reset()
 }
 
-document.addEventListener("mousemove", e => {
-	playerPaddle.position = (e.y / window.innerHeight) * 100
-})
+document.addEventListener("keydown", (e) => {
+    keysPressed[e.key] = true;
+});
+
+document.addEventListener("keyup", (e) => {
+    keysPressed[e.key] = false;
+});
 
 window.requestAnimationFrame(update)
 
@@ -52,7 +64,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 	const password = document.getElementById('password').value;
 
 	try {
-		const response = await fetch('http://127.0.0.1:8000/api/users/login/', { // Update URL to match your Django endpoint
+		const response = await fetch('http://127.0.0.1:8000/api/users/login/', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json', // Specify JSON format
