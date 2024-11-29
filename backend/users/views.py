@@ -1,15 +1,13 @@
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth import authenticate, login, logout
-from django.http import HttpRequest, JsonResponse
-from django.views import View
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 import json
 
-from .forms import LoginForm, RegisterForm
-from .serializers import RegistrationSerializer
+from .serializers import LoginSerializer, RegistrationSerializer
 
 
 class RegistrationView(APIView):
@@ -22,44 +20,24 @@ class RegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-class RegisterView(View):
-    def post(self, request: HttpRequest) -> JsonResponse:
+# class LoginView(APIView):
+#     def post(self, request: Request) -> Response:
+#         serializer = LoginSerializer(data=request.data)
+#         if serializer.is_valid():
+#             user = serializer.validated_data['user']
+#             token, created = Token.objects.get_or_create(user=user)
+#             return Response({"token": token.key}, status=status.HTTP_200_OK)
+#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request: Request) -> Response:
         try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
-        form = RegisterForm(data)
-        if form.is_valid():
-            user = form.save()
-            return JsonResponse(
-                {'message': 'User registered successfully', 'user_id': user.id},
-                status=201
-            )
-        else:
-            return JsonResponse({'errors': form.errors}, status=400)
-
-
-class LoginView(View):
-    def post(self, request: HttpRequest) -> JsonResponse:
-        try:
-            data = json.loads(request.body)
-        except json.JSONDecodeError:
-            return JsonResponse({'error': 'Invalid JSON format'}, status=400)
-        form = LoginForm(data)
-        if not form.is_valid():
-            return JsonResponse({'errors': form.errors}, status=400)
-        username = form.cleaned_data["username"]
-        password = form.cleaned_data["password"]
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            login(request, user)
-            return JsonResponse({'message': 'Login successful'}, status=200)
-        else:
-            return JsonResponse({'error': 'Invalid credentials'}, status=401)
-
-
-class LogoutView(LoginRequiredMixin, View):
-    def post(self, request: HttpRequest) -> JsonResponse:
-        logout(request)
-        return JsonResponse({'message': 'Logout successful'}, status=200)
-
+            refresh_token = request.data['refresh']
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+            return Response({'message': 'Logout successful'}, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
