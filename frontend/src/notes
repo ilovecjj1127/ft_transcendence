@@ -1,0 +1,40 @@
+https://getbootstrap.com/docs/5.3/getting-started/introduction/
+
+
+//Document Object Model (DOM)
+
+1 px = 0.2645833333mm = 1/96 inch
+
+per 'element' or 'node' you can define styles,
+can be done inline in html e.g.;
+<head>
+  <link rel="stylesheet" href="styles.css">
+</head>
+or in one .css file;
+body {
+  background-color: powderblue;
+}
+h1 {
+  color: blue;
+}
+summary;
+
+	Use the HTML style attribute for inline styling
+	Use the HTML <style> element to define internal CSS
+	Use the HTML <link> element to refer to an external CSS file
+	Use the HTML <head> element to store <style> and <link> elements
+	Use the CSS color property for text colors
+	Use the CSS font-family property for text fonts
+	Use the CSS font-size property for text sizes
+	Use the CSS border property for borders
+	Use the CSS padding property for space inside the border
+	Use the CSS margin property for space outside the border
+
+
+The Window.getComputedStyle() method returns an object containing the values of all CSS properties of an element
+
+
+Mime type;
+what type of document it is;
+type/subtype e.g. text/html
+
