@@ -3,10 +3,10 @@
 }
 
 :root {
-	--hue: 200;
+	--hue: 600;
 	--saturation: 50%;
-	--foreground-color: hsl(var(--hue), var(--saturation), 75%);
-	--background-color: hsl(var(--hue), var(--saturation), 20%);
+	--foreground-color: hsl(var(--hue), var(--saturation), 85%);
+	--background-color: hsl(var(--hue), var(--saturation), 60%);
 }
 
 body {
