@@ -38,6 +38,14 @@ Mime type;
 what type of document it is;
 type/subtype e.g. text/html
 
+
 sometimes FOUC; https://medium.com/@fbnlsr/how-to-get-rid-of-the-flash-of-unstyled-content-d6b79bf5d75f
 
+TODO;
 
+learn django
+post requests?
+
+send request form with login & register
+handle response
+json tokens
