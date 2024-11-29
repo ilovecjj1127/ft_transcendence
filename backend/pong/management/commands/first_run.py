@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
 from pong.models import Game
+from users.models import UserProfile
 
 
 class Command(BaseCommand):
@@ -13,9 +14,9 @@ class Command(BaseCommand):
         call_command('migrate')
 
         #Create superuser
-        if not User.objects.filter(username='admin').exists():
+        if not UserProfile.objects.filter(username='admin').exists():
             self.stdout.write('Creating superuser...')
-            User.objects.create_superuser(
+            UserProfile.objects.create_superuser(
                 username='admin',
                 email='admin@example.com',
                 password='admin'
