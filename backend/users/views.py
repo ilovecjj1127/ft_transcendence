@@ -10,7 +10,12 @@ import json
 
 from .forms import LoginForm, RegisterForm
 from .serializers import RegistrationSerializer
+from django.http import HttpResponse
+from django.shortcuts import render
 
+def index(request):
+	# return HttpResponse("Hello world")
+    return render(request, 'index.html')
 
 class RegistrationView(APIView):
     def post(self, request: Request) -> Response:

@@ -1,0 +1,76 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+	<link rel="icon" href="{% static 'media/favicon.ico' %}">
+	<script src="{% static 'js/script.js' %}" type="module"></script>
+    <!-- <script>
+      // run this function when the document is loaded
+      window.onload = () => {
+        // create a couple of elements in an otherwise empty HTML page
+        const heading = document.createElement("h1");
+        const headingText = document.createTextNode("Created h1 element with script");
+        heading.style.fontSize = "6px";
+		heading.appendChild(headingText);
+        document.body.appendChild(heading);
+      };
+    </script> -->
+	<title>Document</title>
+</head>
+<body>
+	<div class="flex-containers">
+		<div class="menu-box">
+
+			<div class="login" id="login-stage">	
+				 <p>Enter names in the fields, then click "Submit" to submit the form:</p>
+				<form id="frm1">
+					username: <input type="text" id="username" name="fname"><br>
+					password: <input type="text" id="password" name="lname"><br><br>
+					<input type="button" id="login-button" action="/login" value="Submit">
+				</form>
+				<!-- username: <input type="text" id="username" name="username"><br>
+				password: <input type="text" id="password" name="password"><br><br>
+				<button type="button" id="login-button">Login</button> -->
+			</div>
+
+			<div class="hidden" id="logged-in-stage">	
+        		<button type="button" id="start-game-button">Start game</button>
+				<button type="button" id="log-out-button">Log out</button>
+
+			</div>
+
+			<div class="hidden" id="in-game-stage">	
+        		<button type="button" id="pause-game-button">Pause game</button>
+				<button type="button" id="exit-game-button">Exit game</button>
+			</div>
+
+		</div>
+		<div class="game-box">game-box
+
+			<div class="score">
+				<div id="left-player-score">0</div>
+				<div id="right-player-score">0</div>
+			</div>
+
+			<div class="ball" id="ball"></div>
+			<div class="paddle left" id="player-paddle"></div>
+			<div class="paddle right" id="player-paddle"></div>
+
+		</div>
+		<div class="chat-box">chat-box</div>
+	</div>
+	<p id="output"></p>
+	<p id="speed-output"></p>
+	<script src="{% static 'js/paddleControlLeft.js' %}" type="module"></script>
+	<script src="{% static 'js/paddleControlRight.js' %}" type="module"></script>
+	<script>
+		function myFunction() {
+			document.getElementById("frm1").submit();
+		}
+	</script>
+</body>
+</html>
