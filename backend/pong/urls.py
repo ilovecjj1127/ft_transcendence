@@ -1,10 +1,9 @@
 from django.urls import path
 
-from . import views
-from .views import ProtectedView
+from .views import HelloView, ProtectedView
 
 
 urlpatterns = [
-    path('', views.index, name='index'),
+    path('', HelloView.as_view(), name='hello'),
     path('protected/', ProtectedView.as_view(), name='protected_view'),
 ]

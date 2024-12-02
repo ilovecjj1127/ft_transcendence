@@ -5,6 +5,10 @@ from rest_framework import serializers
 from .models import UserProfile
 
 
+class SuccessResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+
 class RegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
 
@@ -32,3 +36,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError({'error': 'Invalid credentials'})
         data['user'] = user
         return data
+
+class LogoutSerializer(serializers.Serializer):
+    refresh = serializers.CharField()
