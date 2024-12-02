@@ -27,10 +27,10 @@
 
 			<div class="login" id="login-stage">	
 				 <p>Enter names in the fields, then click "Submit" to submit the form:</p>
-				<form id="frm1">
-					username: <input type="text" id="username" name="fname"><br>
-					password: <input type="text" id="password" name="lname"><br><br>
-					<input type="button" id="login-button" action="/login" value="Submit">
+				<form id="login-form">
+					username: <input type="text" id="username" name="username_" required><br>
+					password: <input type="password" id="password" name="password_" required><br><br>
+					<button type="submit" id="login-button">Login</button>
 				</form>
 				<!-- username: <input type="text" id="username" name="username"><br>
 				password: <input type="text" id="password" name="password"><br><br>
@@ -63,6 +63,40 @@
 		</div>
 		<div class="chat-box">chat-box</div>
 	</div>
+	<script>
+			document.getElementById("login-form").addEventListener("submit", async function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const payload = {
+                username: username,
+                password: password
+            };
+
+            try {
+                const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    alert("Login successful! Token: " + data.token);
+                } else {
+                    const error = await response.json();
+                    alert("Error: " + JSON.stringify(error));
+                }
+            } catch (err) {
+                console.error("Network or server error:", err);
+                alert("An error occurred. Please try again later.");
+            }
+        });
+	</script>
 	<p id="output"></p>
 	<p id="speed-output"></p>
 	<script src="{% static 'js/paddleControlLeft.js' %}" type="module"></script>

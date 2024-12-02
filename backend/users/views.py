@@ -26,7 +26,6 @@ class RegistrationView(APIView):
                             status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-
 class RegisterView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
         try:
@@ -42,7 +41,6 @@ class RegisterView(View):
             )
         else:
             return JsonResponse({'errors': form.errors}, status=400)
-
 
 class LoginView(View):
     def post(self, request: HttpRequest) -> JsonResponse:
