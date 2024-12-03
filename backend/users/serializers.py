@@ -37,5 +37,12 @@ class LoginSerializer(serializers.Serializer):
         data['user'] = user
         return data
 
+
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
+
+
+class UserProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['username', 'avatar', 'friends']

@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
-    SuccessResponseSerializer
+    SuccessResponseSerializer, UserProfileSerializer
+from .services import UserProfileService
 
 
 class RegistrationView(APIView):
@@ -42,3 +43,23 @@ class LogoutView(APIView):
                             status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class UserProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        parameters=[OpenApiParameter(name='username', required=True, type=str)],
+        responses={200: UserProfileSerializer},
+    )
+    def get(self, request: Request) -> Response:
+        username = request.query_params.get('username')
+        if username is None:
+            return Response({'error': 'Username query parameter is required'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        user = UserProfileService.get_user_profile(username)
+        if user is None:
+            return Response({'error': 'User not found'},
+                            status=status.HTTP_404_NOT_FOUND)
+        serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)

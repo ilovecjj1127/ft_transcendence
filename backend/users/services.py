@@ -4,6 +4,14 @@ from .models import FriendshipRequest, UserProfile
 
 
 class UserProfileService:
+
+    @staticmethod
+    def get_user_profile(username: str) -> UserProfile | None:
+        try:
+            return UserProfile.objects.get(username=username)
+        except UserProfile.DoesNotExist:
+            return None
+
     @staticmethod
     @transaction.atomic
     def add_friend(user: UserProfile, friend: UserProfile):
