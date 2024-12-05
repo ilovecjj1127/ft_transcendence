@@ -21,7 +21,20 @@ class Command(BaseCommand):
                 email='admin@example.com',
                 password='admin'
             )
-        
+
+        #Create test users
+        if not UserProfile.objects.filter(username='alice').exists():
+            self.stdout.write('Creating test users...')
+            UserProfile.objects.create_user(
+                username='alice',
+                password='alice'
+            )
+        if not UserProfile.objects.filter(username='bob').exists():
+            UserProfile.objects.create_user(
+                username='bob',
+                password='bob'
+            )
+
         self.stdout.write('Creating DB objects...')
         Game.objects.create(result='Test Game object 1', status='new')
 

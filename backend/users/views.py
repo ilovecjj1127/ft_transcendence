@@ -7,8 +7,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
-    SuccessResponseSerializer, UserProfileSerializer
-from .services import UserProfileService
+    SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer
+from .services import FriendshipRequestService, UserProfileService
 
 
 class RegistrationView(APIView):
@@ -57,9 +57,27 @@ class UserProfileView(APIView):
         if username is None:
             return Response({'error': 'Username query parameter is required'},
                             status=status.HTTP_400_BAD_REQUEST)
-        user = UserProfileService.get_user_profile(username)
-        if user is None:
-            return Response({'error': 'User not found'},
-                            status=status.HTTP_404_NOT_FOUND)
+        try:
+            user = UserProfileService.get_user_profile(username)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class FriendshipRequestView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary='Send friendship request',
+        request=UsernameSerializer,
+        responses={200: SuccessResponseSerializer},
+    )
+    def post(self, request: Request) -> Response:
+        try:
+            to_user = UserProfileService.get_user_profile(request.data['username'])
+            FriendshipRequestService.create(request.user, to_user)
+            return Response({'message': 'Friendship request was sent'},
+                            status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

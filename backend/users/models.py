@@ -35,7 +35,12 @@ class FriendshipRequest(models.Model):
                                 on_delete=models.CASCADE)
     status = models.CharField(
         max_length = 10,
-        choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        choices=[ 
+            ('pending', 'Pending'),
+            ('accepted', 'Accepted'),
+            ('rejected', 'Rejected'), 
+            ('canceled', 'Canceled')
+        ],
         default = 'pending'
     )
     created_at = models.DateTimeField(auto_now_add=True)
