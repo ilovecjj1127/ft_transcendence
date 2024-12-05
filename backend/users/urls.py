@@ -10,5 +10,11 @@ urlpatterns = [
     path('token_refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('', UserProfileView.as_view(), name='user_profile'),
-    path('friendship_request/', FriendshipRequestView.as_view(), name='friendship_request')
+    path('friendship_request/', FriendshipRequestView.as_view(), name='friendship_request'),
+    path('friendship_request/accept/', FriendshipRequestView.as_view(action='accept'),
+         name='accept_friendship_request'),
+    path('friendship_request/reject/', FriendshipRequestView.as_view(action='reject'),
+         name='reject_friendship_request'),
+    path('friendship_request/cancel/', FriendshipRequestView.as_view(action='cancel'),
+         name='cancel_friendship_request'),
 ]

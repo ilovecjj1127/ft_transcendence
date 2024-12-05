@@ -58,12 +58,45 @@ class FriendshipRequestService:
         except FriendshipRequest.DoesNotExist:
             FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
 
+    @staticmethod
+    @transaction.atomic
+    def accept(request_id: int, to_user: UserProfile):
+        try:
+            request = FriendshipRequest.objects.select_related('from_user').get(id=request_id)
+        except FriendshipRequest.DoesNotExist:
+            raise ValueError('Friendship request not found')
+        if request.to_user_id != to_user.id:
+            raise ValueError('It is not an incoming friendship request to this user')
+        if request.status != 'pending':
+            raise ValueError('Cannot accept not pending friendship request')
+        UserProfileService.add_friend(request.from_user, to_user)
+        request.status = 'accepted'
+        request.save()
 
     @staticmethod
     @transaction.atomic
-    def accept(request: FriendshipRequest):
+    def reject(request_id: int, to_user: UserProfile):
+        try:
+            request = FriendshipRequest.objects.get(id=request_id)
+        except FriendshipRequest.DoesNotExist:
+            raise ValueError('Friendship request not found')
+        if request.to_user_id != to_user.id:
+            raise ValueError('It is not an incoming friendship request to this user')
         if request.status != 'pending':
-            raise ValueError('Cannot accept not pending friendship request')
-        UserProfileService.add_friend(request.from_user, request.to_user)
-        request.status = 'accepted'
+            raise ValueError('Cannot reject not pending friendship request')
+        request.status = 'rejected'
+        request.save()
+
+    @staticmethod
+    @transaction.atomic
+    def cancel(request_id: int, from_user: UserProfile):
+        try:
+            request = FriendshipRequest.objects.get(id=request_id)
+        except FriendshipRequest.DoesNotExist:
+            raise ValueError('Friendship request not found')
+        if request.from_user_id != from_user.id:
+            raise ValueError('It is not an outgoing friendship request from this user')
+        if request.status != 'pending':
+            raise ValueError('Cannot cancel not pending friendship request')
+        request.status = 'canceled'
         request.save()

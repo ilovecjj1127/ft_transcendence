@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
-    SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer
+    SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
+    RequestIdSerializer
 from .services import FriendshipRequestService, UserProfileService
 
 
@@ -35,8 +36,11 @@ class LogoutView(APIView):
         responses={200: SuccessResponseSerializer},
     )
     def post(self, request: Request) -> Response:
+        serializer = LogoutSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
-            refresh_token = request.data['refresh']
+            refresh_token = serializer.validated_data['refresh']
             token = RefreshToken(refresh_token)
             token.blacklist()
             return Response({'message': 'Logout successful'},
@@ -67,6 +71,7 @@ class UserProfileView(APIView):
 
 class FriendshipRequestView(APIView):
     permission_classes = [IsAuthenticated]
+    action = ""
 
     @extend_schema(
         summary='Send friendship request',
@@ -74,10 +79,37 @@ class FriendshipRequestView(APIView):
         responses={200: SuccessResponseSerializer},
     )
     def post(self, request: Request) -> Response:
+        serializer = UsernameSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
-            to_user = UserProfileService.get_user_profile(request.data['username'])
+            to_user = UserProfileService.get_user_profile(serializer.validated_data['username'])
             FriendshipRequestService.create(request.user, to_user)
             return Response({'message': 'Friendship request was sent'},
+                            status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @extend_schema(
+        request=RequestIdSerializer,
+        responses={200: SuccessResponseSerializer},
+    )
+    def patch(self, request: Request) -> Response:
+        if self.action not in ['accept', 'reject', 'cancel']:
+            return Response({"error": "Internal server error"},
+                            status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        serializer = RequestIdSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        request_id = serializer.validated_data['request_id']
+        try:
+            if self.action == 'accept':
+                FriendshipRequestService.accept(request_id, request.user)
+            elif self.action == 'reject':
+                FriendshipRequestService.reject(request_id, request.user)
+            else:
+                FriendshipRequestService.cancel(request_id, request.user)
+            return Response({'message': f'Friendship request was {self.action}ed'},
                             status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
