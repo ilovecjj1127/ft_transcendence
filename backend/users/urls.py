@@ -1,7 +1,8 @@
 from django.urls import path
 
 from .views import FriendshipRequestView, FriendshipRequestModifyView, \
-    LogoutView, RegistrationView, UserProfileView, LoginView, RefreshTokenView
+    LogoutView, RegistrationView, UserProfileView, LoginView, RefreshTokenView, \
+    PasswordChangeView
 
 
 urlpatterns = [
@@ -10,6 +11,7 @@ urlpatterns = [
     path('token_refresh/', RefreshTokenView.as_view(), name='token_refresh'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('', UserProfileView.as_view(), name='user_profile'),
+    path('password_change/', PasswordChangeView.as_view(), name='change_password'),
     path('friendship_request/', FriendshipRequestView.as_view(), name='friendship_request'),
     path('friendship_request/accept/', FriendshipRequestModifyView.as_view(action='accept'),
          name='accept_friendship_request'),

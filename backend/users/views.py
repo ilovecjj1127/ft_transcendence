@@ -4,12 +4,11 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
-from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
-    RequestIdSerializer
+    RequestIdSerializer, PasswordChangeSerializer
 from .services import FriendshipRequestService, UserProfileService
 
 
@@ -58,11 +57,10 @@ class LogoutView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
             refresh_token = serializer.validated_data['refresh']
-            token = RefreshToken(refresh_token)
-            token.blacklist()
+            UserProfileService.logout(refresh_token)
             return Response({'message': 'Logout successful'},
                             status=status.HTTP_200_OK)
-        except Exception as e:
+        except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -85,6 +83,29 @@ class UserProfileView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class PasswordChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary='Change password',
+        request=PasswordChangeSerializer,
+        responses={200: SuccessResponseSerializer},
+        tags=['Users'],
+    )
+    def patch(self, request: Request) -> Response:
+        serializer = PasswordChangeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            old_password = serializer.validated_data['old_password']
+            new_password = serializer.validated_data['new_password']
+            UserProfileService.change_password(request.user, old_password, new_password)
+            return Response({'message': 'Password was changed successfully'},
+                            status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class FriendshipRequestView(APIView):

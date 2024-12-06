@@ -1,4 +1,9 @@
+from django.contrib.auth import authenticate
 from django.db import transaction
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, \
+    OutstandingToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 from .models import FriendshipRequest, UserProfile
 
@@ -11,6 +16,34 @@ class UserProfileService:
             return UserProfile.objects.get(username=username)
         except UserProfile.DoesNotExist:
             raise ValueError(f'User "{username}" not found')
+
+    @staticmethod
+    @transaction.atomic
+    def logout(refresh_token: str):
+        try:
+            token = RefreshToken(refresh_token)
+            token.blacklist()
+        except TokenError as e:
+            raise ValueError(str(e))
+
+    @staticmethod
+    @transaction.atomic
+    def invalidate_all_tokens(user: UserProfile):
+        tokens = OutstandingToken.objects.filter(user=user)
+        tokens = [BlacklistedToken(token=token) for token in tokens]
+        BlacklistedToken.objects.bulk_create(tokens, ignore_conflicts=True)
+
+    @staticmethod
+    @transaction.atomic
+    def change_password(user: UserProfile, old_password: str, new_password: str):
+        user_check = authenticate(username=user.username, password=old_password)
+        if user_check is None:
+            raise ValueError('Invalid credentials')
+        if old_password == new_password:
+            raise ValueError('New password should not be the same')
+        user.set_password(new_password)
+        user.save()
+        UserProfileService.invalidate_all_tokens(user)
 
     @staticmethod
     @transaction.atomic

@@ -1,4 +1,3 @@
-from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
 
@@ -24,20 +23,6 @@ class RegistrationSerializer(serializers.ModelSerializer):
         return UserProfile.objects.create_user(**validated_data)
 
 
-class LoginSerializer(serializers.Serializer):
-    username = serializers.CharField(max_length=150)
-    password = serializers.CharField(max_length=128, write_only=True)
-
-    def validate(self, data):
-        username = data.get('username')
-        password = data.get('password')
-        user = authenticate(username=username, password=password)
-        if user is None:
-            raise serializers.ValidationError({'error': 'Invalid credentials'})
-        data['user'] = user
-        return data
-
-
 class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
@@ -51,5 +36,11 @@ class UserProfileSerializer(serializers.ModelSerializer):
 class UsernameSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=150)
 
+
 class RequestIdSerializer(serializers.Serializer):
     request_id = serializers.IntegerField()
+
+
+class PasswordChangeSerializer(serializers.Serializer):
+    old_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, validators=[validate_password])
