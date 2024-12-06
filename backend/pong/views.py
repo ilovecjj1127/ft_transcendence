@@ -13,6 +13,7 @@ class HelloView(APIView):
         summary='Test non-protected endpoint',
         description='Test description',
         responses={200: SuccessResponseSerializer},
+        tags=['Test endpoints'],
     )
     def get(self, request: Request) -> Response:
         return Response({'message': 'Hello World!'},
@@ -24,6 +25,7 @@ class ProtectedView(APIView):
     @extend_schema(
         summary='Test protected endpoint',
         responses={200: SuccessResponseSerializer},
+        tags=['Test endpoints'],
     )
     def get(self, request: Request) -> Response:
         return Response({'message': 'You got access to a protected endpoint!'},

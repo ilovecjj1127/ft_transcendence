@@ -1,10 +1,11 @@
-from drf_spectacular.utils import extend_schema, OpenApiParameter
+from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
@@ -18,6 +19,7 @@ class RegistrationView(APIView):
         summary='New user registration',
         request=RegistrationSerializer,
         responses={201: SuccessResponseSerializer},
+        tags=['Users'],
     )
     def post(self, request: Request) -> Response:
         serializer = RegistrationSerializer(data=request.data)
@@ -28,12 +30,27 @@ class RegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+@extend_schema_view(
+    post=extend_schema(tags=['Authentication'])
+)
+class LoginView(TokenObtainPairView):
+    pass
+
+
+@extend_schema_view(
+    post=extend_schema(tags=['Authentication'])
+)
+class RefreshTokenView(TokenRefreshView):
+    pass
+
+
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
         request=LogoutSerializer,
         responses={200: SuccessResponseSerializer},
+        tags=['Authentication'],
     )
     def post(self, request: Request) -> Response:
         serializer = LogoutSerializer(data=request.data)
@@ -55,6 +72,7 @@ class UserProfileView(APIView):
     @extend_schema(
         parameters=[OpenApiParameter(name='username', required=True, type=str)],
         responses={200: UserProfileSerializer},
+        tags=['Users'],
     )
     def get(self, request: Request) -> Response:
         username = request.query_params.get('username')
@@ -71,12 +89,12 @@ class UserProfileView(APIView):
 
 class FriendshipRequestView(APIView):
     permission_classes = [IsAuthenticated]
-    action = ""
 
     @extend_schema(
         summary='Send friendship request',
         request=UsernameSerializer,
         responses={200: SuccessResponseSerializer},
+        tags=['Friendship requests'],
     )
     def post(self, request: Request) -> Response:
         serializer = UsernameSerializer(data=request.data)
@@ -90,9 +108,15 @@ class FriendshipRequestView(APIView):
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
+
+class FriendshipRequestModifyView(APIView):
+    permission_classes = [IsAuthenticated]
+    action = ""
+
     @extend_schema(
         request=RequestIdSerializer,
         responses={200: SuccessResponseSerializer},
+        tags=['Friendship requests'],
     )
     def patch(self, request: Request) -> Response:
         if self.action not in ['accept', 'reject', 'cancel']:
