@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate
 from django.db import transaction
+from django.db.models import Prefetch
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, \
     OutstandingToken
@@ -13,9 +14,25 @@ class UserProfileService:
     @staticmethod
     def get_user_profile(username: str) -> UserProfile:
         try:
-            return UserProfile.objects.get(username=username)
+            return UserProfile.objects.prefetch_related('friends').get(username=username)
         except UserProfile.DoesNotExist:
             raise ValueError(f'User "{username}" not found')
+
+    @staticmethod
+    def get_my_profile(user: UserProfile) -> UserProfile:
+        return UserProfile.objects.prefetch_related(
+            'friends',
+            Prefetch(
+                'received_requests',
+                queryset=FriendshipRequest.objects.filter(status='pending') \
+                    .select_related('from_user').only('from_user__username')
+            ),
+            Prefetch(
+                'sent_requests',
+                queryset=FriendshipRequest.objects.filter(status='pending') \
+                    .select_related('to_user').only('to_user__username')
+            )
+        ).get(id=user.id)
 
     @staticmethod
     @transaction.atomic

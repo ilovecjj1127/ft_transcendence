@@ -8,7 +8,7 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
-    RequestIdSerializer, PasswordChangeSerializer
+    RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer
 from .services import FriendshipRequestService, UserProfileService
 
 
@@ -82,6 +82,19 @@ class UserProfileView(APIView):
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_404_NOT_FOUND)
         serializer = UserProfileSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class MyProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        responses={200: MyProfileSerializer},
+        tags=['Users'],
+    )
+    def get(self, request: Request) -> Response:
+        user = UserProfileService.get_my_profile(request.user)
+        serializer = MyProfileSerializer(user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
