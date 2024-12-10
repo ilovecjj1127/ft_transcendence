@@ -171,3 +171,24 @@ class FriendshipRequestModifyView(APIView):
                             status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class BreakOffFriendshipView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        request=UsernameSerializer,
+        responses={200: SuccessResponseSerializer},
+        tags=['Friendship requests'],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = UsernameSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            friend_name = serializer.validated_data['username']
+            FriendshipRequestService.break_off_friendship(request.user, friend_name)
+            return Response({'message': f'Friendship with {friend_name} is over'},
+                            status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)

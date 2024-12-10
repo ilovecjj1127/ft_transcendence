@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import FriendshipRequestView, FriendshipRequestModifyView, \
     LogoutView, RegistrationView, UserProfileView, LoginView, RefreshTokenView, \
-    PasswordChangeView, MyProfileView
+    PasswordChangeView, MyProfileView, BreakOffFriendshipView
 
 
 urlpatterns = [
@@ -20,4 +20,5 @@ urlpatterns = [
          name='reject_friendship_request'),
     path('friendship_request/cancel/', FriendshipRequestModifyView.as_view(action='cancel'),
          name='cancel_friendship_request'),
+    path('remove_friend/', BreakOffFriendshipView.as_view(), name='remove_friend'),
 ]

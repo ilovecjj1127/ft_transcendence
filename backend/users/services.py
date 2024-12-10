@@ -150,3 +150,38 @@ class FriendshipRequestService:
             raise ValueError('Cannot cancel not pending friendship request')
         request.status = 'canceled'
         request.save()
+
+    @staticmethod
+    @transaction.atomic
+    def break_off_friendship(user: UserProfile, friend_name: str):
+        if user.username == friend_name:
+            raise ValueError('User cannot remove themself from friends')
+        friend_queryset = UserProfile.objects.prefetch_related(
+            'friends',
+            Prefetch(
+                'received_requests',
+                queryset=FriendshipRequest.objects.filter(from_user=user, status='accepted')
+            ),
+            Prefetch(
+                'sent_requests',
+                queryset=FriendshipRequest.objects.filter(to_user=user, status='accepted')
+            )
+        )
+        try:
+            friend = friend_queryset.get(username=friend_name)
+        except UserProfile.DoesNotExist:
+            raise ValueError(f'User "{friend_name}" not found')
+        if user not in friend.friends.all():
+            raise ValueError('These users are not friends')
+        received_requests = friend.received_requests.all()
+        sent_requests = friend.sent_requests.all()
+        if received_requests:
+            request = received_requests[0]
+            request.status = "canceled"
+        elif sent_requests:
+            request = sent_requests[0]
+            request.status = "rejected"
+        else:
+            raise ValueError('No accepted friendship request found')
+        request.save()
+        user.friends.remove(friend)
