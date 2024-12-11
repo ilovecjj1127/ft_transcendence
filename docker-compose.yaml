@@ -15,6 +15,8 @@ services:
   backend:
     container_name: django_app
     image: transcendence_backend
+    volumes:
+      - ${PWD}/backend:/app
     command: ./wait_db.sh python manage.py runserver 0.0.0.0:8000
     build:
       context: backend
