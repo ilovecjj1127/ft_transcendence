@@ -87,6 +87,13 @@ class UserProfileService:
         return user.friends.filter(id=friend.id).exists()
 
 
+    @staticmethod
+    @transaction.atomic
+    def update_avatar(user: UserProfile, avatar):
+        user.avatar = avatar
+        user.save()
+
+
 class FriendshipRequestService:
     @staticmethod
     @transaction.atomic

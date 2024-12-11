@@ -1,5 +1,6 @@
 from drf_spectacular.utils import extend_schema, extend_schema_view, OpenApiParameter
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
@@ -8,7 +9,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
-    RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer
+    RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer, \
+    AvatarSerializer
 from .services import FriendshipRequestService, UserProfileService
 
 
@@ -192,3 +194,25 @@ class BreakOffFriendshipView(APIView):
                             status=status.HTTP_200_OK)
         except ValueError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class AvatarUploadView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser]
+
+    @extend_schema(
+        request=AvatarSerializer,
+        responses={200: SuccessResponseSerializer},
+        tags=['Users'],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = AvatarSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        avatar = serializer.validated_data['avatar']
+        try:
+            UserProfileService.update_avatar(request.user, avatar)
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response({'message': 'Avatar uploaded successfully'},
+                        status=status.HTTP_200_OK)

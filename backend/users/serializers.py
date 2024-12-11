@@ -1,4 +1,5 @@
 from django.contrib.auth.password_validation import validate_password
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import serializers
 
 from .models import FriendshipRequest, UserProfile
@@ -76,3 +77,12 @@ class RequestIdSerializer(serializers.Serializer):
 class PasswordChangeSerializer(serializers.Serializer):
     old_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, validators=[validate_password])
+
+
+@extend_schema_field({'type': 'string', 'format': 'binary'})
+class AvatarField(serializers.ImageField):
+    pass
+
+
+class AvatarSerializer(serializers.Serializer):
+    avatar = AvatarField()
