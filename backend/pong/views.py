@@ -1,4 +1,3 @@
-from django.http import HttpResponse
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -14,6 +13,7 @@ class HelloView(APIView):
         summary='Test non-protected endpoint',
         description='Test description',
         responses={200: SuccessResponseSerializer},
+        tags=['Test endpoints'],
     )
     def get(self, request: Request) -> Response:
         return Response({'message': 'Hello World!'},
@@ -25,6 +25,7 @@ class ProtectedView(APIView):
     @extend_schema(
         summary='Test protected endpoint',
         responses={200: SuccessResponseSerializer},
+        tags=['Test endpoints'],
     )
     def get(self, request: Request) -> Response:
         return Response({'message': 'You got access to a protected endpoint!'},
