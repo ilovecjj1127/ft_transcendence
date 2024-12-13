@@ -14,5 +14,9 @@ class GameCreateSerializer(serializers.ModelSerializer):
 class GameUpdateSerializer(serializers.ModelSerializer):
 	class Mera:
 		model = Game
-		fields = ['score_player1', 'score_player2', 'winner']
+		fields = ['score_player1', 'score_player2', 'status', 'winner']
+		read_only_fields = ['player1', 'player2', 'created_at']
+
+class GameCompletionSerializer(serializers.ModelSerializer):
+
 

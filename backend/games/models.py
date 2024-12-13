@@ -9,25 +9,25 @@ class Game(models.Model):
 	score_player2 = models.PositiveIntegerField(default=0)
 	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True,
 								related_name="won_games")
+	winning_score = models.PositiveIntegerField(default=10)
 	created_at = models.DateTimeField(auto_now_add=True)
 	status = models.CharField(
-        max_length = 10,
-        choices=[ 
-            ('pending', 'Pending'),
-            ('in_progress', 'In Progress'),
-            ('interrupted', 'Interrupted'), 
-            ('completed', 'Completed')
-        ],
-        default = 'pending'
-    )
+		max_length = 10,
+		choices=[ 
+			('pending', 'Pending'),
+			('in_progress', 'In Progress'),
+			('interrupted', 'Interrupted'), 
+			('completed', 'Completed')
+		],
+		default = 'pending'
+	)
 
 	def __str__(self):
 		return f"{self.player1.username} VS {self.player2.username}"
 	
-	def set_winner(self):
-		self.game_finished = True
-		if self.score_player1 > self.score_player2:
-			winner = self.player1
+	# def mark_as_completed(self):
+	# 	self.status = 'completed'
+		
 
 # class Score(models.Model):
 
