@@ -33,11 +33,13 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'chat.apps.ChatConfig',
     'pong.apps.PongConfig',
     'users.apps.UsersConfig',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'channels',
     'drf_spectacular',
     'silk',
     'django.contrib.admin',
@@ -78,7 +80,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TranscendenceBackend.wsgi.application'
+# WSGI_APPLICATION = 'TranscendenceBackend.wsgi.application'
+ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 
 # Database
@@ -166,4 +169,10 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Detailed description of API endpoints.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    }
 }
