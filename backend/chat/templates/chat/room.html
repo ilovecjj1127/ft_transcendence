@@ -10,9 +10,13 @@
     <button id="chat-message-submit">Send</button>
 
     <script>
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = "/chat/login";
+        }
         const roomName = "{{ room_name }}";
         const chatSocket = new WebSocket(
-            `ws://${window.location.host}/ws/chat/${roomName}/`
+            `ws://${window.location.host}/ws/chat/${roomName}/?token=${token}`
         );
 
         chatSocket.onmessage = function(event) {
