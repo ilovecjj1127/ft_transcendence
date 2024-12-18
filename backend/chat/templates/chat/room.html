@@ -24,8 +24,12 @@
             document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
         };
 
-        chatSocket.onclose = function() {
-            console.error('Chat socket closed unexpectedly');
+        chatSocket.onclose = function(event) {
+            if (event.code === 1006) {
+                alert('Unauthorized: please log in first');
+            } else {
+                console.error('Chat socket closed unexpectedly');
+            }
         };
 
         document.querySelector('#chat-message-submit').onclick = function() {

@@ -1,6 +1,7 @@
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
 from rest_framework.exceptions import AuthenticationFailed
+from rest_framework_simplejwt.exceptions import TokenError
 
 
 
@@ -9,7 +10,9 @@ class JWTAuthMiddleware(BaseMiddleware):
         from django.contrib.auth.models import AnonymousUser
 
         query_string = scope.get('query_string', b'').decode()
-        params = dict(pair.split('=') for pair in query_string.split('&'))
+        params = {}
+        if query_string:
+            params = dict(pair.split('=') for pair in query_string.split('&'))
         token = params.get('token', None)
         if token is None:
             scope['user'] = AnonymousUser()
@@ -22,7 +25,6 @@ class JWTAuthMiddleware(BaseMiddleware):
         from django.contrib.auth import get_user_model
         from django.contrib.auth.models import AnonymousUser
         from rest_framework_simplejwt.tokens import UntypedToken
-        from rest_framework_simplejwt.exceptions import TokenError
 
         User = get_user_model()
         try:
