@@ -10,13 +10,23 @@ class GameCreateSerializer(serializers.ModelSerializer):
 		if data['player1'] == data['player2']:
 			raise serializers.ValidationError("Player 1 and Player 2 cannot be the same.")
 		return data
-	
-class GameUpdateSerializer(serializers.ModelSerializer):
-	class Mera:
+
+class GameDetailSerializer(serializers.ModelSerializer):
+	class Meta:
 		model = Game
-		fields = ['score_player1', 'score_player2', 'status', 'winner']
-		read_only_fields = ['player1', 'player2', 'created_at']
+		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at']
 
-class GameCompletionSerializer(serializers.ModelSerializer):
+class GameStartSerializer(serializers.Serializer):
+    game_id = serializers.IntegerField()
+	
+class GameUpdateSerializer(serializers.Serializer):
+	game_id = serializers.IntegerField(required=True)
+	new_score_player1 = serializers.IntegerField(required=True)
+	new_score_player2 = serializers.IntegerField(required=True)
 
+class GameInterruptSerializer(serializers.Serializer):
+    game_id = serializers.IntegerField()
+
+class GameEndSerializer(serializers.Serializer):
+    game_id = serializers.IntegerField()
 

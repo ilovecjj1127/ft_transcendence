@@ -24,9 +24,6 @@ class Game(models.Model):
 
 	def __str__(self):
 		return f"{self.player1.username} VS {self.player2.username}"
-	
-	# def mark_as_completed(self):
-	# 	self.status = 'completed'
 		
 
 # class Score(models.Model):
