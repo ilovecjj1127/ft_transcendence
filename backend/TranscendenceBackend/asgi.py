@@ -14,7 +14,7 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
 
 from chat.routing import websocket_urlpatterns
-from .middleware import JWTAuthMiddleware
+from .middleware import JWTAuthMiddleware, RedisPoolMiddleware
 
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TranscendenceBackend.settings')
@@ -22,7 +22,9 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TranscendenceBackend.settings')
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
     'websocket': JWTAuthMiddleware(
-        URLRouter(websocket_urlpatterns)
+        RedisPoolMiddleware(
+            URLRouter(websocket_urlpatterns)
+        )
     )
 })
 

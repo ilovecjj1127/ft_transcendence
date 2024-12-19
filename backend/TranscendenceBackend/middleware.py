@@ -1,3 +1,4 @@
+import aioredis
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
 from rest_framework.exceptions import AuthenticationFailed
@@ -33,3 +34,15 @@ class JWTAuthMiddleware(BaseMiddleware):
             return User.objects.get(id=user_id)
         except (TokenError, AuthenticationFailed, User.DoesNotExist):
             return AnonymousUser()
+
+
+class RedisPoolMiddleware(BaseMiddleware):
+    def __init__(self, inner):
+        super().__init__(inner)
+        self.redis_pool = aioredis.from_url(
+            "redis://redis:6379", encoding="utf-8", decode_responses=True
+        )
+
+    async def __call__(self, scope, receive, send):
+        scope['redis_pool'] = self.redis_pool
+        return await super().__call__(scope, receive, send)
