@@ -12,6 +12,10 @@ services:
     # volumes:
     #   - ./db/postgres:/var/lib/postgresql/data
 
+  redis:
+    container_name: transcendence_redis
+    image: redis:alpine
+
   backend:
     container_name: django_app
     image: transcendence_backend
@@ -25,3 +29,4 @@ services:
       - backend/.env
     depends_on:
       - db
+      - redis

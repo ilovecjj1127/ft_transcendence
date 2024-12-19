@@ -3,6 +3,8 @@ import json
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
+    MAX_USERS_PER_ROOM = 2
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.room_name: str = ""
@@ -44,3 +46,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'message': message
         }))
+
+    # async def get_connected_users(self):
+    #     count = await self.channel_layer.get(f'{self.}')
