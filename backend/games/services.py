@@ -4,11 +4,8 @@ from django.db import transaction
 class GameService:
 	@staticmethod
 	@transaction.atomic
-	def start_game(game_id: int):
-		game = Game.objects.get(id=game_id)
-		if game.DoesNotExist:
-			raise ValueError('Game not found')
-		if game.status != 'pending':
+	def start_game(game: Game):
+		if game.status not in ['interrupted', 'pending']:
 			raise ValueError('Game cannot be started')
 		game.status = 'in_progress'
 		game.save()
@@ -16,22 +13,16 @@ class GameService:
 	
 	@staticmethod
 	@transaction.atomic
-	def interrupt_game(game_id: int):
-		game = Game.objects.get(id=game_id)
-		if game.DoesNotExist:
-			raise ValueError('Game not found')
+	def interrupt_game(game: Game):
 		if game.status != 'in_progress':
 			raise ValueError('Game cannot be interrupted')
-		game.status = 'in_progress'
+		game.status = 'interrupted'
 		game.save()
 		return game
 	
 	@staticmethod
 	@transaction.atomic
-	def update_game(game_id: int, new_score_player1: int, new_score_player2: int):
-		game = Game.objects.get(id=game_id)
-		if game.DoesNotExist:
-			raise ValueError('Game not found')
+	def update_game(game: Game, new_score_player1: int, new_score_player2: int):
 		if game.status != 'in_progress':
 			raise ValueError('Game can not be updated')
 		if game.score_player1 != new_score_player1:

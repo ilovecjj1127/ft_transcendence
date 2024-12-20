@@ -1,4 +1,4 @@
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -23,14 +23,18 @@ class GameCreateView(APIView):
 		serializer = GameCreateSerializer(data=request.data)
 		if serializer.is_valid():
 			game = serializer.save()
-			return Response({'message': 'Game created successfully'},
-				   			status=status.HTTP_201_CREATED)
+			return Response(
+				{
+					'message': 'Game created successfully',
+					'game': serializer.data,
+				}, status=status.HTTP_201_CREATED)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class GameDetailView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
+		parameters=[OpenApiParameter(name='game_id', required=True, type=int)],
 		summary="Retrieve game details",
 		request=GameDetailSerializer,
 		tags=['Games'],
@@ -39,10 +43,7 @@ class GameDetailView(APIView):
 		game_id = request.query_params.get('game_id')
 		if not game_id:
 			return Response({'error': 'Game ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-		try:
-			game = get_object_or_404(Game, id=game_id)
-		except Game.DoesNotExist:
-			return Response({'error': 'Game not found'}, status=status.HTTP_404_NOT_FOUND)
+		game = get_object_or_404(Game, id=game_id)
 		serializer = GameDetailSerializer(game)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -58,9 +59,10 @@ class GameStartView(APIView):
 		serializer = GameStartSerializer(data=request.data)
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		game_id = serializer.validated_data['game_id']
+		game = get_object_or_404(Game, id=game_id)
 		try:
-			game_id = serializer.validated_data['game_id']
-			game = GameService.start_game(game_id)
+			GameService.start_game(game)
 			return Response({'message': 'Game started', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -81,7 +83,8 @@ class GameUpdateView(APIView):
 			game_id = serializer.validated_data['game_id']
 			new_score_player1 = serializer.validated_data['new_score_player1']
 			new_score_player2 = serializer.validated_data['new_score_player2']
-			GameService.update_game(game_id, new_score_player1, new_score_player2)
+			game = get_object_or_404(Game, id=game_id)
+			GameService.update_game(game, new_score_player1, new_score_player2)
 			return Response({'message': 'Game updated'}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -101,18 +104,23 @@ class GameInterruptView(APIView):
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		try:
 			game_id = serializer.validated_data['game_id']
-			game = GameService.interrupt_game(game_id)
+			game = get_object_or_404(Game, id=game_id)
+			GameService.interrupt_game(game)
 			return Response({'message': 'Game interrupted', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-# class GameListView(APIView):
-# 	permission_classes = [IsAuthenticated]
+class GameListView(APIView):
+	permission_classes = [IsAuthenticated]
 
-# 	@extend_schema(
-# 		summary="List all games",
-# 		responses={200: GameListSerializer(many=True)},
-# 		tags=['Games'],
-# 	)
-# 	def get(self, request: Request) -> Response:
+	@extend_schema(
+		summary="List all games",
+		request=GameDetailSerializer,
+		responses={200: GameDetailSerializer(many=True)},
+		tags=['Games'],
+	)
+	def get(self, request: Request) -> Response:
+		games = Game.objects.all()
+		serializer = GameDetailSerializer(games, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
 

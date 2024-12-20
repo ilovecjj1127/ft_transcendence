@@ -12,7 +12,7 @@ class Game(models.Model):
 	winning_score = models.PositiveIntegerField(default=10)
 	created_at = models.DateTimeField(auto_now_add=True)
 	status = models.CharField(
-		max_length = 10,
+		max_length = 20,
 		choices=[ 
 			('pending', 'Pending'),
 			('in_progress', 'In Progress'),
