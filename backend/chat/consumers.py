@@ -3,8 +3,6 @@ import json
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
-    MAX_USERS_PER_ROOM = 2
-
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.room_name: str = ""

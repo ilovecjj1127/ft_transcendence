@@ -1,3 +1,4 @@
+from django.shortcuts import render
 from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -6,6 +7,13 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from users.serializers import SuccessResponseSerializer
+
+
+
+def game(request, game_id):
+    return render(request, 'pong/game.html', {
+        'game_id': game_id
+    })
 
 
 class HelloView(APIView):
@@ -18,6 +26,7 @@ class HelloView(APIView):
     def get(self, request: Request) -> Response:
         return Response({'message': 'Hello World!'},
                         status=status.HTTP_200_OK)
+
 
 class ProtectedView(APIView):
     permission_classes = [IsAuthenticated]
