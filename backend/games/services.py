@@ -1,11 +1,31 @@
 from .models import Game
+from users.models import UserProfile
 from django.db import transaction
 
 class GameService:
 	@staticmethod
 	@transaction.atomic
+	def join_game(game: Game, user: UserProfile):
+		if game.status != 'pending' or game.player2 or game.player1 == user:
+			raise ValueError('Game cannot be joined')
+		game.player2 = user
+		game.status = 'ready'
+		game.save()
+		return game
+	
+	@staticmethod
+	@transaction.atomic
+	def cancel_game(game: Game, user: UserProfile):
+		if game.status != 'pending' or game.player2 or game.player1 != user:
+			raise ValueError('Game cannot be canceled')
+		game.status = 'canceled'
+		game.save()
+		return game
+
+	@staticmethod
+	@transaction.atomic
 	def start_game(game: Game):
-		if game.status not in ['interrupted', 'pending']:
+		if game.status not in ['interrupted', 'ready']:
 			raise ValueError('Game cannot be started')
 		game.status = 'in_progress'
 		game.save()

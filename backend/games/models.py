@@ -4,7 +4,7 @@ from users.models import UserProfile
 
 class Game(models.Model):
 	player1 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player1_games")
-	player2 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player2_games")
+	player2 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player2_games", null=True, blank=True)
 	score_player1 = models.PositiveIntegerField(default=0)
 	score_player2 = models.PositiveIntegerField(default=0)
 	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True,
@@ -15,20 +15,25 @@ class Game(models.Model):
 		max_length = 20,
 		choices=[ 
 			('pending', 'Pending'),
+			('ready', 'Ready'),
 			('in_progress', 'In Progress'),
 			('interrupted', 'Interrupted'), 
-			('completed', 'Completed')
+			('completed', 'Completed'),
+			('canceled', 'Canceled')
 		],
 		default = 'pending'
 	)
 
 	def __str__(self):
-		return f"{self.player1.username} VS {self.player2.username}"
+		if self.player2:
+			return f"{self.player1.username} VS {self.player2.username}"
+		else:
+			return f"{self.player1.username} VS [Waiting for player]"
 		
 
 # class Score(models.Model):
 
 # class Tournament(models.Model):
 # 	name = models.CharField(max_length=100)
-# 	players = models.ManyToManyField(UserProfile, related_name="tournaments")
-# 	created_at = models.DateTimeField(auto_now_add=True)
+# 	players = models.ManyToManyField(UserProfile, related_name="tournament_players")
+# 	game = models.ManyToManyField(Game, related_name="tournament_games")

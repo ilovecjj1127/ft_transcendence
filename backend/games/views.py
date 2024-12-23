@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 
 from .serializers import GameCreateSerializer, GameDetailSerializer, GameUpdateSerializer, \
-							GameStartSerializer, GameInterruptSerializer
+							GameCancelSerializer, GameJoinSerializer, GameStartSerializer, \
+								GameInterruptSerializer
 from .models import Game
 from .services import GameService
 
@@ -46,7 +47,47 @@ class GameDetailView(APIView):
 		game = get_object_or_404(Game, id=game_id)
 		serializer = GameDetailSerializer(game)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+class GameJoinView(APIView):
+	permission_classes = [IsAuthenticated]
 
+	@extend_schema(
+		summary="Join the game",
+		request=GameJoinSerializer,
+		tags=['Games'],
+	)
+	def patch(self, request: Request) -> Response:
+		serializer = GameJoinSerializer(data=request.data)
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		game_id = serializer.validated_data['game_id']
+		game = get_object_or_404(Game, id=game_id)
+		try:
+			GameService.join_game(game, request.user)
+			return Response({'message': 'Game joined', 'status': game.status}, status=status.HTTP_200_OK)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+		
+class GameCancelView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="Cancel the game",
+		request=GameJoinSerializer,
+		tags=['Games'],
+	)
+	def patch(self, request: Request) -> Response:
+		serializer = GameJoinSerializer(data=request.data)
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		game_id = serializer.validated_data['game_id']
+		game = get_object_or_404(Game, id=game_id)
+		try:
+			GameService.cancel_game(game, request.user)
+			return Response({'message': 'Game canceled', 'status': game.status}, status=status.HTTP_200_OK)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+	
 class GameStartView(APIView):
 	permission_classes = [IsAuthenticated]
 
