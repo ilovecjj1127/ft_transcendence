@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	<link rel="icon" href="{% static 'media/favicon.ico' %}">
 	<script src="{% static 'js/script.js' %}" type="module"></script>
+	<script src="/js_requests/login-form.js"></script>
 	<title>Document</title>
 </head>
 <body>
@@ -21,21 +22,15 @@
 					password: <input type="password" id="password" name="password_" required><br><br>
 					<button type="submit" id="login-button">Login</button>
 				</form>
-				<!-- username: <input type="text" id="username" name="username"><br>
-				password: <input type="text" id="password" name="password"><br><br>
-				<button type="button" id="login-button">Login</button> -->
 			</div>
-
 			<div class="hidden" id="logged-in-stage">	
         		<button type="button" id="start-game-button">Start game</button>
 				<button type="button" id="log-out-button">Log out</button>
 			</div>
-
 			<div class="hidden" id="in-game-stage">	
         		<button type="button" id="pause-game-button">Pause game</button>
 				<button type="button" id="exit-game-button">Exit game</button>
 			</div>
-
 		</div>
 		<div class="game-box">game-box
 
@@ -51,40 +46,6 @@
 		</div>
 		<div class="chat-box">chat-box</div>
 	</div>
-	<!-- <script>
-			document.getElementById("login-form").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Prevent default form submission
-
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-
-            const payload = {
-                username: username,
-                password: password
-            };
-
-            try {
-                const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(payload)
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    alert("Login successful! Token: " + data.token);
-                } else {
-                    const error = await response.json();
-                    alert("Error: " + JSON.stringify(error));
-                }
-            } catch (err) {
-                console.error("Network or server error:", err);
-                alert("An error occurred. Please try again later.");
-            }
-        });
-	</script> -->
 	<p id="output"></p>
 	<p id="speed-output"></p>
 	<script src="{% static 'js/paddleControlLeft.js' %}" type="module"></script>

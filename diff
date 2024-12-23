@@ -1,0 +1,95 @@
+diff --git a/NOTES_RIK.md b/NOTES_RIK.md
+new file mode 100644
+index 0000000..270f8ef
+--- /dev/null
++++ b/NOTES_RIK.md
+@@ -0,0 +1,8 @@
++
++adding jwt tokens,
++access & refresh
++
++https://medium.com/django-unleashed/securing-django-rest-apis-with-jwt-authentication-using-simple-jwt-a-step-by-step-guide-28efa84666fe
++
++
++
+diff --git a/backend/TranscendenceBackend/settings.py b/backend/TranscendenceBackend/settings.py
+index 888f5ef..4f8ae08 100644
+--- a/backend/TranscendenceBackend/settings.py
++++ b/backend/TranscendenceBackend/settings.py
+@@ -23,7 +23,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
+ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-qhmw3sqgew++6d8t_3nzd*#h&k42)l2z(=i*09j#_zr@1=nq=k")
+ 
+ # SECURITY WARNING: don't run with debug turned on in production!
+-DEBUG = True
++# DEBUG = True
++DEBUG = False
+ 
+ ALLOWED_HOSTS = ['127.0.0.1']
+ 
+diff --git a/backend/extrafile_test copy b/backend/extrafile_test copy
+new file mode 100644
+index 0000000..e69de29
+diff --git a/backend/frontend/extrafile_test b/backend/frontend/extrafile_test
+new file mode 100644
+index 0000000..e69de29
+diff --git a/backend/frontend/templates/index.html b/backend/frontend/templates/index.html
+index 684f1ca..23c1c5f 100644
+--- a/backend/frontend/templates/index.html
++++ b/backend/frontend/templates/index.html
+@@ -8,17 +8,6 @@
+ 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+ 	<link rel="icon" href="{% static 'media/favicon.ico' %}">
+ 	<script src="{% static 'js/script.js' %}" type="module"></script>
+-    <!-- <script>
+-      // run this function when the document is loaded
+-      window.onload = () => {
+-        // create a couple of elements in an otherwise empty HTML page
+-        const heading = document.createElement("h1");
+-        const headingText = document.createTextNode("Created h1 element with script");
+-        heading.style.fontSize = "6px";
+-		heading.appendChild(headingText);
+-        document.body.appendChild(heading);
+-      };
+-    </script> -->
+ 	<title>Document</title>
+ </head>
+ <body>
+@@ -40,7 +29,6 @@
+ 			<div class="hidden" id="logged-in-stage">	
+         		<button type="button" id="start-game-button">Start game</button>
+ 				<button type="button" id="log-out-button">Log out</button>
+-
+ 			</div>
+ 
+ 			<div class="hidden" id="in-game-stage">	
+@@ -63,7 +51,7 @@
+ 		</div>
+ 		<div class="chat-box">chat-box</div>
+ 	</div>
+-	<script>
++	<!-- <script>
+ 			document.getElementById("login-form").addEventListener("submit", async function(event) {
+             event.preventDefault(); // Prevent default form submission
+ 
+@@ -96,7 +84,7 @@
+                 alert("An error occurred. Please try again later.");
+             }
+         });
+-	</script>
++	</script> -->
+ 	<p id="output"></p>
+ 	<p id="speed-output"></p>
+ 	<script src="{% static 'js/paddleControlLeft.js' %}" type="module"></script>
+diff --git a/docker-compose.yaml b/docker-compose.yaml
+index 3db7a26..2a2409c 100644
+--- a/docker-compose.yaml
++++ b/docker-compose.yaml
+@@ -15,6 +15,8 @@ services:
+   backend:
+     container_name: django_app
+     image: transcendence_backend
++    volumes:
++      - ${PWD}/backend:/app
+     command: ./wait_db.sh python manage.py runserver 0.0.0.0:8000
+     build:
+       context: backend
