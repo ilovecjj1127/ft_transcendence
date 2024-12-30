@@ -19,6 +19,14 @@
             background-color: black;
             border: 2px solid white;
         }
+
+        #ball {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body>
@@ -38,11 +46,25 @@
             x: 20,
             y: 0,
         };
+        const ball = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            radius: 10,
+        };
 
         // Draw paddle on the canvas
         function drawPaddle() {
             ctx.fillStyle = "white";
             ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+        }
+
+        // Draw ball on the canvas
+        function drawBall() {
+            ctx.beginPath();
+            ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+            ctx.closePath();
         }
 
         // Clear the canvas
@@ -54,15 +76,18 @@
         function updateCanvas() {
             clearCanvas();
             drawPaddle();
+            drawBall();
         }
 
         // Handle WebSocket messages
         socket.onmessage = function (event) {
             const data = JSON.parse(event.data);
 
-            if (data.type === "paddle_update") {
+            if (data.type === "possitions_update") {
                 // Update paddle position from the server
                 paddle.y = data.paddle_position * 5;
+                ball.x = data.ball_x;
+                ball.y = data.ball_y;
                 updateCanvas();
             }
         };
