@@ -77,19 +77,35 @@
             alert("Connection closed by the server.");
         };
 
+        let pressedKeys = {};
+
+        function sendAction(action) {
+            socket.send(JSON.stringify({
+                type: "paddle_action",
+                action: action,
+            }));
+        }
+
         // Paddle movement handling
         document.addEventListener("keydown", (event) => {
             let action = null;
-            if (event.key === "ArrowUp") {
-                action = "up";
-            } else if (event.key === "ArrowDown") {
-                action = "down";
+            if (!pressedKeys[event.key]) {
+                if (event.key === "ArrowUp") {
+                    action = "up";
+                } else if (event.key === "ArrowDown") {
+                    action = "down";
+                }
             }
             if (action) {
-                socket.send(JSON.stringify({
-                    type: "paddle_action",
-                    action: action,
-                }));
+                sendAction(action);
+                pressedKeys[event.key] = setInterval(() => sendAction(action), 50);
+            }
+        });
+
+        document.addEventListener("keyup", (event) => {
+            if (pressedKeys[event.key]) {
+                clearInterval(pressedKeys[event.key]);
+                pressedKeys[event.key] = null;
             }
         });
 

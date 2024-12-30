@@ -1,3 +1,4 @@
+import asyncio
 from enum import Enum
 import json
 
@@ -9,13 +10,16 @@ from .constants import INITIAL_PADDLE_POSITION, PADDLE_STEP
 class Action(str, Enum):
     UP = 'up'
     DOWN = 'down'
+    STOP = 'stop'
 
 
 class PongConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.game_id: str = ""
-        self.is_player: bool = False
+        self.game_id = ""
+        self.is_player = False
+        self.keep_running = False
+        self.paddle_action = Action.STOP
 
     async def connect(self):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
@@ -37,6 +41,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.redis.set(f'game/{self.game_id}', json.dumps(initial_state))
         else:
             await self.send_paddle_position()
+        self.keep_running = True
+        asyncio.create_task(self.update_positions())
 
     async def disconnect(self, close_code):
         if not self.game_id:
@@ -53,20 +59,28 @@ class PongConsumer(AsyncWebsocketConsumer):
             return
         data = json.loads(text_data)
         action = data.get('action')
-        if action is None:
+        if action not in (Action.UP, Action.DOWN):
             return
-        game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
-        paddle_position, is_changed = self.move_paddle(game_state, action)
-        if not is_changed:
-            return
-        await self.channel_layer.group_send(
-            self.game_id,
-            {
-                'type': 'send_paddle_position',
-                'paddle_position': paddle_position
-            }
-        )
-        await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
+        if self.paddle_action == Action.STOP:
+            self.paddle_action = Action(action)
+        elif self.paddle_action != action:
+            self.paddle_action = Action.STOP
+
+    async def update_positions(self):
+        while (self.keep_running):
+            game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
+            paddle_position, is_changed = self.move_paddle(game_state, self.paddle_action)
+            self.paddle_action = Action.STOP
+            if is_changed:
+                await self.channel_layer.group_send(
+                    self.game_id,
+                    {
+                        'type': 'send_paddle_position',
+                        'paddle_position': paddle_position
+                    }
+                )
+                await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
+            await asyncio.sleep(0.05)
 
     async def send_paddle_position(self, event={}):
         if 'paddle_position' in event:
@@ -90,4 +104,3 @@ class PongConsumer(AsyncWebsocketConsumer):
             return paddle_position, False
         game_state['paddle_position'] = paddle_position
         return paddle_position, True
-
