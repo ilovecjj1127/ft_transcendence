@@ -6,7 +6,8 @@ import random
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 
-from .constants import INITIAL_PADDLE_POSITION, PADDLE_STEP, INITIAL_BALL_X, INITIAL_BALL_Y
+from .constants import X_MAX, Y_MAX, INITIAL_VELOCITY, VELOCITY_STEP, BALL_RADIUS, \
+    PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_INDENT, PADDLE_STEP
 
 
 class Action(str, Enum):
@@ -67,19 +68,11 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.paddle_action = Action.STOP
 
     def iniatialize_game(self) -> dict:
-        direction_x = 0
-        while (abs(direction_x) < 0.2 or abs(direction_x) > 0.9):
-            random_angle = random.uniform(0, 2 * math.pi)
-            direction_x = math.cos(random_angle)
-            direction_y = math.sin(random_angle)
-        return {
-            "paddle_position": INITIAL_PADDLE_POSITION,
-            "ball_x": INITIAL_BALL_X,
-            "ball_y": INITIAL_BALL_Y,
-            "ball_direction_x": direction_x,
-            "ball_direction_y": direction_y,
-            "ball_velocity": 1
+        game_state = {
+            "paddle_position": (Y_MAX - PADDLE_HEIGHT) / 2
         }
+        self.get_new_ball(game_state)
+        return game_state
 
     async def update_positions(self):
         while (self.keep_running):
@@ -98,27 +91,15 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
             await asyncio.sleep(0.05)
 
-    # async def send_paddle_position(self, event={}):
-    #     if 'paddle_position' in event:
-    #         paddle_position = event['paddle_position']
-    #     else:
-    #         state_string = await self.redis.get(f'game/{self.game_id}')
-    #         game_state = json.loads(state_string) if state_string is not None else {}
-    #         paddle_position = game_state.get('paddle_position', INITIAL_PADDLE_POSITION)
-    #     await self.send(text_data=json.dumps({
-    #         'type': 'paddle_update',
-    #         'paddle_position': paddle_position
-    #     }))
-
     async def send_game_state(self, event: dict = {}):
         if event:
             game_state = event
         else:
             state_string = await self.redis.get(f'game/{self.game_id}')
             game_state = json.loads(state_string) if state_string is not None else {}
-        paddle_position = game_state.get('paddle_position', INITIAL_PADDLE_POSITION)
-        ball_x = game_state.get('ball_x', INITIAL_BALL_X)
-        ball_y = game_state.get('ball_y', INITIAL_BALL_Y)
+        paddle_position = game_state.get('paddle_position', (Y_MAX - PADDLE_HEIGHT) / 2)
+        ball_x = game_state.get('ball_x', X_MAX / 2.0)
+        ball_y = game_state.get('ball_y', Y_MAX / 2.0)
         await self.send(text_data=json.dumps({
             'type': 'possitions_update',
             'paddle_position': paddle_position,
@@ -130,10 +111,48 @@ class PongConsumer(AsyncWebsocketConsumer):
         paddle_position = game_state['paddle_position']
         if self.paddle_action == Action.UP and paddle_position > 0:
             game_state['paddle_position'] = max(0, paddle_position - PADDLE_STEP)
-        elif self.paddle_action == Action.DOWN and paddle_position < 100:
-            game_state['paddle_position'] = min(100, paddle_position + PADDLE_STEP)
+        elif self.paddle_action == Action.DOWN and paddle_position < Y_MAX - PADDLE_HEIGHT:
+            game_state['paddle_position'] = min(Y_MAX - PADDLE_HEIGHT, paddle_position + PADDLE_STEP)
         self.paddle_action = Action.STOP
 
     def move_ball(self, game_state: dict):
-        game_state['ball_x'] += game_state['ball_direction_x'] * game_state['ball_velocity']
-        game_state['ball_y'] += game_state['ball_direction_y'] * game_state['ball_velocity']
+        ball_x, ball_y = game_state['ball_x'], game_state['ball_y']
+        ball_x += game_state['ball_direction_x'] * game_state['ball_velocity']
+        ball_y += game_state['ball_direction_y'] * game_state['ball_velocity']
+        game_state['ball_velocity'] += VELOCITY_STEP
+        if ball_y <= BALL_RADIUS or ball_y >= Y_MAX - BALL_RADIUS:
+            game_state['ball_direction_y'] *= -1
+            if ball_y <= BALL_RADIUS:
+                ball_y = BALL_RADIUS * 2 - ball_y
+            else:
+                ball_y = (Y_MAX - BALL_RADIUS) * 2 - ball_y
+        if self.is_bounced(ball_x, ball_y, game_state):
+            game_state['ball_direction_x'] *= -1
+            ball_x = (PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS) * 2 - ball_x
+        if ball_x <= BALL_RADIUS:
+            self.get_new_ball(game_state)
+            return
+        elif ball_x >= X_MAX - BALL_RADIUS:
+            game_state['ball_direction_x'] *= -1
+            ball_x = (X_MAX - BALL_RADIUS) * 2 - ball_x
+        game_state['ball_x'], game_state['ball_y'] = ball_x, ball_y
+
+    def get_new_ball(self, game_state: dict):
+        direction_x = 0
+        while (abs(direction_x) < 0.2 or abs(direction_x) > 0.9):
+            random_angle = random.uniform(0, 2 * math.pi)
+            direction_x = math.cos(random_angle)
+            direction_y = math.sin(random_angle)
+        game_state["ball_x"] = X_MAX / 2.0
+        game_state["ball_y"] = Y_MAX / 2.0
+        game_state["ball_direction_x"] = direction_x
+        game_state["ball_direction_y"] = direction_y
+        game_state["ball_velocity"] = INITIAL_VELOCITY
+
+    def is_bounced(self, ball_x: float, ball_y: float, game_state: dict) -> bool:
+        paddle_position = game_state['paddle_position']
+        x_bounce = PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS
+        if ball_x  <= x_bounce < game_state['ball_x'] \
+                and paddle_position <= ball_y <= paddle_position + PADDLE_HEIGHT:
+            return True
+        return False

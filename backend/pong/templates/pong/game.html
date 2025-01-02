@@ -20,13 +20,6 @@
             border: 2px solid white;
         }
 
-        #ball {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background-color: red;
-            border-radius: 50%;
-        }
     </style>
 </head>
 <body>
@@ -85,7 +78,7 @@
 
             if (data.type === "possitions_update") {
                 // Update paddle position from the server
-                paddle.y = data.paddle_position * 5;
+                paddle.y = data.paddle_position;
                 ball.x = data.ball_x;
                 ball.y = data.ball_y;
                 updateCanvas();
