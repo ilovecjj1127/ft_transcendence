@@ -33,10 +33,16 @@
         // Canvas and paddle setup
         const canvas = document.getElementById("gameCanvas");
         const ctx = canvas.getContext("2d");
-        const paddle = {
+        const paddle1 = {
             width: 10,
             height: 100,
             x: 20,
+            y: 0,
+        };
+        const paddle2 = {
+            width: 10,
+            height: 100,
+            x: 770,
             y: 0,
         };
         const ball = {
@@ -46,9 +52,10 @@
         };
 
         // Draw paddle on the canvas
-        function drawPaddle() {
+        function drawPaddles() {
             ctx.fillStyle = "white";
-            ctx.fillRect(paddle.x, paddle.y, paddle.width, paddle.height);
+            ctx.fillRect(paddle1.x, paddle1.y, paddle1.width, paddle1.height);
+            ctx.fillRect(paddle2.x, paddle2.y, paddle2.width, paddle2.height);
         }
 
         // Draw ball on the canvas
@@ -68,7 +75,7 @@
         // Update canvas
         function updateCanvas() {
             clearCanvas();
-            drawPaddle();
+            drawPaddles();
             drawBall();
         }
 
@@ -78,7 +85,8 @@
 
             if (data.type === "possitions_update") {
                 // Update paddle position from the server
-                paddle.y = data.paddle_position;
+                paddle1.y = data.paddle1_y;
+                paddle2.y = data.paddle2_y;
                 ball.x = data.ball_x;
                 ball.y = data.ball_y;
                 updateCanvas();

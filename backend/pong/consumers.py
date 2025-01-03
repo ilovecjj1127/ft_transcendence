@@ -20,7 +20,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.game_id = ""
-        self.is_player = False
+        self.player_num = 0
         self.keep_running = False
 
     async def connect(self):
@@ -31,15 +31,23 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
-        key_player = f'game/{self.game_id}/player'
-        player = await self.redis.get(key_player)
-        if player is None and not self.scope['user'].is_anonymous:
-            self.is_player = True
-            await self.redis.set(key_player, self.scope['user'].username)
+        player1 = await self.redis.get(f'game/{self.game_id}/player1')
+        player2 = await self.redis.get(f'game/{self.game_id}/player2')
+        if player1 is None and not self.scope['user'].is_anonymous:
+            self.player_num = 1
+            await self.redis.set(f'game/{self.game_id}/player1',
+                                 self.scope['user'].username)
             initial_state = self.iniatialize_game()
             await self.send_game_state(initial_state)
             await self.redis.set(f'game/{self.game_id}', json.dumps(initial_state))
-            await self.redis.set(f'game/{self.game_id}/paddle1', Action.STOP)
+            await self.redis.set(f'game/{self.game_id}/paddle1_action', Action.STOP)
+            await self.redis.set(f'game/{self.game_id}/paddle2_action', Action.STOP)
+        elif player2 is None and not self.scope['user'].is_anonymous:
+            self.player_num = 2
+            await self.redis.set(f'game/{self.game_id}/player2',
+                                 self.scope['user'].username)
+            await self.send_game_state()
+            # await self.group_send_player2_joined()
             self.keep_running = True
             asyncio.create_task(self.update_positions())
         else:
@@ -48,11 +56,13 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if not self.game_id:
             return
-        if self.is_player:
+        if self.player_num:
             await self.redis.delete(
                 f'game/{self.game_id}',
-                f'game/{self.game_id}/player',
-                f'game/{self.game_id}/paddle1'
+                f'game/{self.game_id}/player1',
+                f'game/{self.game_id}/player2',
+                f'game/{self.game_id}/paddle1_action',
+                f'game/{self.game_id}/paddle2_action'
             )
         await self.channel_layer.group_discard(
             self.game_id,
@@ -60,21 +70,24 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
-        if not self.is_player:
+        if not self.player_num:
             return
         data = json.loads(text_data)
         action = data.get('action')
         if action not in (Action.UP, Action.DOWN):
             return
-        paddle_action = await self.redis.get(f'game/{self.game_id}/paddle1')
+        key_paddle = f'game/{self.game_id}/paddle{self.player_num}_action'
+        paddle_action = await self.redis.get(key_paddle)
         if paddle_action == Action.STOP:
-            await self.redis.set(f'game/{self.game_id}/paddle1', Action(action))
+            await self.redis.set(key_paddle, Action(action))
         elif paddle_action != action:
-            await self.redis.set(f'game/{self.game_id}/paddle1', Action.STOP)
+            await self.redis.set(key_paddle, Action.STOP)
 
     def iniatialize_game(self) -> dict:
+        paddle_position = (Y_MAX - PADDLE_HEIGHT) / 2
         game_state = {
-            "paddle_position": (Y_MAX - PADDLE_HEIGHT) / 2
+            "paddle1_y": paddle_position,
+            "paddle2_y": paddle_position
         }
         self.get_new_ball(game_state)
         return game_state
@@ -82,13 +95,15 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def update_positions(self):
         while (self.keep_running):
             game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
-            await self.move_paddle(game_state)
+            await self.move_paddle(game_state, 1)
+            await self.move_paddle(game_state, 2)
             self.move_ball(game_state)
             await self.channel_layer.group_send(
                 self.game_id,
                 {
                     'type': 'send_game_state',
-                    'paddle_position': game_state['paddle_position'],
+                    'paddle1_y': game_state['paddle1_y'],
+                    'paddle2_y': game_state['paddle2_y'],
                     'ball_x': game_state['ball_x'],
                     'ball_y': game_state['ball_y']
                 }
@@ -102,25 +117,39 @@ class PongConsumer(AsyncWebsocketConsumer):
         else:
             state_string = await self.redis.get(f'game/{self.game_id}')
             game_state = json.loads(state_string) if state_string is not None else {}
-        paddle_position = game_state.get('paddle_position', (Y_MAX - PADDLE_HEIGHT) / 2)
+        paddle1_y = game_state.get('paddle1_y', (Y_MAX - PADDLE_HEIGHT) / 2)
+        paddle2_y = game_state.get('paddle2_y', (Y_MAX - PADDLE_HEIGHT) / 2)
         ball_x = game_state.get('ball_x', X_MAX / 2.0)
         ball_y = game_state.get('ball_y', Y_MAX / 2.0)
         await self.send(text_data=json.dumps({
             'type': 'possitions_update',
-            'paddle_position': paddle_position,
+            'paddle1_y': paddle1_y,
+            'paddle2_y': paddle2_y,
             'ball_x': int(ball_x),
             'ball_y': int(ball_y)
         }))
 
-    async def move_paddle(self, game_state: dict):
-        paddle_position = game_state['paddle_position']
-        paddle_action = await self.redis.get(f'game/{self.game_id}/paddle1')
+    async def group_send_player2_joined(self):
+        await self.channel_layer.group_send(
+            self.game_id,
+            {'type': 'send_player2_joined'}
+        )
+
+    async def send_player2_joined(self, event: dict = {}):
+        await self.send(text_data=json.dumps({
+            'type': "player2_joined"
+        }))
+
+    async def move_paddle(self, game_state: dict, paddle_num: int):
+        paddle_position = game_state[f'paddle{paddle_num}_y']
+        paddle_action = await self.redis.get(f'game/{self.game_id}/paddle{paddle_num}_action')
         if paddle_action == Action.UP and paddle_position > 0:
-            game_state['paddle_position'] = max(0, paddle_position - PADDLE_STEP)
+            game_state[f'paddle{paddle_num}_y'] = max(0, paddle_position - PADDLE_STEP)
         elif paddle_action == Action.DOWN and paddle_position < Y_MAX - PADDLE_HEIGHT:
-            game_state['paddle_position'] = min(Y_MAX - PADDLE_HEIGHT, paddle_position + PADDLE_STEP)
+            game_state[f'paddle{paddle_num}_y'] = min(Y_MAX - PADDLE_HEIGHT,
+                                                      paddle_position + PADDLE_STEP)
         if paddle_action != Action.STOP:
-            await self.redis.set(f'game/{self.game_id}/paddle1', Action.STOP)
+            await self.redis.set(f'game/{self.game_id}/paddle{paddle_num}_action', Action.STOP)
 
     def move_ball(self, game_state: dict):
         ball_x, ball_y = game_state['ball_x'], game_state['ball_y']
@@ -157,7 +186,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         game_state["ball_velocity"] = INITIAL_VELOCITY
 
     def is_bounced(self, ball_x: float, ball_y: float, game_state: dict) -> bool:
-        paddle_position = game_state['paddle_position']
+        paddle_position = game_state['paddle1_y']
         x_bounce = PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS
         if ball_x  <= x_bounce < game_state['ball_x'] \
                 and paddle_position <= ball_y <= paddle_position + PADDLE_HEIGHT:
