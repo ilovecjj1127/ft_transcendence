@@ -50,6 +50,8 @@
             y: canvas.height / 2,
             radius: 10,
         };
+        let score1 = 0;
+        let score2 = 0;
 
         // Draw paddle on the canvas
         function drawPaddles() {
@@ -67,6 +69,15 @@
             ctx.closePath();
         }
 
+        //Draw score on the canvas
+        function drawScore() {
+            ctx.font = "30px Arial";
+            ctx.fillStyle = "white";
+            ctx.textAlign = "center";
+            ctx.fillText(score1, canvas.width / 4, 50);
+            ctx.fillText(score2, canvas.width * 3 / 4, 50)
+        }
+
         // Clear the canvas
         function clearCanvas() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -75,8 +86,9 @@
         // Update canvas
         function updateCanvas() {
             clearCanvas();
-            drawPaddles();
+            drawScore();
             drawBall();
+            drawPaddles();
         }
 
         // Handle WebSocket messages
@@ -89,6 +101,8 @@
                 paddle2.y = data.paddle2_y;
                 ball.x = data.ball_x;
                 ball.y = data.ball_y;
+                score1 = data.score1;
+                score2 = data.score2;
                 updateCanvas();
             }
         };

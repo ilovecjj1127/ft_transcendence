@@ -87,7 +87,9 @@ class PongConsumer(AsyncWebsocketConsumer):
         paddle_position = (Y_MAX - PADDLE_HEIGHT) / 2
         game_state = {
             "paddle1_y": paddle_position,
-            "paddle2_y": paddle_position
+            "paddle2_y": paddle_position,
+            "score1": 0,
+            "score2": 0
         }
         self.get_new_ball(game_state)
         return game_state
@@ -105,7 +107,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                     'paddle1_y': game_state['paddle1_y'],
                     'paddle2_y': game_state['paddle2_y'],
                     'ball_x': game_state['ball_x'],
-                    'ball_y': game_state['ball_y']
+                    'ball_y': game_state['ball_y'],
+                    'score1': game_state['score1'],
+                    'score2': game_state['score2']
                 }
             )
             await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
@@ -126,19 +130,21 @@ class PongConsumer(AsyncWebsocketConsumer):
             'paddle1_y': paddle1_y,
             'paddle2_y': paddle2_y,
             'ball_x': int(ball_x),
-            'ball_y': int(ball_y)
+            'ball_y': int(ball_y),
+            'score1': game_state.get('score1', 0),
+            'score2': game_state.get('score2', 0)
         }))
 
-    async def group_send_player2_joined(self):
-        await self.channel_layer.group_send(
-            self.game_id,
-            {'type': 'send_player2_joined'}
-        )
+    # async def group_send_player2_joined(self):
+    #     await self.channel_layer.group_send(
+    #         self.game_id,
+    #         {'type': 'send_player2_joined'}
+    #     )
 
-    async def send_player2_joined(self, event: dict = {}):
-        await self.send(text_data=json.dumps({
-            'type': "player2_joined"
-        }))
+    # async def send_player2_joined(self, event: dict = {}):
+    #     await self.send(text_data=json.dumps({
+    #         'type': "player2_joined"
+    #     }))
 
     async def move_paddle(self, game_state: dict, paddle_num: int):
         paddle_position = game_state[f'paddle{paddle_num}_y']
@@ -164,6 +170,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 ball_y = (Y_MAX - BALL_RADIUS) * 2 - ball_y
         ball_x = self.check_rebound(ball_x, ball_y, game_state)
         if ball_x <= BALL_RADIUS or ball_x >= X_MAX - BALL_RADIUS:
+            self.update_score(game_state, ball_x)
             return self.get_new_ball(game_state)
         game_state['ball_x'], game_state['ball_y'] = ball_x, ball_y
 
@@ -193,3 +200,9 @@ class PongConsumer(AsyncWebsocketConsumer):
             game_state['ball_direction_x'] *= -1
             return right_rebound * 2 - ball_x
         return ball_x
+
+    def update_score(self, game_state: dict, ball_x: float):
+        if ball_x <= BALL_RADIUS:
+            game_state['score2'] += 1
+        elif ball_x >= X_MAX - BALL_RADIUS:
+            game_state['score1'] += 1
