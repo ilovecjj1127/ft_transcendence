@@ -162,15 +162,9 @@ class PongConsumer(AsyncWebsocketConsumer):
                 ball_y = BALL_RADIUS * 2 - ball_y
             else:
                 ball_y = (Y_MAX - BALL_RADIUS) * 2 - ball_y
-        if self.is_bounced(ball_x, ball_y, game_state):
-            game_state['ball_direction_x'] *= -1
-            ball_x = (PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS) * 2 - ball_x
-        if ball_x <= BALL_RADIUS:
-            self.get_new_ball(game_state)
-            return
-        elif ball_x >= X_MAX - BALL_RADIUS:
-            game_state['ball_direction_x'] *= -1
-            ball_x = (X_MAX - BALL_RADIUS) * 2 - ball_x
+        ball_x = self.check_rebound(ball_x, ball_y, game_state)
+        if ball_x <= BALL_RADIUS or ball_x >= X_MAX - BALL_RADIUS:
+            return self.get_new_ball(game_state)
         game_state['ball_x'], game_state['ball_y'] = ball_x, ball_y
 
     def get_new_ball(self, game_state: dict):
@@ -185,10 +179,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         game_state["ball_direction_y"] = direction_y
         game_state["ball_velocity"] = INITIAL_VELOCITY
 
-    def is_bounced(self, ball_x: float, ball_y: float, game_state: dict) -> bool:
-        paddle_position = game_state['paddle1_y']
-        x_bounce = PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS
-        if ball_x  <= x_bounce < game_state['ball_x'] \
-                and paddle_position <= ball_y <= paddle_position + PADDLE_HEIGHT:
-            return True
-        return False
+    def check_rebound(self, ball_x: float, ball_y: float, game_state: dict) -> float:
+        paddle1_y = game_state['paddle1_y']
+        paddle2_y = game_state['paddle2_y']
+        left_rebound = PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS
+        right_rebound = X_MAX - left_rebound
+        if ball_x  <= left_rebound < game_state['ball_x'] \
+                and paddle1_y <= ball_y <= paddle1_y + PADDLE_HEIGHT:
+            game_state['ball_direction_x'] *= -1
+            return left_rebound * 2 - ball_x
+        elif ball_x  >= right_rebound > game_state['ball_x'] \
+                and paddle2_y <= ball_y <= paddle2_y + PADDLE_HEIGHT:
+            game_state['ball_direction_x'] *= -1
+            return right_rebound * 2 - ball_x
+        return ball_x
