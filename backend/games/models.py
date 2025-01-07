@@ -1,6 +1,9 @@
 from django.db import models
 from users.models import UserProfile
 
+# class Player(models.Model):
+# 	name = models.CharField(max_length=100)
+# 	user = models.
 
 class Game(models.Model):
 	player1 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player1_games")
@@ -11,6 +14,7 @@ class Game(models.Model):
 								related_name="won_games")
 	winning_score = models.PositiveIntegerField(default=10)
 	created_at = models.DateTimeField(auto_now_add=True)
+	modified_at = models.DateTimeField(auto_now=True)
 	status = models.CharField(
 		max_length = 20,
 		choices=[ 
@@ -33,7 +37,8 @@ class Game(models.Model):
 
 # class Score(models.Model):
 
-# class Tournament(models.Model):
-# 	name = models.CharField(max_length=100)
-# 	players = models.ManyToManyField(UserProfile, related_name="tournament_players")
-# 	game = models.ManyToManyField(Game, related_name="tournament_games")
+class Tournament(models.Model):
+	name = models.CharField(max_length=100)
+	created_at = models.DateTimeField(auto_now_add=True)
+	players = models.ManyToManyField(UserProfile, related_name="tournament_players")
+	game = models.ManyToManyField(Game, related_name="tournament_games")

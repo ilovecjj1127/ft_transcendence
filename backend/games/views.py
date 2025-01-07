@@ -5,10 +5,10 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
+from django.db.models import Q
 
 from .serializers import GameCreateSerializer, GameDetailSerializer, GameUpdateSerializer, \
-							GameCancelSerializer, GameJoinSerializer, GameStartSerializer, \
-								GameInterruptSerializer
+							GameActionSerializer
 from .models import Game
 from .services import GameService
 
@@ -21,15 +21,15 @@ class GameCreateView(APIView):
 		tags=['Games'],
 	)
 	def post(self, request: Request) -> Response:
-		serializer = GameCreateSerializer(data=request.data)
-		if serializer.is_valid():
-			game = serializer.save()
-			return Response(
-				{
-					'message': 'Game created successfully',
-					'game': serializer.data,
-				}, status=status.HTTP_201_CREATED)
-		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		serializer = GameCreateSerializer(data=request.data, context={'request': request})
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		game = serializer.save()
+		return Response(
+			{
+				'message': 'Game created successfully',
+				'game': GameCreateSerializer(game).data,
+			}, status=status.HTTP_201_CREATED)
 
 class GameDetailView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -53,17 +53,16 @@ class GameJoinView(APIView):
 
 	@extend_schema(
 		summary="Join the game",
-		request=GameJoinSerializer,
+		request=GameActionSerializer,
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
-		serializer = GameJoinSerializer(data=request.data)
+		serializer = GameActionSerializer(data=request.data)
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		game_id = serializer.validated_data['game_id']
-		game = get_object_or_404(Game, id=game_id)
 		try:
-			GameService.join_game(game, request.user)
+			game = GameService.join_game(game_id, request.user)
 			return Response({'message': 'Game joined', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -73,17 +72,16 @@ class GameCancelView(APIView):
 
 	@extend_schema(
 		summary="Cancel the game",
-		request=GameJoinSerializer,
+		request=GameActionSerializer,
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
-		serializer = GameJoinSerializer(data=request.data)
+		serializer = GameActionSerializer(data=request.data)
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		game_id = serializer.validated_data['game_id']
-		game = get_object_or_404(Game, id=game_id)
 		try:
-			GameService.cancel_game(game, request.user)
+			game = GameService.cancel_game(game_id, request.user)
 			return Response({'message': 'Game canceled', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -93,61 +91,17 @@ class GameStartView(APIView):
 
 	@extend_schema(
 		summary="Start the game",
-		request=GameStartSerializer,
+		request=GameActionSerializer,
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
-		serializer = GameStartSerializer(data=request.data)
+		serializer = GameActionSerializer(data=request.data)
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		game_id = serializer.validated_data['game_id']
-		game = get_object_or_404(Game, id=game_id)
 		try:
-			GameService.start_game(game)
+			game = GameService.start_game(game_id)
 			return Response({'message': 'Game started', 'status': game.status}, status=status.HTTP_200_OK)
-		except ValueError as e:
-			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-class GameUpdateView(APIView):
-	permission_classes = [IsAuthenticated]
-
-	@extend_schema(
-		summary="Update game scores",
-		request=GameUpdateSerializer,
-		tags=['Games'],
-	)
-	def patch(self, request: Request) -> Response:
-		serializer = GameUpdateSerializer(data=request.data)
-		if not serializer.is_valid():
-			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		try:
-			game_id = serializer.validated_data['game_id']
-			new_score_player1 = serializer.validated_data['new_score_player1']
-			new_score_player2 = serializer.validated_data['new_score_player2']
-			game = get_object_or_404(Game, id=game_id)
-			GameService.update_game(game, new_score_player1, new_score_player2)
-			return Response({'message': 'Game updated'}, status=status.HTTP_200_OK)
-		except ValueError as e:
-			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-
-
-class GameInterruptView(APIView):
-	permission_classes = [IsAuthenticated]
-
-	@extend_schema(
-		summary="Interrupt the game",
-		request=GameInterruptSerializer,
-		tags=['Games'],
-	)
-	def patch(self, request: Request) -> Response:
-		serializer = GameInterruptSerializer(data=request.data)
-		if not serializer.is_valid():
-			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		try:
-			game_id = serializer.validated_data['game_id']
-			game = get_object_or_404(Game, id=game_id)
-			GameService.interrupt_game(game)
-			return Response({'message': 'Game interrupted', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -164,4 +118,40 @@ class GameListView(APIView):
 		games = Game.objects.all()
 		serializer = GameDetailSerializer(games, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+class PendingGameListView(APIView):
+	permission_classes = [IsAuthenticated]
 
+	@extend_schema(
+		summary="List all the pending games",
+		responses={200: GameDetailSerializer(many=True)},
+		tags=['Games'],
+	)
+	def get(self, request: Request) -> Response:
+		games = Game.objects.filter(status='pending')
+		serializer = GameDetailSerializer(games, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+		
+class ReadyGameListView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="List all the ready games",
+		responses={200: GameDetailSerializer(many=True)},
+		tags=['Games'],
+	)
+	def get(self, request: Request) -> Response:
+		user = request.user
+		games = Game.objects.filter(status='ready').filter(Q(player1=user) | Q(player2=user))
+		serializer = GameDetailSerializer(games, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+class GameStatisticsView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="Get analysis result of user's games",
+		tags=['Games'],
+	)
+	def get(self, request: Request) -> Response:
+		return Response(serializer.data, status=status.HTTP_200_OK)

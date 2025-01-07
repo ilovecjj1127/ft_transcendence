@@ -1,11 +1,13 @@
 from .models import Game
 from users.models import UserProfile
 from django.db import transaction
+from django.shortcuts import get_object_or_404
 
 class GameService:
 	@staticmethod
 	@transaction.atomic
-	def join_game(game: Game, user: UserProfile):
+	def join_game(game_id: int, user: UserProfile) -> Game:
+		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'pending' or game.player2 or game.player1 == user:
 			raise ValueError('Game cannot be joined')
 		game.player2 = user
@@ -15,7 +17,8 @@ class GameService:
 	
 	@staticmethod
 	@transaction.atomic
-	def cancel_game(game: Game, user: UserProfile):
+	def cancel_game(game_id: int, user: UserProfile) -> Game:
+		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'pending' or game.player2 or game.player1 != user:
 			raise ValueError('Game cannot be canceled')
 		game.status = 'canceled'
@@ -24,7 +27,8 @@ class GameService:
 
 	@staticmethod
 	@transaction.atomic
-	def start_game(game: Game):
+	def start_game(game_id: int) -> Game:
+		game = get_object_or_404(Game, id=game_id)
 		if game.status not in ['interrupted', 'ready']:
 			raise ValueError('Game cannot be started')
 		game.status = 'in_progress'
@@ -33,7 +37,8 @@ class GameService:
 	
 	@staticmethod
 	@transaction.atomic
-	def interrupt_game(game: Game):
+	def interrupt_game(game_id: int) -> Game:
+		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game cannot be interrupted')
 		game.status = 'interrupted'
@@ -42,7 +47,8 @@ class GameService:
 	
 	@staticmethod
 	@transaction.atomic
-	def update_game(game: Game, new_score_player1: int, new_score_player2: int):
+	def update_game(game_id: int, new_score_player1: int, new_score_player2: int) -> Game:
+		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game can not be updated')
 		if game.score_player1 != new_score_player1:
