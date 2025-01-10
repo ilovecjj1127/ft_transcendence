@@ -57,5 +57,3 @@ class TournamentPlayer(models.Model):
 class TournamentMatch(models.Model):
 	tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="matches")
 	game = models.OneToOneField(Game, on_delete=models.CASCADE)
-	round_number = models.PositiveIntegerField()
-	match_number = models.PositiveIntegerField()

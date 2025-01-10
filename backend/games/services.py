@@ -116,5 +116,34 @@ class TournamentService:
 		players = list(tournament.players.all())
 		if len(players) <= 2:
 			raise ValueError('A tournament must have more than two player to start.')
+		
 		matches = []
+		for i in range(len(players)):
+			for j in range(i + 1, len(players)):
+				game = Game.objects.create(
+					player1=players[i].player,
+					player2=players[j].player,
+					status='ready',
+				)
+				matches.append(TournamentMatch(tournament=tournament, game=game))
+		TournamentMatch.objects.bulk_create(matches)
+		tournament.status = 'in_progress'
+		tournament.save()
+		return tournament
+	
+	@staticmethod
+	@transaction.atomic
+	def cancel_tournament(tournament_id: int, user: UserProfile) -> Tournament:
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		is_participant = tournament.players.filter(player=user).exists()
+		if tournament.status != 'registration':
+			raise ValueError('Tournament cannot be canceled.')
+		if not is_participant:
+			raise PermissionError('User is not the participant in this tournament.')
+
+		tournament.status = 'canceled'
+		tournament.save()
+		return tournament
+	
+	
 		
