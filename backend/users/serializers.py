@@ -60,7 +60,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['username', 'avatar', 'friends']
+        fields = ['id', 'username', 'avatar', 'friends']
 
     def get_friends(self, obj):
         return [friend.username for friend in obj.friends.all()]

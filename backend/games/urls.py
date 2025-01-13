@@ -13,5 +13,4 @@ urlpatterns = [
 	path('join/', GameJoinView.as_view(), name='join_game'),
 	path('cancel/', GameCancelView.as_view(), name='cancel_game'),
 	path('start/', GameStartView.as_view(), name='start_game'),
-	path('tournaments/register/'),
 ]

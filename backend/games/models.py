@@ -31,29 +31,3 @@ class Game(models.Model):
 		else:
 			return f"{self.player1.username} VS [Waiting for player]"
 		
-class Tournament(models.Model):
-	name = models.CharField(max_length=100)
-	created_at = models.DateTimeField(auto_now_add=True)
-	modified_at = models.DateTimeField(auto_now=True)
-	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, 
-								related_name="won_tournament")
-	status = models.CharField(
-		max_length=20,
-		choices=[
-			('registration', 'Registration Open'),
-			('in_progress', 'In Progress'),
-			('completed', 'Completed'),
-			('canceled', 'Canceled'),
-		],
-		default='registration'
-	)
-
-class TournamentPlayer(models.Model):
-	tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="players")
-	player = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
-	alias = models.CharField(max_length=50)
-	registered_at = models.DateTimeField(auto_now_add=True)
-
-class TournamentMatch(models.Model):
-	tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="matches")
-	game = models.OneToOneField(Game, on_delete=models.CASCADE)

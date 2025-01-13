@@ -7,10 +7,9 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from .serializers import GameCreateSerializer, GameDetailSerializer, GameUpdateSerializer, \
-							GameActionSerializer
+from .serializers import GameCreateSerializer, GameDetailSerializer, GameActionSerializer
 from .models import Game
-from .services import GameService, TournamentService
+from .services import GameService
 
 class GameCreateView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -158,34 +157,3 @@ class GameStatisticsView(APIView):
 	def get(self, request: Request) -> Response:
 		stats = GameService.calculate_user_statistics(request.user)
 		return Response(stats, status=status.HTTP_200_OK)
-
-
-class TournamentCreateView(APIView):
-	permission_classes = [IsAuthenticated]
-
-	@extend_schema(
-		summary="Propose a new tournament",
-		request=TournamentCreateSerializer,
-		tags=['Tournaments'],
-	)
-	def post(self, request: Request) -> Response:
-		
-	
-class TournamentCancelView(APIView):
-	permission_classes = [IsAuthenticated]
-
-	@extend_schema(
-		summary="Cancel the tournament",
-		request=TournamentActionSerializer,
-		tags=['Tournaments'],
-	)
-	def patch(self, request: Request) -> Response:
-		serializer = TournamentActionSerializer(data=request.data)
-		if not serializer.is_valid():
-			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		tournament_id = serializer.validated_data['tournament_id']
-		try:
-			game = TournamentService.cancel_tournament(tournament_id, request.user)
-			return Response({'message': 'Tournament canceled', 'status': game.status}, status=status.HTTP_200_OK)
-		except ValueError as e:
-			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
