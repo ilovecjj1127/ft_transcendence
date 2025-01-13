@@ -145,5 +145,3 @@ class TournamentService:
 		tournament.save()
 		return tournament
 	
-	
-		
