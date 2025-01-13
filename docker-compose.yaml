@@ -5,8 +5,8 @@ services:
   db:
     container_name: transcendence_db
     image: postgres:17-alpine
-    ports:
-      - "5432:5432"
+    # ports:
+    #   - "5432:5432"
     env_file:
       - db/.env
     # volumes:
@@ -18,9 +18,20 @@ services:
     command: ./wait_db.sh python manage.py runserver 0.0.0.0:8000
     build:
       context: backend
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
     env_file:
       - backend/.env
     depends_on:
       - db
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./spa_example:/usr/share/nginx/html
+    ports:
+      - "8080:8080"
+    depends_on:
+      - backend
