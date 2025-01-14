@@ -12,7 +12,7 @@
     <script>
         const token = localStorage.getItem('access_token');
         if (!token) {
-            window.location.href = "/chat/login";
+            window.location.href = "/pong/login";
         }
         const roomName = "{{ room_name }}";
         const chatSocket = new WebSocket(

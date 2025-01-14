@@ -15,6 +15,8 @@ def game(request, game_id):
         'game_id': game_id
     })
 
+def login(request):
+    return render(request, 'pong/login.html')
 
 class HelloView(APIView):
     @extend_schema(
