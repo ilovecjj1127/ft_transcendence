@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'pong.apps.PongConfig',
     'users.apps.UsersConfig',
+	'games.apps.GamesConfig',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
