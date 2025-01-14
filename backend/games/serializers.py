@@ -23,7 +23,7 @@ class GameCreateSerializer(serializers.ModelSerializer):
 class GameDetailSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at']
+		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at', 'modified_at']
 
 class GameActionSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField()

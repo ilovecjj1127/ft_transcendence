@@ -1,4 +1,4 @@
-from .models import *
+from .models import Game
 from users.models import UserProfile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -30,12 +30,41 @@ class GameService:
 	@transaction.atomic
 	def start_game(game_id: int, user: UserProfile) -> Game:
 		game = get_object_or_404(Game, id=game_id)
-		if game.status != 'ready' or game.player1 != user or game.player2 != user:
+		if game.status != 'ready' or (game.player1 != user and game.player2 != user):
 			raise ValueError('Game cannot be started')
 		game.status = 'in_progress'
 		game.save()
 		return game
 	
+	@staticmethod
+	@transaction.atomic
+	def interrupt_game(game_id: int) -> Game:
+		game = get_object_or_404(Game, id=game_id)
+		if game.status != 'in_progress':
+			raise ValueError('Game cannot be interrupted')
+		game.status = 'interrupted'
+		game.save()
+		return game
+	
+	@staticmethod
+	@transaction.atomic
+	def update_game(game_id: int, new_score_player1: int, new_score_player2: int) -> Game:
+		game = get_object_or_404(Game, id=game_id)
+		if game.status != 'in_progress':
+			raise ValueError('Game can not be updated')
+		if game.score_player1 != new_score_player1:
+			game.score_player1 = new_score_player1
+		if game.score_player2 != new_score_player2:
+			game.score_player2 = new_score_player2
+		if game.score_player1 >= game.winning_score:
+			game.winner = game.player1
+			game.status = 'completed'
+		elif game.score_player2 >= game.winning_score:
+			game.winner = game.player2
+			game.status = 'completed'
+		game.save()
+		return game
+
 	@staticmethod
 	def calculate_user_statistics(user: UserProfile):
 		completed_games = Game.objects.filter(status='completed').filter(Q(player1=user) | Q(player2=user))
@@ -56,3 +85,4 @@ class GameService:
 			'win_percentage': round(win_percentage, 2),
 			'avgerage_points_per_game': round(avg_points_per_game, 2),
 		}
+
