@@ -1,7 +1,9 @@
 from django.urls import path
 from .views import GameCreateView, GameDetailView, GameStartView, \
 					GameJoinView, GameCancelView, GameListView, \
-					PendingGameListView, ReadyGameListView, GameStatisticsView
+					PendingGameListView, ReadyGameListView, GameStatisticsView, \
+					TournamentCreateView, TournamentCancelView, TournamentStartView, TournamentJoinView, \
+					RegistrationTournamentListView, CompleteTournamentDetailView
 
 urlpatterns = [
 	path('create/', GameCreateView.as_view(), name='create_game'),
@@ -13,5 +15,10 @@ urlpatterns = [
 	path('join/', GameJoinView.as_view(), name='join_game'),
 	path('cancel/', GameCancelView.as_view(), name='cancel_game'),
 	path('start/', GameStartView.as_view(), name='start_game'),
-	path('tournaments/register/'),
+	path('tournament/create/', TournamentCreateView.as_view(), name='create_tournament'),
+	path('tournament/join/', TournamentJoinView.as_view(), name='join_tournament'),
+	path('tournament/start/', TournamentStartView.as_view(), name='start_tournament'),
+	path('tournament/cancel/', TournamentCancelView.as_view(), name='cancel_tournament'),
+	path('tournament/show/registration/', RegistrationTournamentListView.as_view(), name='registraion_tournament'),
+	path('tournament/show/complete/', CompleteTournamentDetailView.as_view(), name='complete_tournament'),
 ]

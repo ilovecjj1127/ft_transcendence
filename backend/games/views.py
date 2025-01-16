@@ -7,9 +7,10 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from .serializers import GameCreateSerializer, GameDetailSerializer, GameUpdateSerializer, \
-							GameActionSerializer
-from .models import Game
+from .serializers import GameCreateSerializer, GameDetailSerializer, GameActionSerializer, \
+							TournamentCreateSerializer, TournamentJoinSerializer, \
+							TournamentActionSerializer, TournamentDetailSerializer
+from .models import Game, Tournament
 from .services import GameService, TournamentService
 
 class GameCreateView(APIView):
@@ -169,13 +170,67 @@ class TournamentCreateView(APIView):
 		tags=['Tournaments'],
 	)
 	def post(self, request: Request) -> Response:
-		
-	
+		serializer = TournamentCreateSerializer(data=request.data)
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		name = serializer.validated_data['name']
+		alias = serializer.validated_data['alias']
+		user = request.user
+		try:
+			tournament = TournamentService.create_tournament(name, alias, user)
+			return Response(
+				{
+					'message': f'Tournament {name} created successfully',
+					'status': tournament.status,
+				}, status=status.HTTP_201_CREATED)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class TournamentJoinView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="Join an existing tournament",
+		request=TournamentJoinSerializer,
+		tags=['Tournaments'],
+	)
+	def post(self, request: Request) -> Response:
+		serializer = TournamentJoinSerializer(data=request.data)
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		tournament_id = serializer.validated_data['tournament_id']
+		alias = serializer.validated_data['alias']
+		user = request.user
+		try:
+			tournament_player = TournamentService.join_tournament(tournament_id, alias, user)
+			return Response({'message': f'{alias} joined Tournament {tournament_player.tournament.name}'}, status=status.HTTP_200_OK)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class TournamentStartView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="Start a tournament",
+		request=TournamentActionSerializer,
+		tags=['Tournaments'],
+	)
+	def post(self, request: Request) -> Response:
+		serializer = TournamentActionSerializer(data=request.data)
+		if not serializer.is_valid():
+			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+		tournament_id = serializer.validated_data['tournament_id']
+		try:
+			tournament = TournamentService.start_tournament(tournament_id, request.user)
+			return Response({'message': f'Tournament {tournament.name} started'}, status=status.HTTP_200_OK)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 class TournamentCancelView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
-		summary="Cancel the tournament",
+		summary="Cancel a tournament",
 		request=TournamentActionSerializer,
 		tags=['Tournaments'],
 	)
@@ -185,7 +240,41 @@ class TournamentCancelView(APIView):
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		tournament_id = serializer.validated_data['tournament_id']
 		try:
-			game = TournamentService.cancel_tournament(tournament_id, request.user)
-			return Response({'message': 'Tournament canceled', 'status': game.status}, status=status.HTTP_200_OK)
+			tournament = TournamentService.cancel_tournament(tournament_id, request.user)
+			return Response({'message': f'Tournament {tournament.name} is canceled'}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class RegistrationTournamentListView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		summary="List all the pending games",
+		request=TournamentDetailSerializer,
+		responses={200: TournamentDetailSerializer(many=True)},
+		tags=['Tournaments'],
+	)
+	def get(self, request: Request) -> Response:
+		tournaments = Tournament.objects.filter(status='registration')
+		serializer = TournamentDetailSerializer(tournaments, many=True)
+		return Response(serializer.data, status=status.HTTP_200_OK)
+	
+class CompleteTournamentDetailView(APIView):
+	permission_classes = [IsAuthenticated]
+
+	@extend_schema(
+		parameters=[OpenApiParameter(name='tournament_id', required=True, type=int)],
+		summary="Show the complete tournament results",
+		responses={200: TournamentDetailSerializer},
+		tags=['Tournaments'],
+	)
+	def get(self, request: Request):
+		tournament_id = request.query_params.get('tournament_id')
+		if not tournament_id:
+			return Response({'error': 'Tournament ID is required'}, status=status.HTTP_400_BAD_REQUEST)
+		try:
+			tournament = Tournament.objects.get(id=tournament_id, status='completed')
+		except Tournament.DoesNotExist:
+			return Response({'error': 'Tournament not found or not completed'}, status=status.HTTP_404_NOT_FOUND)
+		serializer = TournamentDetailSerializer(tournament)
+		return Response(serializer.data, status=status.HTTP_200_OK)

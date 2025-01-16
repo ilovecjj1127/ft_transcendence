@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Game
+from .models import Game, Tournament, TournamentPlayer, TournamentMatch
 
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -23,7 +23,7 @@ class GameCreateSerializer(serializers.ModelSerializer):
 class GameDetailSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at']
+		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at', 'modified_at']
 
 class GameActionSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField()
@@ -33,3 +33,33 @@ class GameUpdateSerializer(serializers.Serializer):
 	new_score_player1 = serializers.IntegerField(required=True)
 	new_score_player2 = serializers.IntegerField(required=True)
 
+class TournamentCreateSerializer(serializers.ModelSerializer):
+	alias = serializers.CharField(max_length=50)
+	class Meta:
+		model = Tournament
+		fields = ['name', 'alias']
+
+class TournamentJoinSerializer(serializers.Serializer):
+	tournament_id = serializers.IntegerField()
+	alias = serializers.CharField(max_length=50)
+
+class TournamentPlayerSerialier(serializers.ModelSerializer):
+	class Meta:
+		model = TournamentPlayer
+		fields = ['player', 'alias']
+
+class TournamentMatchSerializer(serializers.ModelSerializer):
+	game = GameDetailSerializer()
+	class Meta:
+		model = TournamentMatch
+		fields = ['game']
+
+class TournamentDetailSerializer(serializers.ModelSerializer):
+	players = TournamentPlayerSerialier(many=True)
+	matches = TournamentMatchSerializer(many=True)
+	class Meta:
+		model = Tournament
+		fields = ['id', 'name', 'status', 'winner', 'created_at', 'modified_at', 'players', 'matches']
+
+class TournamentActionSerializer(serializers.Serializer):
+	tournament_id = serializers.IntegerField()
