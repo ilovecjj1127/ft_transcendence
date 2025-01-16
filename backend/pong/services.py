@@ -14,30 +14,23 @@ class Action(str, Enum):
 
 
 class PongService:
-    def __init__(self, game_id, redis):
+    def __init__(self, game_id, player_num, redis):
         self.game_id = game_id
         self.redis = redis
-        self.player_num = 0
+        self.player_num = player_num
         self.keep_running = False
 
-    async def connect(self, user) -> dict:
-        player1 = await self.redis.get(f'game/{self.game_id}/player1')
-        player2 = await self.redis.get(f'game/{self.game_id}/player2')
-        if player1 is None and not user.is_anonymous:
-            self.player_num = 1
-            await self.redis.set(f'game/{self.game_id}/player1', user.username)
+    async def connect(self) -> dict:
+        players_count = await self.redis.incr(f'game/{self.game_id}/players_count')
+        if players_count == 1:
             game_state = self.iniatialize_game()
             await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
             await self.redis.set(f'game/{self.game_id}/paddle1_action', Action.STOP)
             await self.redis.set(f'game/{self.game_id}/paddle2_action', Action.STOP)
-        elif player2 is None and not user.is_anonymous:
-            self.player_num = 2
-            await self.redis.set(f'game/{self.game_id}/player2', user.username)
+        else:
             self.keep_running = True
             game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
             game_state["run_game"] = True
-        else:
-            return {}
         return game_state
 
     def iniatialize_game(self) -> dict:

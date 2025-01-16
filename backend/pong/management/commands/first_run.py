@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
-from django.contrib.auth.models import User
 
 from users.models import UserProfile
+from games.models import Game
 
 
 class Command(BaseCommand):
@@ -24,16 +24,29 @@ class Command(BaseCommand):
             )
 
         #Create test users
+        user1, user2 = None, None
         if not UserProfile.objects.filter(username='alice').exists():
             self.stdout.write('Creating test users...')
-            UserProfile.objects.create_user(
+            user1 = UserProfile.objects.create_user(
                 username='alice',
                 password='alice'
             )
         if not UserProfile.objects.filter(username='bob').exists():
-            UserProfile.objects.create_user(
+            user2 = UserProfile.objects.create_user(
                 username='bob',
                 password='bob'
+            )
+        
+        #Crate test games
+        if user1 and user2:
+            Game.objects.create(
+                player1=user1,
+                status='pending'
+            )
+            Game.objects.create(
+                player1=user1,
+                player2=user2,
+                status='ready'
             )
 
         self.stdout.write('Creating DB objects...')
