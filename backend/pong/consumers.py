@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from .constants import X_MAX, Y_MAX, PADDLE_HEIGHT
@@ -68,6 +69,10 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             )
             await asyncio.sleep(0.05)
+            if game_state['score1'] == self.game.winning_score \
+                    or game_state['score2'] == self.game.winning_score:
+                break
+        await self.finish_game(game_state)
 
     async def send_game_state(self, event: dict):
         game_state = event
@@ -97,8 +102,22 @@ class PongConsumer(AsyncWebsocketConsumer):
         except Game.DoesNotExist:
             return 0
         if game.status in ('pending', 'ready'):
+            self.game = game
             if user == game.player1:
                 return 1
             elif user == game.player2:
                 return 2
         return 0
+
+    async def finish_game(self, game_state: dict):
+        self.game.status = "completed"
+        self.game.score_player1 = game_state['score1']
+        self.game.score_player2 = game_state['score2']
+        if game_state['score1'] == self.game.winning_score:
+            self.game.winner = self.game.player1
+        elif game_state['score2'] == self.game.winning_score:
+            self.game.winner = self.game.player2
+        else:
+            self.game.status = "interrupted"
+        await database_sync_to_async(self.game.save)()
+        await self.close(code=4003)
