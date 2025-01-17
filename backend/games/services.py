@@ -1,4 +1,4 @@
-from .models import Game, Tournament, TournamentMatch, TournamentPlayer
+from .models import Game, Tournament, TournamentPlayer
 from users.models import UserProfile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
@@ -89,10 +89,19 @@ class GameService:
 class TournamentService:
 	@staticmethod
 	@transaction.atomic
-	def create_tournament(name: str, alias: str, user: UserProfile) -> Tournament:
-		if not name or not alias:
-			raise ValueError('Both name and alias must be provided.')
-		tournament = Tournament.objects.create(name=name)
+	def create_tournament(name: str, alias: str, user: UserProfile, min_players=4, 
+					   max_players=8, winning_score=10) -> Tournament:
+		if not name:
+			raise ValueError('tournament name must be provided.')
+		if not alias:
+			alias = user.username
+		tournament = Tournament.objects.create(
+			name=name,
+			creator=user,
+			min_players=min_players,
+			max_players=max_players,
+			winning_score=winning_score
+		)
 		TournamentPlayer.objects.create(
 			tournament=tournament,
 			player=user,
@@ -104,39 +113,41 @@ class TournamentService:
 	@transaction.atomic
 	def join_tournament(tournament_id: int, alias: str, user: UserProfile) -> TournamentPlayer:
 		if not alias:
-			raise ValueError('alias must be provided.')
+			alias = user.username
 		tournament = get_object_or_404(Tournament, id=tournament_id)
 		if tournament.status != 'registration':
 			raise ValueError('Tournament is not open for registration.')
 		if TournamentPlayer.objects.filter(tournament=tournament, player=user).exists():
 			raise ValueError('User is already registered in this tournament.')
-		return TournamentPlayer.objects.create(
+		tournament_player = TournamentPlayer.objects.create(
 			tournament=tournament,
 			player=user,
 			alias=alias
 		)
+		if tournament.players.count() == tournament.max_players:
+			tournament.status = 'in_progress'
+			tournament.save()
+		return tournament_player
 	
 	@staticmethod
 	@transaction.atomic
 	def start_tournament(tournament_id: int, user: UserProfile) -> Tournament:
 		tournament = get_object_or_404(Tournament, id=tournament_id)
-		is_participant = tournament.players.filter(player=user).exists()
-		if not is_participant:
-			raise PermissionError('User is not the participant in this tournament.')
+		if user != tournament.creator:
+			raise PermissionError('Only the creator can start the tournament.')
 		players = list(tournament.players.all())
-		if len(players) <= 2:
-			raise ValueError('A tournament must have more than two player to start.')
+		if len(players) < tournament.min_players:
+			raise ValueError(f'Tournament cannot be started with less than {tournament.min_players}players')
 		
-		matches = []
 		for i in range(len(players)):
 			for j in range(i + 1, len(players)):
-				game = Game.objects.create(
+				Game.objects.create(
+					tournament=tournament,
 					player1=players[i].player,
 					player2=players[j].player,
+					winning_score=tournament.winning_score,
 					status='ready',
 				)
-				matches.append(TournamentMatch(tournament=tournament, game=game))
-		TournamentMatch.objects.bulk_create(matches)
 		tournament.status = 'in_progress'
 		tournament.save()
 		return tournament
@@ -145,11 +156,10 @@ class TournamentService:
 	@transaction.atomic
 	def cancel_tournament(tournament_id: int, user: UserProfile) -> Tournament:
 		tournament = get_object_or_404(Tournament, id=tournament_id)
-		is_participant = tournament.players.filter(player=user).exists()
 		if tournament.status != 'registration':
 			raise ValueError('Tournament cannot be canceled.')
-		if not is_participant:
-			raise PermissionError('User is not the participant in this tournament.')
+		if user != tournament.creator:
+			raise PermissionError('Only the creator can cancel the tournament.')
 		tournament.status = 'canceled'
 		tournament.save()
 		return tournament
@@ -188,6 +198,12 @@ class TournamentService:
 		tournament.status = 'completed'
 		tournament.save()
 		return tournament
+	
+	@staticmethod
+	def calculate_leaderboard(tournament_id: int) -> dict:
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		players = TournamentPlayer.objects.filter(tournament=tournament)
+		return None
 	
 	
 		

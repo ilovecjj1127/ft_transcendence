@@ -174,14 +174,17 @@ class TournamentCreateView(APIView):
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		name = serializer.validated_data['name']
-		alias = serializer.validated_data['alias']
+		alias = serializer.validated_data.get('alias', None)
 		user = request.user
+		max_players = serializer.validated_data.get('max_players', 4)
+		min_players = serializer.validated_data.get('min_players', 8)
+		winning_score = serializer.validated_data.get('winnint_score', 10)
 		try:
-			tournament = TournamentService.create_tournament(name, alias, user)
+			TournamentService.create_tournament(name, alias, user, max_players, min_players, winning_score)
 			return Response(
 				{
-					'message': f'Tournament {name} created successfully',
-					'status': tournament.status,
+					'message': 'Tournament created successfully',
+					'status': serializer.data,
 				}, status=status.HTTP_201_CREATED)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -199,11 +202,16 @@ class TournamentJoinView(APIView):
 		if not serializer.is_valid():
 			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 		tournament_id = serializer.validated_data['tournament_id']
-		alias = serializer.validated_data['alias']
+		alias = serializer.validated_data.get('alias', None)
 		user = request.user
 		try:
 			tournament_player = TournamentService.join_tournament(tournament_id, alias, user)
-			return Response({'message': f'{alias} joined Tournament {tournament_player.tournament.name}'}, status=status.HTTP_200_OK)
+			return Response(
+				{
+					'message': f'{alias} joined Tournament {tournament_player.tournament.name}',
+					'status': tournament_player.tournament.status,
+				}, status=status.HTTP_200_OK
+			)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -258,14 +266,13 @@ class RegistrationTournamentListView(APIView):
 		tournaments = Tournament.objects.filter(status='registration')
 		serializer = TournamentDetailSerializer(tournaments, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
-	
-class CompleteTournamentDetailView(APIView):
+
+class TournamentLeaderboardView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
 		parameters=[OpenApiParameter(name='tournament_id', required=True, type=int)],
-		summary="Show the complete tournament results",
-		responses={200: TournamentDetailSerializer},
+		summary="Show the current situation of tournament",
 		tags=['Tournaments'],
 	)
 	def get(self, request: Request):
@@ -273,8 +280,7 @@ class CompleteTournamentDetailView(APIView):
 		if not tournament_id:
 			return Response({'error': 'Tournament ID is required'}, status=status.HTTP_400_BAD_REQUEST)
 		try:
-			tournament = Tournament.objects.get(id=tournament_id, status='completed')
+			leaderboard = TournamentService.calculate_leaderboard(tournament_id)
 		except Tournament.DoesNotExist:
-			return Response({'error': 'Tournament not found or not completed'}, status=status.HTTP_404_NOT_FOUND)
-		serializer = TournamentDetailSerializer(tournament)
-		return Response(serializer.data, status=status.HTTP_200_OK)
+			return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)
+		return Response(leaderboard, status=status.HTTP_200_OK)

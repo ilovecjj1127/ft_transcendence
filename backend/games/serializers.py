@@ -34,10 +34,17 @@ class GameUpdateSerializer(serializers.Serializer):
 	new_score_player2 = serializers.IntegerField(required=True)
 
 class TournamentCreateSerializer(serializers.ModelSerializer):
-	alias = serializers.CharField(max_length=50)
+	alias = serializers.CharField(max_length=50, required=False)
 	class Meta:
 		model = Tournament
-		fields = ['name', 'alias']
+		fields = ['name', 'min_players', 'max_players', 'winning_scores']
+	
+	def validate(self, data):
+		if data.get('min_players', 4) > data.get('max_players', 8):
+			raise serializers.ValidationError("Minimum players cannot be greater than minimum players")
+		if data.get('min_players', 3) <= 2:
+			raise serializers.ValidationError("Minimum 3 players required for a tournament")
+		return data
 
 class TournamentJoinSerializer(serializers.Serializer):
 	tournament_id = serializers.IntegerField()
@@ -48,15 +55,9 @@ class TournamentPlayerSerialier(serializers.ModelSerializer):
 		model = TournamentPlayer
 		fields = ['player', 'alias']
 
-class TournamentMatchSerializer(serializers.ModelSerializer):
-	game = GameDetailSerializer()
-	class Meta:
-		model = TournamentMatch
-		fields = ['game']
-
 class TournamentDetailSerializer(serializers.ModelSerializer):
 	players = TournamentPlayerSerialier(many=True)
-	matches = TournamentMatchSerializer(many=True)
+	matches = GameDetailSerializer(many=True)
 	class Meta:
 		model = Tournament
 		fields = ['id', 'name', 'status', 'winner', 'created_at', 'modified_at', 'players', 'matches']

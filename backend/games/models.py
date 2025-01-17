@@ -1,8 +1,39 @@
 from django.db import models
 from users.models import UserProfile
+from django.core.exceptions import ValidationError
 
+class Tournament(models.Model):
+	name = models.CharField(max_length=100)
+	created_at = models.DateTimeField(auto_now_add=True)
+	modified_at = models.DateTimeField(auto_now=True)
+	creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='created_tournaments')
+	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, 
+								related_name="won_tournament")
+	status = models.CharField(
+		max_length=20,
+		choices=[
+			('registration', 'Registration Open'),
+			('in_progress', 'In Progress'),
+			('completed', 'Completed'),
+			('canceled', 'Canceled'),
+		],
+		default='registration'
+	)
+	min_players = models.PositiveIntegerField(default=4)
+	max_players = models.PositiveIntegerField(default=8)
+	winning_score = models.PositiveIntegerField(default=10)
+
+	def clean(self):
+		if self.min_players <= 2:
+			raise ValidationError("Minimum 3 players required for a tournament")
+		if self.max_players < self.min_players:
+			raise ValidationError("Maximum players must be greater than minimum players")
+	
+	def __str__(self):
+		return self.name
 
 class Game(models.Model):
+	tournament = models.ForeignKey(Tournament, on_delete=models.SET_NULL, related_name="matches", null=True, blank=True)
 	player1 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player1_games")
 	player2 = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name="player2_games", null=True, blank=True)
 	score_player1 = models.PositiveIntegerField(default=0)
@@ -26,34 +57,16 @@ class Game(models.Model):
 	)
 
 	def __str__(self):
+		if self.tournament:
+			return f"Tournament {self.tournament.name}: {self.player1.username} VS {self.player2.username}"
 		if self.player2:
 			return f"{self.player1.username} VS {self.player2.username}"
 		else:
 			return f"{self.player1.username} VS [Waiting for player]"
 		
-class Tournament(models.Model):
-	name = models.CharField(max_length=100)
-	created_at = models.DateTimeField(auto_now_add=True)
-	modified_at = models.DateTimeField(auto_now=True)
-	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, 
-								related_name="won_tournament")
-	status = models.CharField(
-		max_length=20,
-		choices=[
-			('registration', 'Registration Open'),
-			('in_progress', 'In Progress'),
-			('completed', 'Completed'),
-			('canceled', 'Canceled'),
-		],
-		default='registration'
-	)
 
 class TournamentPlayer(models.Model):
 	tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="players")
 	player = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 	alias = models.CharField(max_length=50)
 	registered_at = models.DateTimeField(auto_now_add=True)
-
-class TournamentMatch(models.Model):
-	tournament = models.ForeignKey(Tournament, on_delete=models.CASCADE, related_name="matches")
-	game = models.OneToOneField(Game, on_delete=models.CASCADE)

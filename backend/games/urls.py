@@ -3,7 +3,7 @@ from .views import GameCreateView, GameDetailView, GameStartView, \
 					GameJoinView, GameCancelView, GameListView, \
 					PendingGameListView, ReadyGameListView, GameStatisticsView, \
 					TournamentCreateView, TournamentCancelView, TournamentStartView, TournamentJoinView, \
-					RegistrationTournamentListView, CompleteTournamentDetailView
+					RegistrationTournamentListView, TournamentLeaderboardView
 
 urlpatterns = [
 	path('create/', GameCreateView.as_view(), name='create_game'),
@@ -20,5 +20,5 @@ urlpatterns = [
 	path('tournament/start/', TournamentStartView.as_view(), name='start_tournament'),
 	path('tournament/cancel/', TournamentCancelView.as_view(), name='cancel_tournament'),
 	path('tournament/show/registration/', RegistrationTournamentListView.as_view(), name='registraion_tournament'),
-	path('tournament/show/complete/', CompleteTournamentDetailView.as_view(), name='complete_tournament'),
+	path('tournament/leaderboard/', TournamentLeaderboardView.as_view(), name='tournament_leaderboard'),
 ]
