@@ -3,6 +3,8 @@ import json
 import math
 import random
 
+from channels.db import database_sync_to_async
+
 from .constants import X_MAX, Y_MAX, INITIAL_VELOCITY, VELOCITY_STEP, BALL_RADIUS, \
     PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_INDENT, PADDLE_STEP
 
@@ -14,24 +16,63 @@ class Action(str, Enum):
 
 
 class PongService:
-    def __init__(self, game_id, player_num, redis):
+    def __init__(self, game_id, redis):
         self.game_id = game_id
+        self.game = None
         self.redis = redis
-        self.player_num = player_num
+        self.player_num = 0
         self.keep_running = False
 
-    async def connect(self) -> dict:
-        players_count = await self.redis.incr(f'game/{self.game_id}/players_count')
-        if players_count == 1:
+    async def connect(self, user) -> dict:
+        self.player_num = await self._get_player_num(user)
+        if self.player_num == 0:
+            return {}
+        connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
+        if not connected_players:
             game_state = self.iniatialize_game()
             await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
             await self.redis.set(f'game/{self.game_id}/paddle1_action', Action.STOP)
             await self.redis.set(f'game/{self.game_id}/paddle2_action', Action.STOP)
-        else:
+        elif str(self.player_num) not in connected_players:
             self.keep_running = True
             game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
             game_state["run_game"] = True
+        else:
+            self.player_num = 0
+            return {}
+        await self.redis.rpush(f'game/{self.game_id}/connected_players', self.player_num)
         return game_state
+    
+    async def disconnect(self):
+        await self.redis.lrem(f'game/{self.game_id}/connected_players', 1, self.player_num)
+        connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
+        if connected_players:
+            return
+        game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
+        await self.finish_game(game_state)
+        await self.redis.delete(
+            f'game/{self.game_id}',
+            f'game/{self.game_id}/connected_players',
+            f'game/{self.game_id}/paddle1_action',
+            f'game/{self.game_id}/paddle2_action'
+        )
+
+    async def _get_player_num(self, user) -> int:
+        from games.models import Game
+
+        if user.is_anonymous:
+            return 0
+        try:
+            game = await Game.objects.select_related("player1", "player2").aget(id=self.game_id)
+        except Game.DoesNotExist:
+            return 0
+        if game.status in ('pending', 'ready'):
+            self.game = game
+            if user == game.player1:
+                return 1
+            elif user == game.player2:
+                return 2
+        return 0
 
     def iniatialize_game(self) -> dict:
         paddle_position = (Y_MAX - PADDLE_HEIGHT) / 2
@@ -43,6 +84,18 @@ class PongService:
         }
         self.get_new_ball(game_state)
         return game_state
+
+    async def finish_game(self, game_state: dict):
+        self.game.status = "completed"
+        self.game.score_player1 = game_state['score1']
+        self.game.score_player2 = game_state['score2']
+        if game_state['score1'] == self.game.winning_score:
+            self.game.winner = self.game.player1
+        elif game_state['score2'] == self.game.winning_score:
+            self.game.winner = self.game.player2
+        else:
+            self.game.status = "interrupted"
+        await database_sync_to_async(self.game.save)()
 
     def get_new_ball(self, game_state: dict):
         direction_x = 0
