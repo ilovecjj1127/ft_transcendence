@@ -34,9 +34,8 @@ class PongService:
             await self.redis.set(f'game/{self.game_id}/paddle1_action', Action.STOP)
             await self.redis.set(f'game/{self.game_id}/paddle2_action', Action.STOP)
         elif str(self.player_num) not in connected_players:
-            self.keep_running = True
             game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
-            game_state["run_game"] = True
+            await self.start_game()
         else:
             self.player_num = 0
             return {}
@@ -46,16 +45,9 @@ class PongService:
     async def disconnect(self):
         await self.redis.lrem(f'game/{self.game_id}/connected_players', 1, self.player_num)
         connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
-        if connected_players:
-            return
-        game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
-        await self.finish_game(game_state)
-        await self.redis.delete(
-            f'game/{self.game_id}',
-            f'game/{self.game_id}/connected_players',
-            f'game/{self.game_id}/paddle1_action',
-            f'game/{self.game_id}/paddle2_action'
-        )
+        if not connected_players:
+            game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
+            await self.finish_game(game_state)
 
     async def _get_player_num(self, user) -> int:
         from games.models import Game
@@ -63,10 +55,10 @@ class PongService:
         if user.is_anonymous:
             return 0
         try:
-            game = await Game.objects.select_related("player1", "player2").aget(id=self.game_id)
+            game = await Game.objects.select_related('player1', 'player2').aget(id=self.game_id)
         except Game.DoesNotExist:
             return 0
-        if game.status in ('pending', 'ready'):
+        if game.status in ('pending', 'ready', 'in_progress'):
             self.game = game
             if user == game.player1:
                 return 1
@@ -85,8 +77,17 @@ class PongService:
         self.get_new_ball(game_state)
         return game_state
 
+    async def start_game(self):
+        if self.game.status != 'ready':
+            return
+        self.keep_running = True
+        self.game.status = 'in_progress'
+        await database_sync_to_async(self.game.save)()
+
     async def finish_game(self, game_state: dict):
-        self.game.status = "completed"
+        if self.game.status != 'in_progress':
+            return
+        self.game.status = 'completed'
         self.game.score_player1 = game_state['score1']
         self.game.score_player2 = game_state['score2']
         if game_state['score1'] == self.game.winning_score:
@@ -94,8 +95,14 @@ class PongService:
         elif game_state['score2'] == self.game.winning_score:
             self.game.winner = self.game.player2
         else:
-            self.game.status = "interrupted"
+            self.game.status = 'interrupted'
         await database_sync_to_async(self.game.save)()
+        await self.redis.delete(
+            f'game/{self.game_id}',
+            f'game/{self.game_id}/connected_players',
+            f'game/{self.game_id}/paddle1_action',
+            f'game/{self.game_id}/paddle2_action'
+        )
 
     def get_new_ball(self, game_state: dict):
         direction_x = 0
@@ -125,6 +132,8 @@ class PongService:
         await self.move_paddle(game_state, 2)
         self.move_ball(game_state)
         await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
+        if max(game_state['score2'], game_state['score1']) == self.game.winning_score:
+            self.keep_running = False
         return game_state
 
     async def move_paddle(self, game_state: dict, paddle_num: int):

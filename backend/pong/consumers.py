@@ -25,20 +25,17 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         await self.send_game_state(game_state)
-        if game_state.get("run_game", False):
+        if self.service.keep_running:
             asyncio.create_task(self.broadcast_game_state())
 
     async def disconnect(self, close_code):
-        if self.service.player_num not in (1, 2):
+        if self.service.player_num == 0:
             return
-        is_over = await self.service.disconnect()
+        await self.service.disconnect()
         await self.channel_layer.group_discard(
             self.game_id,
             self.channel_name
         )
-        if is_over:
-            await self.service.finish_game()
-
 
     async def receive(self, text_data):
         if not self.service.player_num:
@@ -63,9 +60,13 @@ class PongConsumer(AsyncWebsocketConsumer):
                 }
             )
             await asyncio.sleep(0.05)
-            if game_state['score1'] == self.service.game.winning_score \
-                    or game_state['score2'] == self.service.game.winning_score:
-                break
+        await self.channel_layer.group_send(
+            self.game_id,
+            {
+                'type': 'send_disconnect_command',
+                'message': 'End of the game'
+            }
+        )
         await self.service.finish_game(game_state)
         await self.close(code=4003)
 
@@ -84,3 +85,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             'score1': game_state.get('score1', 0),
             'score2': game_state.get('score2', 0)
         }))
+
+    async def send_disconnect_command(self, event: dict):
+        await self.send(text_data=json.dumps({
+            'type': 'disconnect',
+            'message': event.get('message', '')
+        }))
+        await self.close(code=4004)
