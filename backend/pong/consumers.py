@@ -47,6 +47,8 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def broadcast_game_state(self):
         while (self.service.keep_running):
             game_state = await self.service.update_positions()
+            if not game_state:
+                return
             await self.channel_layer.group_send(
                 self.game_id,
                 {
@@ -67,8 +69,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'message': 'End of the game'
             }
         )
-        await self.service.finish_game(game_state)
-        await self.close(code=4003)
 
     async def send_game_state(self, event: dict):
         game_state = event

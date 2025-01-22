@@ -46,7 +46,8 @@ class PongService:
         await self.redis.lrem(f'game/{self.game_id}/connected_players', 1, self.player_num)
         connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
         if not connected_players:
-            game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
+            state_string = await self.redis.get(f'game/{self.game_id}')
+            game_state = json.loads(state_string)
             await self.finish_game(game_state)
 
     async def _get_player_num(self, user) -> int:
@@ -127,7 +128,10 @@ class PongService:
             await self.redis.set(key_paddle, Action.STOP)
 
     async def update_positions(self) -> dict:
-        game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
+        state_string = await self.redis.get(f'game/{self.game_id}')
+        if not state_string:
+            return {}
+        game_state = json.loads(state_string)
         await self.move_paddle(game_state, 1)
         await self.move_paddle(game_state, 2)
         self.move_ball(game_state)
