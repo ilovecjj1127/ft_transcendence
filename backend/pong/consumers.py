@@ -4,7 +4,7 @@ import json
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 from .constants import X_MAX, Y_MAX, PADDLE_HEIGHT
-from .services import PongService
+from .services.mechanics import PongMechanics
 
 
 class PongConsumer(AsyncWebsocketConsumer):
@@ -14,7 +14,7 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.game_id = self.scope['url_route']['kwargs']['game_id']
-        self.service = PongService(self.game_id, self.scope['redis_pool'])
+        self.service = PongMechanics(self.game_id, self.scope['redis_pool'])
         game_state = await self.service.connect(self.scope['user'])
         if not game_state:
             await self.close()
@@ -48,7 +48,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         while (self.service.keep_running):
             game_state = await self.service.update_positions()
             if not game_state:
-                return
+                break
             await self.channel_layer.group_send(
                 self.game_id,
                 {
@@ -69,6 +69,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'message': 'End of the game'
             }
         )
+        self.service.disconnect()
 
     async def send_game_state(self, event: dict):
         game_state = event
