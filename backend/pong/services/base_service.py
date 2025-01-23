@@ -41,10 +41,10 @@ class PongServiceBase:
         await self.redis.rpush(f'game/{self.game_id}/connected_players', self.player_num)
         return game_state
     
-    async def disconnect(self, force: bool = False):
+    async def disconnect(self):
         await self.redis.lrem(f'game/{self.game_id}/connected_players', 1, self.player_num)
         connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
-        if not connected_players or force:
+        if not connected_players:
             state_string = await self.redis.get(f'game/{self.game_id}')
             if state_string:
                 game_state = json.loads(state_string)

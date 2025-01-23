@@ -69,7 +69,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 'message': 'End of the game'
             }
         )
-        self.service.disconnect(force=True)
 
     async def send_game_state(self, event: dict):
         game_state = event
@@ -92,4 +91,5 @@ class PongConsumer(AsyncWebsocketConsumer):
             'type': 'disconnect',
             'message': event.get('message', '')
         }))
+        await asyncio.sleep(0.1)
         await self.close(code=4004)
