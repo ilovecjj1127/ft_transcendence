@@ -41,10 +41,10 @@ class PongServiceBase:
         await self.redis.rpush(f'game/{self.game_id}/connected_players', self.player_num)
         return game_state
     
-    async def disconnect(self):
+    async def disconnect(self, force: bool = False):
         await self.redis.lrem(f'game/{self.game_id}/connected_players', 1, self.player_num)
         connected_players = await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)
-        if not connected_players:
+        if not connected_players or force:
             state_string = await self.redis.get(f'game/{self.game_id}')
             if state_string:
                 game_state = json.loads(state_string)
@@ -86,7 +86,10 @@ class PongServiceBase:
         await database_sync_to_async(self.game.save)()
 
     async def finish_game(self, game_state: dict):
-        if self.game.status != 'in_progress':
+        from games.models import Game
+
+        game = await Game.objects.aget(id=self.game_id)
+        if game.status != 'in_progress':
             return
         self.game.status = 'completed'
         self.game.score_player1 = game_state['score1']

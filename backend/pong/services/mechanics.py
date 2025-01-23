@@ -25,8 +25,7 @@ class PongMechanics(PongServiceBase):
         await self.move_paddle(game_state, 2)
         self.move_ball(game_state)
         await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
-        if max(game_state['score2'], game_state['score1']) == self.game.winning_score \
-                or not (await self.redis.lrange(f'game/{self.game_id}/connected_players', 0, -1)):
+        if max(game_state['score2'], game_state['score1']) == self.game.winning_score:
             self.keep_running = False
         return game_state
 
