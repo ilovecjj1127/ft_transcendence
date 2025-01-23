@@ -52,10 +52,8 @@ class GameService:
 		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game can not be updated')
-		if game.score_player1 != new_score_player1:
-			game.score_player1 = new_score_player1
-		if game.score_player2 != new_score_player2:
-			game.score_player2 = new_score_player2
+		game.score_player1 = new_score_player1
+		game.score_player2 = new_score_player2
 		if game.score_player1 >= game.winning_score:
 			game.winner = game.player1
 			game.status = 'completed'
@@ -63,6 +61,12 @@ class GameService:
 			game.winner = game.player2
 			game.status = 'completed'
 		game.save()
+		tournament = game.tournament
+		if tournament:
+			try:
+				TournamentService.finish_tournament(tournament.id)
+			except ValueError:
+				pass
 		return game
 
 	@staticmethod
@@ -133,6 +137,8 @@ class TournamentService:
 	@transaction.atomic
 	def start_tournament(tournament_id: int, user: UserProfile) -> Tournament:
 		tournament = get_object_or_404(Tournament, id=tournament_id)
+		if tournament.status != 'registration':
+			raise ValueError('Tournament cannot be started')
 		if user != tournament.creator:
 			raise PermissionError('Only the creator can start the tournament.')
 		players = list(tournament.players.all())
@@ -165,12 +171,7 @@ class TournamentService:
 		return tournament
 	
 	@staticmethod
-	@transaction.atomic
-	def finish_tournament(tournament_id: int) -> Tournament:
-		tournament = get_object_or_404(Tournament, id=tournament_id)
-		unfinished_games = tournament.matches.filter(game__status__in=['in_progress', 'ready']).exists()
-		if unfinished_games:
-			raise ValueError('Cannot finish tournament: some games are not finished yet.')
+	def determine_tournament_winner(tournament: Tournament) -> TournamentPlayer:
 		points = {}
 		for tournament_player in tournament.players.all():
 			points[tournament_player.player] = 0
@@ -185,16 +186,28 @@ class TournamentService:
 			winner_scores = {player: 0 for player in winners}
 			for match in matches:
 				game = match.game
-				if game.status == 'completed':
-					if game.player1 in winners:
-						winner_scores[game.player1] += game.score_player1
-					if game.player2 in winners:
-						winner_scores[game.player2] += game.score_player2
+				if game.status == 'completed' and game.winner in winners:
+					winner_scores[game.winner] += abs(game.score_player1 - game.score_player2)
 			max_score = max(winner_scores.values())
 			final_winner = [player for player, score in winner_scores.items() if score == max_score]
-			tournament.winner = final_winner[0]
+			if len(final_winner) == 2:
+				for match in matches:
+					if (match.player1 == final_winner[0] and match.player2 == final_winner[1]) or \
+						(match.player1 == final_winner[1] and match.player2 == final_winner[0]):
+						return match.winner
+			else:
+				return final_winner[0]
 		else:
-			tournament.winner = winners[0]
+			return winners[0]
+
+	@staticmethod
+	@transaction.atomic
+	def finish_tournament(tournament_id: int) -> Tournament:
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		unfinished_games = tournament.matches.filter(game__status__in=['in_progress', 'ready']).exists()
+		if unfinished_games:
+			raise ValueError('Cannot finish tournament: some games are not finished yet.')
+		tournament.winner = TournamentService.determine_tournament_winner(tournament)
 		tournament.status = 'completed'
 		tournament.save()
 		return tournament
