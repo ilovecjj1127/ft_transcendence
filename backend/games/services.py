@@ -2,7 +2,7 @@ from .models import Game, Tournament, TournamentPlayer
 from users.models import UserProfile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
-from django.db.models import Q
+from django.db.models import Q, Sum, Case, When, F
 
 class GameService:
 	@staticmethod
@@ -123,6 +123,8 @@ class TournamentService:
 			raise ValueError('Tournament is not open for registration.')
 		if TournamentPlayer.objects.filter(tournament=tournament, player=user).exists():
 			raise ValueError('User is already registered in this tournament.')
+		if TournamentPlayer.objects.filter(tournament=tournament, alias=alias).first():
+			raise ValueError(f"The alias '{alias}' is already taken in this tournament.")
 		tournament_player = TournamentPlayer.objects.create(
 			tournament=tournament,
 			player=user,
@@ -171,34 +173,28 @@ class TournamentService:
 		return tournament
 	
 	@staticmethod
-	def determine_tournament_winner(tournament: Tournament) -> TournamentPlayer:
-		points = {}
-		for tournament_player in tournament.players.all():
-			points[tournament_player.player] = 0
+	def find_game_winner(player1: TournamentPlayer, player2: TournamentPlayer, tournament: Tournament) -> TournamentPlayer:
 		matches = tournament.matches.all()
 		for match in matches:
-			game = match.game
-			if game.status == 'completed' and game.winner:
-				points[game.winner] += 1
-		max_points = max(points.values())
-		winners = [player for player, score in points.items() if score == max_points]
-		if len(winners) > 1:
-			winner_scores = {player: 0 for player in winners}
-			for match in matches:
-				game = match.game
-				if game.status == 'completed' and game.winner in winners:
-					winner_scores[game.winner] += abs(game.score_player1 - game.score_player2)
-			max_score = max(winner_scores.values())
-			final_winner = [player for player, score in winner_scores.items() if score == max_score]
-			if len(final_winner) == 2:
-				for match in matches:
-					if (match.player1 == final_winner[0] and match.player2 == final_winner[1]) or \
-						(match.player1 == final_winner[1] and match.player2 == final_winner[0]):
-						return match.winner
-			else:
-				return final_winner[0]
-		else:
+			if (match.player1 == player1 and match.player2 == player2) or \
+				(match.player1 == player2 and match.player2 == player1):
+				return match.winner
+
+	@staticmethod
+	def determine_tournament_winner(tournament: Tournament) -> TournamentPlayer:
+		leaderboard = TournamentService.calculate_leaderboard(tournament)
+		winners = []
+		for player_alias, player_data in leaderboard.items():
+			if player_data.get('ranking') == 1:
+				winners.append(get_object_or_404(TournamentPlayer, tournament=tournament, alias=player_alias))
+			if player_data.get('ranking') > 1:
+				break
+		if len(winners) == 1:
 			return winners[0]
+		winner = TournamentService.find_game_winner(winners[0], winners[1], tournament)
+		for i in range(2, len(winners)):
+			winner = TournamentService.find_game_winner(winner, winners[i], tournament)
+		return winner
 
 	@staticmethod
 	@transaction.atomic
@@ -213,10 +209,50 @@ class TournamentService:
 		return tournament
 	
 	@staticmethod
-	def calculate_leaderboard(tournament_id: int) -> dict:
-		tournament = get_object_or_404(Tournament, id=tournament_id)
+	def calculate_leaderboard(tournament: Tournament) -> dict:
 		players = TournamentPlayer.objects.filter(tournament=tournament)
-		return None
-	
-	
+		leaderboard_data = {}
+		player_stats = []
+		for player in players:
+			completed_games = Game.objects.filter(
+				Q(player1=player) | Q(player2=player),
+				status='completed',
+				tournament=tournament
+			)
+
+			game_total = completed_games.count()
+			game_win = completed_games.filter(winner=player).count()
+			total_score = completed_games.annotate(
+				score=Case(
+					When(player1=player, then=F('score_player1') - F('score_player2')),
+					When(player2=player, then=F('score_player2') - F('score_player1'))
+				)
+			).aggregate(total=Sum('score'))['total']
+
+			player_stats.append({
+				'alias': player.alias,
+				'stats': {
+					'game_count': game_total,
+					'game_win': game_win,
+					'total_score': total_score,
+				}
+			})
+		sorted_stats = sorted(
+			player_stats,
+			key=lambda x: (-x['stats']['game_win'], x['stats']['total_score'])
+		)
+		curr_pos = 1
+		previous_scores = None
+		previous_wins = None
+		
+		for idx, player_data in enumerate(sorted_stats):
+			if (previous_scores != player_data['stats']['total_score'] or
+	   			previous_wins != player_data['stats']['game_win']):
+				curr_pos = idx + 1
+			previous_scores = player_data['stats']['total_score']
+			previous_wins = player_data['stats']['game_win']
+			player_data['stats']['ranking'] = curr_pos
+			leaderboard_data[player_data['alias']] = player_data['stats']
+
+		return leaderboard_data
 		

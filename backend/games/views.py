@@ -279,8 +279,7 @@ class TournamentLeaderboardView(APIView):
 		tournament_id = request.query_params.get('tournament_id')
 		if not tournament_id:
 			return Response({'error': 'Tournament ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-		try:
-			leaderboard = TournamentService.calculate_leaderboard(tournament_id)
-		except Tournament.DoesNotExist:
-			return Response({'error': 'Tournament not found'}, status=status.HTTP_404_NOT_FOUND)
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		leaderboard = TournamentService.calculate_leaderboard(tournament)
 		return Response(leaderboard, status=status.HTTP_200_OK)
+	

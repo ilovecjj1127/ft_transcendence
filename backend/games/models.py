@@ -70,3 +70,6 @@ class TournamentPlayer(models.Model):
 	player = models.ForeignKey(UserProfile, on_delete=models.CASCADE)
 	alias = models.CharField(max_length=50)
 	registered_at = models.DateTimeField(auto_now_add=True)
+
+	def __str__(self):
+		return f"{self.alias} in Tournament '{self.tournament.name}'"

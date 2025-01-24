@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from .models import Game, Tournament, TournamentPlayer, TournamentMatch
+from .models import Game, Tournament, TournamentPlayer
 
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
