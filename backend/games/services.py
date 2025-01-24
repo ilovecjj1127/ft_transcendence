@@ -131,8 +131,7 @@ class TournamentService:
 			alias=alias
 		)
 		if tournament.players.count() == tournament.max_players:
-			tournament.status = 'in_progress'
-			tournament.save()
+			TournamentService.start_tournament(tournament_id, tournament.creator)
 		return tournament_player
 	
 	@staticmethod
@@ -174,11 +173,15 @@ class TournamentService:
 	
 	@staticmethod
 	def find_game_winner(player1: TournamentPlayer, player2: TournamentPlayer, tournament: Tournament) -> TournamentPlayer:
-		matches = tournament.matches.all()
-		for match in matches:
-			if (match.player1 == player1 and match.player2 == player2) or \
-				(match.player1 == player2 and match.player2 == player1):
-				return match.winner
+		if not player1:
+			return player2
+		match = tournament.matches.filter(
+			(Q(player1=player1.player, player2=player2.player) |
+			 Q(player2=player1.player, player1=player2.player))
+		).first()
+		if not match or not match.winner:
+			return None
+		return get_object_or_404(TournamentPlayer, tournament=tournament, player=match.winner)
 
 	@staticmethod
 	def determine_tournament_winner(tournament: Tournament) -> TournamentPlayer:
@@ -194,6 +197,8 @@ class TournamentService:
 		winner = TournamentService.find_game_winner(winners[0], winners[1], tournament)
 		for i in range(2, len(winners)):
 			winner = TournamentService.find_game_winner(winner, winners[i], tournament)
+		if not winner:
+			return winners[0]
 		return winner
 
 	@staticmethod
@@ -209,28 +214,32 @@ class TournamentService:
 		return tournament
 	
 	@staticmethod
-	def calculate_leaderboard(tournament: Tournament) -> dict:
-		players = TournamentPlayer.objects.filter(tournament=tournament)
+	@transaction.atomic
+	def calculate_leaderboard(tournament_id: int) -> dict:
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		if tournament.status not in ['in_progress', 'completed']:
+			raise ValueError("Leaderboard only for a in-progress or completed tournament")
+		tournament_players = TournamentPlayer.objects.filter(tournament=tournament)
 		leaderboard_data = {}
 		player_stats = []
-		for player in players:
+		for t_player in tournament_players:
 			completed_games = Game.objects.filter(
-				Q(player1=player) | Q(player2=player),
+				Q(player1=t_player.player) | Q(player2=t_player.player),
 				status='completed',
 				tournament=tournament
 			)
 
 			game_total = completed_games.count()
-			game_win = completed_games.filter(winner=player).count()
+			game_win = completed_games.filter(winner=t_player.player).count()
 			total_score = completed_games.annotate(
 				score=Case(
-					When(player1=player, then=F('score_player1') - F('score_player2')),
-					When(player2=player, then=F('score_player2') - F('score_player1'))
+					When(player1=t_player.player, then=F('score_player1') - F('score_player2')),
+					When(player2=t_player.player, then=F('score_player2') - F('score_player1'))
 				)
-			).aggregate(total=Sum('score'))['total']
+			).aggregate(total=Sum('score'))['total'] or 0
 
 			player_stats.append({
-				'alias': player.alias,
+				'alias': t_player.alias,
 				'stats': {
 					'game_count': game_total,
 					'game_win': game_win,
@@ -239,7 +248,7 @@ class TournamentService:
 			})
 		sorted_stats = sorted(
 			player_stats,
-			key=lambda x: (-x['stats']['game_win'], x['stats']['total_score'])
+			key=lambda x: (-x['stats']['game_win'], -x['stats']['total_score'])
 		)
 		curr_pos = 1
 		previous_scores = None

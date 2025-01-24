@@ -7,7 +7,7 @@ class Tournament(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True)
 	modified_at = models.DateTimeField(auto_now=True)
 	creator = models.ForeignKey(UserProfile, on_delete=models.CASCADE, related_name='created_tournaments')
-	winner = models.ForeignKey(UserProfile, on_delete=models.SET_NULL, null=True, blank=True, 
+	winner = models.ForeignKey('TournamentPlayer', on_delete=models.SET_NULL, null=True, blank=True, 
 								related_name="won_tournament")
 	status = models.CharField(
 		max_length=20,

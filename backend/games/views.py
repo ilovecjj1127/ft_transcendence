@@ -180,11 +180,11 @@ class TournamentCreateView(APIView):
 		min_players = serializer.validated_data.get('min_players', 8)
 		winning_score = serializer.validated_data.get('winnint_score', 10)
 		try:
-			TournamentService.create_tournament(name, alias, user, max_players, min_players, winning_score)
+			tournament = TournamentService.create_tournament(name, alias, user, max_players, min_players, winning_score)
 			return Response(
 				{
 					'message': 'Tournament created successfully',
-					'status': serializer.data,
+					'status': tournament.status,
 				}, status=status.HTTP_201_CREATED)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
@@ -279,7 +279,10 @@ class TournamentLeaderboardView(APIView):
 		tournament_id = request.query_params.get('tournament_id')
 		if not tournament_id:
 			return Response({'error': 'Tournament ID is required'}, status=status.HTTP_400_BAD_REQUEST)
-		tournament = get_object_or_404(Tournament, id=tournament_id)
-		leaderboard = TournamentService.calculate_leaderboard(tournament)
-		return Response(leaderboard, status=status.HTTP_200_OK)
+		try:
+			leaderboard = TournamentService.calculate_leaderboard(tournament_id)
+			return Response(leaderboard, status=status.HTTP_200_OK)
+		except ValueError as e:
+			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
 	
