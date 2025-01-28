@@ -2,6 +2,7 @@
 
 import Ball from "./Ball.js"
 import Paddle from "./Paddle.js"
+import loginFunction from "../js_requests/login-form.js"
 
 
 const ball = new Ball(document.getElementById("ball"))
@@ -26,18 +27,29 @@ export let start_game = false
 
 let lastTime = null
 
-loginButton.addEventListener("click", () => 
+loginButton.addEventListener("click", async function(event)
 {
 	const username = document.getElementById("username").value;
 	console.log("input: " + username)
+	console.log("Hi click");
+
 	if (username)
 	{
-		loginStageBox.classList.add("hidden")
-		loggedInStageBox.classList.remove("hidden")
+	
+		const result = await loginFunction(event);
+		console.log("result =  ", result)
+		if (result == 0)
+		{
+			console.log("LoginF() == 0");
+
+			loginStageBox.classList.add("hidden")
+			loggedInStageBox.classList.remove("hidden")
+		}
 	}
 	else {
 		alert("please enter username!")
 	}
+
 });
 
 startButton.addEventListener("click", () => 

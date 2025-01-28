@@ -8,7 +8,7 @@
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	<link rel="icon" href="{% static 'media/favicon.ico' %}">
 	<script src="{% static 'js/script.js' %}" type="module"></script>
-	<script src="/js_requests/login-form.js"></script>
+	{% comment %} <script src="{% static 'js_requests/login-form.js'  %}"></script> {% endcomment %}
 	<title>Document</title>
 </head>
 <body>
@@ -16,7 +16,7 @@
 		<div class="menu-box">
 
 			<div class="login" id="login-stage">	
-				 <p>Enter names in the fields, then click "Submit" to submit the form:</p>
+				<p>Enter names in the fields, then click "Submit" to submit the form:</p>
 				<form id="login-form">
 					username: <input type="text" id="username" name="username_" required><br>
 					password: <input type="password" id="password" name="password_" required><br><br>
