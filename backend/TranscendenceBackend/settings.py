@@ -27,18 +27,21 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-qhmw3sqgew++6d8t_3n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
+# ALLOWED_HOSTS = ['127.0.0.1', '10.11.1.18']
 ALLOWED_HOSTS = []
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'pong.apps.PongConfig',
     'users.apps.UsersConfig',
 	'games.apps.GamesConfig',
+    'chat.apps.ChatConfig',
+    'pong.apps.PongConfig',
     'corsheaders',
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
+    'channels',
     'drf_spectacular',
     'silk',
     'django.contrib.admin',
@@ -79,7 +82,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'TranscendenceBackend.wsgi.application'
+# WSGI_APPLICATION = 'TranscendenceBackend.wsgi.application'
+ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 
 # Database
@@ -133,7 +137,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -155,7 +160,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
@@ -167,4 +172,13 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'Detailed description of API endpoints.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
+}
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
+        },
+    }
 }
