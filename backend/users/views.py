@@ -13,6 +13,11 @@ from .serializers import RegistrationSerializer
 from django.http import HttpResponse
 from django.shortcuts import render
 
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
+
 def index(request):
 	# return HttpResponse("Hello world")
     return render(request, 'index.html')
@@ -56,7 +61,10 @@ class LoginView(View):
         user = authenticate(request, username=username, password=password)
         if user is not None:
             login(request, user)
-            return JsonResponse({'message': 'Login successful'}, status=200)
+            token_view = TokenObtainPairView.as_view()
+            response = token_view(request)
+            token_data = response.data
+            return JsonResponse({'message': 'Login successful', 'access_token': token_data["access"]}, status=200)
         else:
             return JsonResponse({'error': 'Invalid credentials'}, status=401)
 

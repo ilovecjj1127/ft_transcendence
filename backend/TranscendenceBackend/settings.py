@@ -110,6 +110,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
+
 print("BASE_DIR:", BASE_DIR)
 print("Absolute path to frontend/static:", BASE_DIR.parent / 'frontend/static')
 # Internationalization
