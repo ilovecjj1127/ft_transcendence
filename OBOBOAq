@@ -1,0 +1,89 @@
+[33mcommit c985361fffed8443657deb3bde1980deb050b27e[m[33m ([m[1;36mHEAD -> [m[1;32mrik/front_end_basic_test[m[33m, [m[1;31morigin/rik/front_end_basic_test[m[33m)[m
+Author: Your Name <you@example.com>
+Date:   Mon Dec 23 20:50:27 2024 +0100
+
+    the mapped volume was causing error somehow. Also, moved login-script into seperate folder
+
+[33mcommit 1ff00d5a93a4636272dd0a686375fd02d7628304[m
+Author: Your Name <you@example.com>
+Date:   Thu Dec 12 15:08:28 2024 +0100
+
+    deleted backend/TranscendenceBackend/form.html
+
+[33mcommit 3610295a192327d4190842d8a13344cd79a2408c[m
+Author: Your Name <you@example.com>
+Date:   Wed Dec 11 21:01:36 2024 +0100
+
+    added binded mount for whole backend/ folder unto app/ in django_app
+
+[33mcommit b8e22648bb8768548557e47a2f3a4f3403f9c27d[m
+Author: Your Name <you@example.com>
+Date:   Tue Dec 3 20:32:08 2024 +0100
+
+    added notes
+
+[33mcommit 69ec90a7fe682afef14752cd3c6ed3f8110838b0[m
+Author: Your Name <you@example.com>
+Date:   Mon Dec 2 19:21:42 2024 +0100
+
+    + script for post
+
+[33mcommit 9256137d417698dcdd3f230cbd3b8e2ab11e1dee[m[33m ([m[1;32m0a[m[33m)[m
+Author: Your Name <you@example.com>
+Date:   Fri Nov 29 20:06:44 2024 +0100
+
+    edit notes
+
+[33mcommit 45c2265ea34664f6d8cac38ef7ef55737bf95031[m
+Author: Your Name <you@example.com>
+Date:   Fri Nov 29 20:01:48 2024 +0100
+
+    put frontend with basic pong and menu in project, works in docker
+
+[33mcommit 626f0a92d7a0e0f4431562eae0f426a3b4135ea3[m
+Author: Your Name <you@example.com>
+Date:   Fri Nov 29 11:21:46 2024 +0100
+
+    pasted front end into project, not ready yet
+
+[33mcommit 4de664e2314743784db918018bd86cd14adc9da4[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Thu Nov 28 20:53:21 2024 +0100
+
+    Added DRF, changed register view
+
+[33mcommit 3d724ef6b32ab0e3d834709fee3d3f0e9931a374[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Wed Nov 27 20:31:07 2024 +0100
+
+    Fixed bugs, tested register and login
+
+[33mcommit bd82acb3a86415d8598806de86aa44be09b97a39[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Fri Nov 22 20:47:20 2024 +0100
+
+    Created FriendshipRequest, added register, login and logout endpoints
+
+[33mcommit c3a92209e75abf5c96b8a4545716763cac0fd096[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Thu Nov 21 20:57:51 2024 +0100
+
+    Added UserProfile model with avatars
+
+[33mcommit de239097b238b85ca3c133d8c0a474f5e265bbc0[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Tue Nov 19 18:29:11 2024 +0100
+
+    Canceled mounting DB folder, added first_run.py script to initialize DB each time
+
+[33mcommit 7f56ea1f412b1700ebff826641500024cd1e9411[m
+Author: Alexander Petukhov <alpetukh@student.codam.nl>
+Date:   Mon Nov 18 20:23:08 2024 +0100
+
+    Django project was created
+
+[33mcommit be74b5ce3a2765b0159821f160f17e5adec95ecd[m
+Author: Jiajia <43346340+ilovecjj1127@users.noreply.github.com>
+Date:   Thu Nov 14 18:07:16 2024 +0100
+
+    Initial commit
