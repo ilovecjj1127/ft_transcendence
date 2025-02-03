@@ -86,3 +86,7 @@ class AvatarField(serializers.ImageField):
 
 class AvatarSerializer(serializers.Serializer):
     avatar = AvatarField()
+
+
+class OTPCodeSerializer(serializers.Serializer):
+    otp_code = serializers.CharField(max_length=6)

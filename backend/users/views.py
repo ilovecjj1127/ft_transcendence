@@ -10,8 +10,8 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from .serializers import LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
     RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer, \
-    AvatarSerializer
-from .services import FriendshipRequestService, UserProfileService
+    AvatarSerializer, OTPCodeSerializer
+from .services import FriendshipRequestService, UserProfileService, User2FAService
 
 
 class RegistrationView(APIView):
@@ -215,4 +215,38 @@ class AvatarUploadView(APIView):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({'message': 'Avatar uploaded successfully'},
+                        status=status.HTTP_200_OK)
+
+
+class Setup2FA(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary='Ask for 2FA setup',
+        responses={200: SuccessResponseSerializer},
+        tags=['Users']
+    )
+    def patch(self, request: Request) -> Response:
+        try:
+            qr_code = User2FAService.connect_with_2fa_app(request.user)
+        except Exception as e:
+            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
+        return Response({'qr_code': qr_code}, status=status.HTTP_200_OK)
+
+    @extend_schema(
+        summary='Confirm 2FA setup',
+        request=OTPCodeSerializer,
+        responses={200: SuccessResponseSerializer},
+        tags=['Users']
+    )
+    def post(self, request: Request) -> Response:
+        serializer = OTPCodeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user_code = serializer.validated_data['otp_code']
+        try:
+            User2FAService.setup_2fa(request.user, user_code)
+        except Exception as e:
+            return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
+        return Response({'message': '2FA was setup successfully'},
                         status=status.HTTP_200_OK)
