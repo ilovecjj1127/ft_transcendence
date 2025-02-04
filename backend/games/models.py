@@ -28,6 +28,10 @@ class Tournament(models.Model):
 			raise ValidationError("Minimum 3 players required for a tournament")
 		if self.max_players < self.min_players:
 			raise ValidationError("Maximum players must be greater than minimum players")
+
+	def save(self, *args, **kwargs):
+		self.full_clean()
+		super().save(*args, **kwargs)
 	
 	def __str__(self):
 		return self.name

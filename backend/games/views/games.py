@@ -9,7 +9,7 @@ from django.db.models import Q
 
 from games.serializers.games import GameCreateSerializer, GameDetailSerializer, GameActionSerializer
 from games.models import Game
-from games.services import GameService
+from games.services.games import GameService
 
 class GameCreateView(APIView):
 	permission_classes = [IsAuthenticated]

@@ -131,6 +131,13 @@ class TournamentService:
 		return tournament
 	
 	@staticmethod
+	def get_tournament_check_status(tournament_id: int, allowed_statuses: list) -> Tournament:
+		tournament = get_object_or_404(Tournament, id=tournament_id)
+		if tournament.status not in allowed_statuses:
+			raise ValueError("Tournament is not ready or completed. No Game can be listed.")
+		return tournament
+	
+	@staticmethod
 	@transaction.atomic
 	def calculate_leaderboard(tournament_id: int) -> dict:
 		tournament = get_object_or_404(Tournament, id=tournament_id)
