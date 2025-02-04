@@ -5,12 +5,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
+from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from .serializers import LogoutSerializer, RegistrationSerializer, \
+from .serializers import LoginSerializer, LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
     RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer, \
-    AvatarSerializer, OTPCodeSerializer
+    AvatarSerializer, OTPCodeSerializer, Verify2FASerializer
 from .services import FriendshipRequestService, UserProfileService, User2FAService
 
 
@@ -35,7 +36,16 @@ class RegistrationView(APIView):
     post=extend_schema(tags=['Authentication'])
 )
 class LoginView(TokenObtainPairView):
-    pass
+    serializer_class = LoginSerializer
+
+    def post(self, request: Request) -> Response:
+        serializer = self.get_serializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        data = serializer.validated_data
+        if data.get("2fa_required"):
+            return Response(data, status=status.HTTP_202_ACCEPTED)
+        return Response(data, status=status.HTTP_200_OK)
 
 
 @extend_schema_view(
@@ -218,7 +228,7 @@ class AvatarUploadView(APIView):
                         status=status.HTTP_200_OK)
 
 
-class Setup2FA(APIView):
+class Setup2FAView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
@@ -250,3 +260,22 @@ class Setup2FA(APIView):
             return Response({'error': str(e)}, status.HTTP_400_BAD_REQUEST)
         return Response({'message': '2FA was setup successfully'},
                         status=status.HTTP_200_OK)
+
+
+class Verify2FAView(APIView):
+    @extend_schema(
+        request=Verify2FASerializer,
+        responses={200: LoginSerializer},
+        tags=['Authentication'],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = Verify2FASerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        user = serializer.validated_data['user']
+        refresh = RefreshToken.for_user(user)
+        data = {
+            "refresh": str(refresh),
+            "access": str(refresh.access_token)
+        }
+        return Response(data, status=status.HTTP_200_OK)

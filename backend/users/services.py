@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Prefetch
+import jwt
 import pyotp
 import qrcode
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -9,7 +11,9 @@ from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, \
 from rest_framework_simplejwt.exceptions import TokenError
 
 import base64
+import datetime
 from io import BytesIO
+from uuid import UUID
 
 from .models import FriendshipRequest, UserProfile
 
@@ -227,6 +231,7 @@ class User2FAService:
         return totp.verify(user_input_code)
 
     @staticmethod
+    @transaction.atomic
     def connect_with_2fa_app(user: UserProfile):
         if user.is_2fa_enabled:
             raise ValueError('2FA is already enabled')
@@ -239,6 +244,7 @@ class User2FAService:
         return User2FAService.generate_qr_code(provisioning_uri)
 
     @staticmethod
+    @transaction.atomic
     def setup_2fa(user: UserProfile, user_code: str):
         if user.is_2fa_enabled:
             raise ValueError('2FA is already enabled')
@@ -249,3 +255,23 @@ class User2FAService:
             raise ValueError('Invalid code. Try again')
         user.is_2fa_enabled = True
         user.save()
+
+    @staticmethod
+    def create_partial_token(user_id: UUID) -> str:
+        """
+        Creates a short-lived JWT indicating the user passed the password check
+        but still needs to pass 2FA.
+        """
+        now = datetime.datetime.now(datetime.timezone.utc)
+        exp = now + datetime.timedelta(minutes=5)
+        payload = {
+            "user_id": str(user_id),
+            "type": "pending_2fa",
+            "iat": now,
+            "exp": exp
+        }
+        return jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
+
+    @staticmethod
+    def decode_partial_token(token: str) -> dict:
+        return jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
