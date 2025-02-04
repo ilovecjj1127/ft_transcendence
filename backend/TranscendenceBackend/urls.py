@@ -27,7 +27,8 @@ urlpatterns = [
     path('chat/', include('chat.urls')),
     path('pong/', include('pong.urls')),
     path('api/users/', include('users.urls')),
-	path('api/games/', include('games.urls')),
+	path('api/games/', include('games.urls.games')),
+	path('api/tournament/', include('games.urls.tournament')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Need to be replaced with Nginx
