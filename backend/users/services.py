@@ -266,7 +266,7 @@ class User2FAService:
         exp = now + datetime.timedelta(minutes=5)
         payload = {
             "user_id": str(user_id),
-            "type": "pending_2fa",
+            "token_type": "pending_2fa",
             "iat": now,
             "exp": exp
         }

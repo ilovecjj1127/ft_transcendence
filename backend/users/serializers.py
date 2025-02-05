@@ -33,7 +33,7 @@ class LoginSerializer(TokenObtainPairSerializer):
         user = self.user
         if user.is_2fa_enabled:
             return {
-                "2fa_required": True,
+                "required_2fa": True,
                 "partial_token": User2FAService.create_partial_token(user.id)
             }
         return data
@@ -108,6 +108,15 @@ class OTPCodeSerializer(serializers.Serializer):
     otp_code = serializers.CharField(max_length=6)
 
 
+class QRCodeSerializer(serializers.Serializer):
+    qr_code = serializers.CharField()
+
+
+class PartialTokenSerializer(serializers.Serializer):
+    required_2fa = serializers.BooleanField()
+    partial_token = serializers.CharField()
+
+
 class Verify2FASerializer(serializers.Serializer):
     partial_token = serializers.CharField()
     otp_code = serializers.CharField()
@@ -121,7 +130,7 @@ class Verify2FASerializer(serializers.Serializer):
             raise serializers.ValidationError('Partial token expired')
         except jwt.InvalidTokenError:
             raise serializers.ValidationError('Invalid partial token')
-        if payload.get('type') != 'pending_2fa':
+        if payload.get('token_type', '') != 'pending_2fa':
             raise serializers.ValidationError('Token is not a 2FA pending token')
         user_id = payload.get('user_id')
         try:

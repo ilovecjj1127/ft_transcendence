@@ -6,12 +6,14 @@ from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 from .serializers import LoginSerializer, LogoutSerializer, RegistrationSerializer, \
     SuccessResponseSerializer, UserProfileSerializer, UsernameSerializer, \
     RequestIdSerializer, PasswordChangeSerializer, MyProfileSerializer, \
-    AvatarSerializer, OTPCodeSerializer, Verify2FASerializer
+    AvatarSerializer, OTPCodeSerializer, Verify2FASerializer, PartialTokenSerializer, \
+    QRCodeSerializer
 from .services import FriendshipRequestService, UserProfileService, User2FAService
 
 
@@ -32,18 +34,20 @@ class RegistrationView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@extend_schema_view(
-    post=extend_schema(tags=['Authentication'])
-)
 class LoginView(TokenObtainPairView):
     serializer_class = LoginSerializer
 
+    @extend_schema(
+        request=LoginSerializer,
+        responses={200: TokenObtainPairSerializer, 202: PartialTokenSerializer},
+        tags=['Authentication'],
+    )
     def post(self, request: Request) -> Response:
         serializer = self.get_serializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         data = serializer.validated_data
-        if data.get("2fa_required"):
+        if data.get("required_2fa"):
             return Response(data, status=status.HTTP_202_ACCEPTED)
         return Response(data, status=status.HTTP_200_OK)
 
@@ -233,7 +237,7 @@ class Setup2FAView(APIView):
 
     @extend_schema(
         summary='Ask for 2FA setup',
-        responses={200: SuccessResponseSerializer},
+        responses={200: QRCodeSerializer},
         tags=['Users']
     )
     def patch(self, request: Request) -> Response:
@@ -265,7 +269,7 @@ class Setup2FAView(APIView):
 class Verify2FAView(APIView):
     @extend_schema(
         request=Verify2FASerializer,
-        responses={200: LoginSerializer},
+        responses={200: TokenObtainPairSerializer},
         tags=['Authentication'],
     )
     def post(self, request: Request) -> Response:
