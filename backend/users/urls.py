@@ -1,9 +1,11 @@
 from django.urls import path
 
-from .views import FriendshipRequestView, FriendshipRequestModifyView, \
-    LogoutView, RegistrationView, UserProfileView, LoginView, RefreshTokenView, \
-    PasswordChangeView, MyProfileView, BreakOffFriendshipView, AvatarUploadView, \
+from .views.Authentication import LoginView, LogoutView, RefreshTokenView, \
     Verify2FAView, Setup2FAView
+from .views.FriendshipRequest import BreakOffFriendshipView, FriendshipRequestView, \
+    FriendshipRequestModifyView
+from .views.UserProfile import RegistrationView, UserProfileView, PasswordChangeView, \
+    MyProfileView, AvatarUploadView
 
 
 urlpatterns = [

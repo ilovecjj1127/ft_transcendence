@@ -5,7 +5,6 @@ import django.contrib.auth.validators
 import django.db.models.deletion
 import django.utils.timezone
 import users.utils
-import users.validators
 import uuid
 from django.conf import settings
 from django.db import migrations, models
@@ -34,7 +33,7 @@ class Migration(migrations.Migration):
                 ('is_active', models.BooleanField(default=True, help_text='Designates whether this user should be treated as active. Unselect this instead of deleting accounts.', verbose_name='active')),
                 ('date_joined', models.DateTimeField(default=django.utils.timezone.now, verbose_name='date joined')),
                 ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('avatar', models.ImageField(blank=True, default='avatars/default.jpeg', upload_to=users.utils.avatar_upload_to, validators=[users.validators.validate_avatar_size])),
+                ('avatar', models.ImageField(blank=True, default='avatars/default.jpeg', upload_to=users.utils.avatar_upload_to, validators=[users.utils.validate_avatar_size])),
                 ('friends', models.ManyToManyField(blank=True, to=settings.AUTH_USER_MODEL)),
                 ('groups', models.ManyToManyField(blank=True, help_text='The groups this user belongs to. A user will get all permissions granted to each of their groups.', related_name='user_set', related_query_name='user', to='auth.group', verbose_name='groups')),
                 ('user_permissions', models.ManyToManyField(blank=True, help_text='Specific permissions for this user.', related_name='user_set', related_query_name='user', to='auth.permission', verbose_name='user permissions')),
