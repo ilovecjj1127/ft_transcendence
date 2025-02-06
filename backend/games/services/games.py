@@ -43,7 +43,12 @@ class GameService:
 		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game cannot be interrupted')
-		game.status = 'interrupted'
+		if game.tournament:
+			game.status = 'ready'
+			game.score_player1 = 0
+			game.score_player2 = 0
+		else:
+			game.status = 'interrupted'
 		game.save()
 		return game
 	

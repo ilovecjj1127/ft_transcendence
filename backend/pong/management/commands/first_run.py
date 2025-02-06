@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
 
 from users.models import UserProfile
-from games.models import Game
+from games.models import Game, Tournament, TournamentPlayer
 
 
 class Command(BaseCommand):
@@ -36,8 +36,18 @@ class Command(BaseCommand):
                 username='bob',
                 password='bob'
             )
+        if not UserProfile.objects.filter(username='cathy').exists():
+            user3 = UserProfile.objects.create_user(
+                username='cathy',
+                password='cathy'
+            )
+        if not UserProfile.objects.filter(username='david').exists():
+            user4 = UserProfile.objects.create_user(
+                username='david',
+                password='david'
+            )
         
-        #Crate test games
+        #Create test games
         if user1 and user2:
             Game.objects.create(
                 player1=user1,
@@ -47,6 +57,23 @@ class Command(BaseCommand):
                 player1=user1,
                 player2=user2,
                 status='ready'
+            )
+        
+        # Create test tournament
+        if user1 and user2 and user3 and user4:
+            tournament = Tournament.objects.create(
+                name='first_tournament',
+                creator=user1
+            )
+            TournamentPlayer.objects.create(
+                tournament=tournament,
+                player=user1,
+                alias=user1.username+'_alias'
+            )
+            TournamentPlayer.objects.create(
+                tournament=tournament,
+                player=user3,
+                alias=user3.username+'_alias'
             )
 
         self.stdout.write('Creating DB objects...')

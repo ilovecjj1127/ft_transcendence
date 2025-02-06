@@ -7,7 +7,7 @@ from rest_framework.views import APIView
 
 from games.serializers.tournament import TournamentCreateSerializer, TournamentJoinSerializer, \
 							TournamentActionSerializer, TournamentDetailSerializer
-from games.serializers.games import GameDetailSerializer
+from games.serializers.games import GameDetailSerializer, SuccessResponseSerializer
 from games.models import Tournament, Game
 from games.services.tournament import TournamentService
 from django.db.models import Q
@@ -18,6 +18,7 @@ class TournamentCreateView(APIView):
 	@extend_schema(
 		summary="Propose a new tournament",
 		request=TournamentCreateSerializer,
+		responses={201: SuccessResponseSerializer},
 		tags=['Tournaments'],
 	)
 	def post(self, request: Request) -> Response:
@@ -53,6 +54,7 @@ class TournamentJoinView(APIView):
 	@extend_schema(
 		summary="Join an existing tournament",
 		request=TournamentJoinSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Tournaments'],
 	)
 	def post(self, request: Request) -> Response:
@@ -79,6 +81,7 @@ class TournamentStartView(APIView):
 	@extend_schema(
 		summary="Start a tournament",
 		request=TournamentActionSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Tournaments'],
 	)
 	def post(self, request: Request) -> Response:
@@ -91,6 +94,8 @@ class TournamentStartView(APIView):
 			return Response({'message': f'Tournament {tournament.name} started'}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+		except PermissionError as e:
+			return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
 class TournamentCancelView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -98,6 +103,7 @@ class TournamentCancelView(APIView):
 	@extend_schema(
 		summary="Cancel a tournament",
 		request=TournamentActionSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Tournaments'],
 	)
 	def patch(self, request: Request) -> Response:
@@ -110,12 +116,14 @@ class TournamentCancelView(APIView):
 			return Response({'message': f'Tournament {tournament.name} is canceled'}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+		except PermissionError as e:
+			return Response({'error': str(e)}, status=status.HTTP_403_FORBIDDEN)
 
 class RegistrationTournamentListView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
-		summary="List all the pending games",
+		summary="List all the tournaments with registration open",
 		request=TournamentDetailSerializer,
 		responses={200: TournamentDetailSerializer(many=True)},
 		tags=['Tournaments'],
@@ -132,7 +140,7 @@ class UpcomingTournamentListView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
-		summary="List User's upcoming games",
+		summary="List User's upcoming tournaments",
 		request=TournamentDetailSerializer,
 		responses={200: TournamentDetailSerializer(many=True)},
 		tags=['Tournaments'],
@@ -150,7 +158,7 @@ class OngoingTournamentListView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
-		summary="List User's ongoing games",
+		summary="List User's ongoing tournaments",
 		request=TournamentDetailSerializer,
 		responses={200: TournamentDetailSerializer(many=True)},
 		tags=['Tournaments'],
@@ -227,6 +235,7 @@ class TournamentLeaderboardView(APIView):
 	@extend_schema(
 		parameters=[OpenApiParameter(name='tournament_id', required=True, type=int)],
 		summary="Show the current situation of tournament",
+		responses={200: SuccessResponseSerializer},
 		tags=['Tournaments'],
 	)
 	def get(self, request: Request):

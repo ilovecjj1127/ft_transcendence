@@ -2,6 +2,9 @@ from rest_framework import serializers
 
 from games.models import Game
 
+class SuccessResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
@@ -19,6 +22,10 @@ class GameCreateSerializer(serializers.ModelSerializer):
 		else:
 			data['status'] = 'pending'
 		return data
+
+class GameCreateResponseSerializer(serializers.Serializer):
+	message = serializers.CharField()
+	game = GameCreateSerializer()
 
 class GameDetailSerializer(serializers.ModelSerializer):
 	class Meta:
