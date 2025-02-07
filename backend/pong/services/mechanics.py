@@ -2,7 +2,8 @@ import json
 
 from .base_service import Action, PongServiceBase
 from ..constants import X_MAX, Y_MAX, VELOCITY_STEP, BALL_RADIUS, \
-    PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_INDENT, PADDLE_STEP
+    PADDLE_HEIGHT, PADDLE_WIDTH, PADDLE_INDENT, PADDLE_STEP, \
+    LEFT_REBOUND, RIGHT_REBOUND
 
 
 class PongMechanics(PongServiceBase):
@@ -58,18 +59,18 @@ class PongMechanics(PongServiceBase):
         game_state['ball_x'], game_state['ball_y'] = ball_x, ball_y
 
     def check_rebound(self, ball_x: float, ball_y: float, game_state: dict) -> float:
+        if LEFT_REBOUND < ball_x < RIGHT_REBOUND:
+            return ball_x
         paddle1_y = game_state['paddle1_y']
         paddle2_y = game_state['paddle2_y']
-        left_rebound = PADDLE_INDENT + PADDLE_WIDTH + BALL_RADIUS
-        right_rebound = X_MAX - left_rebound
-        if ball_x  <= left_rebound < game_state['ball_x'] \
+        if ball_x  <= LEFT_REBOUND < game_state['ball_x'] \
                 and paddle1_y <= ball_y <= paddle1_y + PADDLE_HEIGHT:
             game_state['ball_direction_x'] *= -1
-            return left_rebound * 2 - ball_x
-        elif ball_x  >= right_rebound > game_state['ball_x'] \
+            return LEFT_REBOUND * 2 - ball_x
+        elif ball_x  >= RIGHT_REBOUND > game_state['ball_x'] \
                 and paddle2_y <= ball_y <= paddle2_y + PADDLE_HEIGHT:
             game_state['ball_direction_x'] *= -1
-            return right_rebound * 2 - ball_x
+            return RIGHT_REBOUND * 2 - ball_x
         return ball_x
 
     def update_score(self, game_state: dict, ball_x: float):
