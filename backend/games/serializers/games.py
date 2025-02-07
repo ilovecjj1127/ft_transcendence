@@ -1,6 +1,9 @@
 from rest_framework import serializers
 
-from .models import Game
+from games.models import Game
+
+class SuccessResponseSerializer(serializers.Serializer):
+    message = serializers.CharField()
 
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
@@ -20,10 +23,14 @@ class GameCreateSerializer(serializers.ModelSerializer):
 			data['status'] = 'pending'
 		return data
 
+class GameCreateResponseSerializer(serializers.Serializer):
+	message = serializers.CharField()
+	game = GameCreateSerializer()
+
 class GameDetailSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'status', 'winner', 'created_at', 'modified_at']
+		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'winning_score', 'status', 'winner', 'tournament', 'created_at', 'modified_at']
 
 class GameActionSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField()
@@ -32,4 +39,3 @@ class GameUpdateSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField(required=True)
 	new_score_player1 = serializers.IntegerField(required=True)
 	new_score_player2 = serializers.IntegerField(required=True)
-

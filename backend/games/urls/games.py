@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import GameCreateView, GameDetailView, GameStartView, \
+from games.views.games import GameCreateView, GameDetailView, GameStartView, \
 					GameJoinView, GameCancelView, GameListView, \
 					PendingGameListView, ReadyGameListView, GameStatisticsView
 

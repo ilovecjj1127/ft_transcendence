@@ -1,8 +1,9 @@
-from .models import Game
+from games.models import Game
 from users.models import UserProfile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from .tournament import TournamentService
 
 class GameService:
 	@staticmethod
@@ -42,7 +43,12 @@ class GameService:
 		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game cannot be interrupted')
-		game.status = 'interrupted'
+		if game.tournament:
+			game.status = 'ready'
+			game.score_player1 = 0
+			game.score_player2 = 0
+		else:
+			game.status = 'interrupted'
 		game.save()
 		return game
 	
@@ -52,10 +58,8 @@ class GameService:
 		game = get_object_or_404(Game, id=game_id)
 		if game.status != 'in_progress':
 			raise ValueError('Game can not be updated')
-		if game.score_player1 != new_score_player1:
-			game.score_player1 = new_score_player1
-		if game.score_player2 != new_score_player2:
-			game.score_player2 = new_score_player2
+		game.score_player1 = new_score_player1
+		game.score_player2 = new_score_player2
 		if game.score_player1 >= game.winning_score:
 			game.winner = game.player1
 			game.status = 'completed'
@@ -63,6 +67,12 @@ class GameService:
 			game.winner = game.player2
 			game.status = 'completed'
 		game.save()
+		tournament = game.tournament
+		if tournament:
+			try:
+				TournamentService.finish_tournament(tournament.id)
+			except ValueError:
+				pass
 		return game
 
 	@staticmethod
@@ -85,4 +95,3 @@ class GameService:
 			'win_percentage': round(win_percentage, 2),
 			'avgerage_points_per_game': round(avg_points_per_game, 2),
 		}
-

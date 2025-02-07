@@ -7,9 +7,10 @@ from rest_framework.views import APIView
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
-from .serializers import GameCreateSerializer, GameDetailSerializer, GameActionSerializer
-from .models import Game
-from .services import GameService
+from games.serializers.games import GameCreateSerializer, GameDetailSerializer, GameActionSerializer, \
+									SuccessResponseSerializer, GameCreateResponseSerializer
+from games.models import Game
+from games.services.games import GameService
 
 class GameCreateView(APIView):
 	permission_classes = [IsAuthenticated]
@@ -17,6 +18,7 @@ class GameCreateView(APIView):
 	@extend_schema(
 		summary="Create a new game",
 		request=GameCreateSerializer,
+		responses={201: GameCreateResponseSerializer},
 		tags=['Games'],
 	)
 	def post(self, request: Request) -> Response:
@@ -37,6 +39,7 @@ class GameDetailView(APIView):
 		parameters=[OpenApiParameter(name='game_id', required=True, type=int)],
 		summary="Retrieve game details",
 		request=GameDetailSerializer,
+		responses={200: GameDetailSerializer},
 		tags=['Games'],
 	)
 	def get(self, request: Request) -> Response:
@@ -53,6 +56,7 @@ class GameJoinView(APIView):
 	@extend_schema(
 		summary="Join the game",
 		request=GameActionSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
@@ -72,6 +76,7 @@ class GameCancelView(APIView):
 	@extend_schema(
 		summary="Cancel the game",
 		request=GameActionSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
@@ -91,6 +96,7 @@ class GameStartView(APIView):
 	@extend_schema(
 		summary="Start the game",
 		request=GameActionSerializer,
+		responses={200: SuccessResponseSerializer},
 		tags=['Games'],
 	)
 	def patch(self, request: Request) -> Response:
@@ -152,6 +158,7 @@ class GameStatisticsView(APIView):
 
 	@extend_schema(
 		summary="Get analysis result of user's games",
+		responses={200: SuccessResponseSerializer},
 		tags=['Games'],
 	)
 	def get(self, request: Request) -> Response:
