@@ -1,5 +1,5 @@
 from django.urls import path
-from games.views.games import GameCreateView, GameDetailView, GameStartView, \
+from games.views.games import GameCreateView, GameDetailView, \
 					GameJoinView, GameCancelView, GameListView, \
 					PendingGameListView, ReadyGameListView, GameStatisticsView
 
@@ -12,5 +12,4 @@ urlpatterns = [
 	path('statistics/', GameStatisticsView.as_view(), name='game_statistics'),
 	path('join/', GameJoinView.as_view(), name='join_game'),
 	path('cancel/', GameCancelView.as_view(), name='cancel_game'),
-	path('start/', GameStartView.as_view(), name='start_game'),
 ]

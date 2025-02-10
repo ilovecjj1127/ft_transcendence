@@ -102,7 +102,7 @@ class TournamentService:
 
 	@staticmethod
 	def determine_tournament_winner(tournament: Tournament) -> TournamentPlayer:
-		leaderboard = TournamentService.calculate_leaderboard(tournament)
+		leaderboard = TournamentService.calculate_leaderboard(tournament.id)
 		winners = []
 		for player_alias, player_data in leaderboard.items():
 			if player_data.get('ranking') == 1:
@@ -122,7 +122,7 @@ class TournamentService:
 	@transaction.atomic
 	def finish_tournament(tournament_id: int) -> Tournament:
 		tournament = get_object_or_404(Tournament, id=tournament_id)
-		unfinished_games = tournament.matches.filter(game__status__in=['in_progress', 'ready']).exists()
+		unfinished_games = tournament.matches.filter(status__in=['in_progress', 'ready']).exists()
 		if unfinished_games:
 			raise ValueError('Cannot finish tournament: some games are not finished yet.')
 		tournament.winner = TournamentService.determine_tournament_winner(tournament)
