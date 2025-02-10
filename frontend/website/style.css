@@ -1,0 +1,110 @@
+body {
+	background-color: black;
+	color: white;
+	height: 100vh;
+	width: 100vw;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+}
+
+#canvas {
+	border-radius: 5px;
+	background-color: rgb(23, 26, 91);
+}
+
+#canvas-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#restart-block{
+	background: #55a012;
+	color: white;
+	height: 75px;
+	width: 200px;
+	font-size: x-large;
+    position:absolute;
+	display: none;
+	border-radius: 0.5rem;
+}
+
+#restart-block:hover {
+	scale: 150%
+}
+
+.modal.fade {
+	color: black;
+}
+
+@keyframes cardIn {
+	0% {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+#cube-img {
+	display: none;
+}
+
+#pong-img {
+	display: none;
+}
+
+
+#back-to-menu {
+	position: relative;
+	color: #facf45;
+	font-size: 2rem;
+	left: 3rem;
+	bottom: 16.5rem;
+	display: none;
+}
+
+#back-to-menu:hover {
+	display: block;
+	border-radius: 1rem;
+	background-color: rgb(2, 2, 36);
+}
+
+.pong-mode  {
+	height: 75px;
+	width: auto;
+	top: 30%;
+	font-size: x-large;
+	position: absolute;
+	gap: 20px;
+	display: none;
+	flex-flow: column;
+	/* outline: none; */
+	/* align-items: stretch; */
+}
+
+.player {
+	background-color: rgba(0,0,0,0);
+	color: #facf45;
+	/* outline: none; */
+	/* box-shadow: none; */
+	border: none;
+	/* outline-color: "red"; */
+	font-family: "rixvideogame-pro", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 40pt;
+}
+
+.player:hover {
+	scale: 150%;
+}
+
+
+
