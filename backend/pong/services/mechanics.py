@@ -52,26 +52,72 @@ class PongMechanics(PongServiceBase):
                 ball_y = BALL_RADIUS * 2 - ball_y
             else:
                 ball_y = (Y_MAX - BALL_RADIUS) * 2 - ball_y
-        ball_x = self.check_rebound(ball_x, ball_y, game_state)
+        ball_x, ball_y = self.check_rebound(ball_x, ball_y, game_state)
         if ball_x <= BALL_RADIUS or ball_x >= X_MAX - BALL_RADIUS:
             self.update_score(game_state, ball_x)
             return self.get_new_ball(game_state)
         game_state['ball_x'], game_state['ball_y'] = ball_x, ball_y
 
-    def check_rebound(self, ball_x: float, ball_y: float, game_state: dict) -> float:
+    def check_rebound(self, ball_x: float, ball_y: float, game_state: dict) -> tuple[float, float]:
         if LEFT_REBOUND < ball_x < RIGHT_REBOUND:
-            return ball_x
+            return ball_x, ball_y
         paddle1_y = game_state['paddle1_y']
         paddle2_y = game_state['paddle2_y']
-        if ball_x  <= LEFT_REBOUND < game_state['ball_x'] \
-                and paddle1_y <= ball_y <= paddle1_y + PADDLE_HEIGHT:
+        if ball_x <= LEFT_REBOUND < game_state['ball_x'] \
+                and (paddle1_y <= ball_y <= paddle1_y + PADDLE_HEIGHT \
+                    or ball_y < paddle1_y < BALL_RADIUS * 2 \
+                    or ball_y > paddle1_y + PADDLE_HEIGHT > Y_MAX - BALL_RADIUS * 2):
             game_state['ball_direction_x'] *= -1
-            return LEFT_REBOUND * 2 - ball_x
-        elif ball_x  >= RIGHT_REBOUND > game_state['ball_x'] \
-                and paddle2_y <= ball_y <= paddle2_y + PADDLE_HEIGHT:
+            ball_x = LEFT_REBOUND * 2 - ball_x
+        elif ball_x >= RIGHT_REBOUND > game_state['ball_x'] \
+                and (paddle2_y <= ball_y <= paddle2_y + PADDLE_HEIGHT \
+                    or ball_y < paddle2_y < BALL_RADIUS * 2 \
+                    or ball_y > paddle2_y + PADDLE_HEIGHT > Y_MAX - BALL_RADIUS * 2):
             game_state['ball_direction_x'] *= -1
-            return RIGHT_REBOUND * 2 - ball_x
-        return ball_x
+            ball_x = RIGHT_REBOUND * 2 - ball_x
+        elif ball_x < LEFT_REBOUND:
+            if -BALL_RADIUS < ball_y - paddle1_y < PADDLE_HEIGHT // 2:
+                if paddle1_y > 2 * BALL_RADIUS:
+                    if game_state['ball_direction_y'] > 0:
+                        game_state['ball_direction_y'] *= -1
+                    ball_y = paddle1_y - BALL_RADIUS
+                elif ball_x > PADDLE_INDENT + PADDLE_WIDTH // 2:
+                    game_state['ball_direction_x'] *= -1
+                    ball_x = LEFT_REBOUND
+                else:
+                    ball_x = PADDLE_INDENT - BALL_RADIUS
+            elif -BALL_RADIUS < paddle1_y + PADDLE_HEIGHT - ball_y < PADDLE_HEIGHT // 2:
+                if paddle1_y + PADDLE_HEIGHT < Y_MAX - 2 * BALL_RADIUS:
+                    if game_state['ball_direction_y'] < 0:
+                        game_state['ball_direction_y'] *= -1
+                    ball_y = paddle1_y + PADDLE_HEIGHT + BALL_RADIUS
+                elif ball_x > PADDLE_INDENT + PADDLE_WIDTH // 2:
+                    game_state['ball_direction_x'] *= -1
+                    ball_x = LEFT_REBOUND
+                else:
+                    ball_x = PADDLE_INDENT - BALL_RADIUS
+        elif ball_x > RIGHT_REBOUND:
+            if -BALL_RADIUS < ball_y - paddle2_y < PADDLE_HEIGHT // 2:
+                if paddle2_y > 2 * BALL_RADIUS:
+                    if game_state['ball_direction_y'] > 0:
+                        game_state['ball_direction_y'] *= -1
+                    ball_y = paddle2_y - BALL_RADIUS
+                elif ball_x < X_MAX - PADDLE_INDENT - PADDLE_WIDTH // 2:
+                    game_state['ball_direction_x'] *= -1
+                    ball_x = RIGHT_REBOUND
+                else:
+                    ball_x = X_MAX - PADDLE_INDENT + BALL_RADIUS
+            elif -BALL_RADIUS < paddle2_y + PADDLE_HEIGHT - ball_y < PADDLE_HEIGHT // 2:
+                if paddle2_y + PADDLE_HEIGHT < Y_MAX - 2 * BALL_RADIUS:
+                    if game_state['ball_direction_y'] < 0:
+                        game_state['ball_direction_y'] *= -1
+                    ball_y = paddle2_y + PADDLE_HEIGHT + BALL_RADIUS
+                elif ball_x < X_MAX - PADDLE_INDENT - PADDLE_WIDTH // 2:
+                    game_state['ball_direction_x'] *= -1
+                    ball_x = RIGHT_REBOUND
+                else:
+                    ball_x = X_MAX - PADDLE_INDENT + BALL_RADIUS
+        return ball_x, ball_y
 
     def update_score(self, game_state: dict, ball_x: float):
         if ball_x <= BALL_RADIUS:
