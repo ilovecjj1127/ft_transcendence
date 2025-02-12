@@ -38,7 +38,7 @@ deactivate () {
 # unset irrelevant variables
 deactivate nondestructive
 
-VIRTUAL_ENV=/home/rik/Documents/coding/codam/ft_transcendence/Test_Seperate_Django_And_Frontend/app/venv
+VIRTUAL_ENV=/home/rverhoev/CORE/ft_transcendence/Test_Seperate_Django_And_Frontend/app/venv
 export VIRTUAL_ENV
 
 _OLD_VIRTUAL_PATH="$PATH"
