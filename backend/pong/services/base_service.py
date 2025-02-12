@@ -110,7 +110,7 @@ class PongServiceBase:
 
     def get_new_ball(self, game_state: dict):
         direction_x = 0
-        while (abs(direction_x) < 0.2 or abs(direction_x) > 0.9):
+        while (abs(direction_x) < 0.3):
             random_angle = random.uniform(0, 2 * math.pi)
             direction_x = math.cos(random_angle)
             direction_y = math.sin(random_angle)
