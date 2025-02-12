@@ -33,7 +33,7 @@ export default async function loginFunction(event)
 
 	const username = document.getElementById("username").value;
 	const password = document.getElementById("password").value;
-	
+
 	const payload = {
 		username: username,
 		password: password
@@ -47,7 +47,7 @@ export default async function loginFunction(event)
 			},
 			body: JSON.stringify(payload)
 		});
-	
+
 		if (response.ok) {
 			const data = await response.json();
 			// const token_copy = data.token
