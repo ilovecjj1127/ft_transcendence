@@ -40,6 +40,10 @@ class GameService:
 			game.winner = game.player1
 		elif game.score_player2 >= game.winning_score:
 			game.winner = game.player2
+		elif game.tournament:
+			game.status = 'ready'
+			game.score_player1 = 0
+			game.score_player2 = 0
 		else:
 			game.status = 'interrupted'
 		game.save()
