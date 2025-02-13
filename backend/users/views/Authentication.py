@@ -1,30 +1,27 @@
-from drf_spectacular.utils import extend_schema, extend_schema_view
+from drf_spectacular.utils import extend_schema
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from ..serializers.Authentication import LoginSerializer, LogoutSerializer, \
-    OTPCodeSerializer, Verify2FASerializer, PartialTokenSerializer, QRCodeSerializer
+from ..serializers.Authentication import LoginSerializer, RefreshSerializer, \
+    TokenPairSerializer, OTPCodeSerializer, Verify2FASerializer, PartialTokenSerializer, \
+    QRCodeSerializer
 from ..serializers.UserProfile import SuccessResponseSerializer
 from ..services.User2FA import User2FAService
 from ..services.UserProfile import UserProfileService
 
 
-class LoginView(TokenObtainPairView):
-    serializer_class = LoginSerializer
-
+class LoginView(APIView):
     @extend_schema(
         request=LoginSerializer,
-        responses={200: TokenObtainPairSerializer, 202: PartialTokenSerializer},
+        responses={200: TokenPairSerializer, 202: PartialTokenSerializer},
         tags=['Authentication'],
     )
     def post(self, request: Request) -> Response:
-        serializer = self.get_serializer(data=request.data)
+        serializer = LoginSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         data = serializer.validated_data
@@ -33,23 +30,36 @@ class LoginView(TokenObtainPairView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-@extend_schema_view(
-    post=extend_schema(tags=['Authentication'])
-)
-class RefreshTokenView(TokenRefreshView):
-    pass
+class RefreshTokenView(APIView):
+    @extend_schema(
+        request=RefreshSerializer,
+        responses={200: TokenPairSerializer},
+        tags=['Authentication'],
+    )
+    def post(self, request: Request) -> Response:
+        serializer = RefreshSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            token = serializer.validated_data['refresh']
+            return Response(
+                UserProfileService.refresh_token(token),
+                status=status.HTTP_200_OK
+            )
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        request=LogoutSerializer,
+        request=RefreshSerializer,
         responses={200: SuccessResponseSerializer},
         tags=['Authentication'],
     )
     def post(self, request: Request) -> Response:
-        serializer = LogoutSerializer(data=request.data)
+        serializer = RefreshSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         try:
@@ -99,7 +109,7 @@ class Setup2FAView(APIView):
 class Verify2FAView(APIView):
     @extend_schema(
         request=Verify2FASerializer,
-        responses={200: TokenObtainPairSerializer},
+        responses={200: TokenPairSerializer},
         tags=['Authentication'],
     )
     def post(self, request: Request) -> Response:

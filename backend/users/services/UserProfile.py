@@ -36,6 +36,18 @@ class UserProfileService:
 
     @staticmethod
     @transaction.atomic
+    def refresh_token(token: str) -> dict:
+        try:
+            new_token = RefreshToken(token)
+            return {
+                "access": str(new_token.access_token),
+                "refresh": str(new_token)
+            }
+        except TokenError as e:
+            raise ValueError(str(e))
+
+    @staticmethod
+    @transaction.atomic
     def logout(refresh_token: str):
         try:
             token = RefreshToken(refresh_token)
@@ -85,7 +97,6 @@ class UserProfileService:
         if user.pk == friend.pk:
             raise ValueError('Both arguments are the same user')
         return user.friends.filter(id=friend.id).exists()
-
 
     @staticmethod
     @transaction.atomic

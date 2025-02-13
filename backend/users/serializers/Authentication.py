@@ -1,24 +1,40 @@
+from django.contrib.auth import authenticate
 import jwt
 from rest_framework import serializers
-from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from ..models import UserProfile
 from ..services.User2FA import User2FAService
 
 
-class LoginSerializer(TokenObtainPairSerializer):
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
+
     def validate(self, attrs):
-        data = super().validate(attrs)
-        user = self.user
+        username = attrs.get("username")
+        password = attrs.get("password")
+        user = authenticate(username=username, password=password)
+        if user is None:
+            raise serializers.ValidationError('Invalid credentials')
         if user.is_2fa_enabled:
             return {
                 "required_2fa": True,
                 "partial_token": User2FAService.create_partial_token(user.id)
             }
-        return data
+        refresh = RefreshToken.for_user(user)
+        return {
+            "access": str(refresh.access_token),
+            "refresh": str(refresh)
+        }
 
 
-class LogoutSerializer(serializers.Serializer):
+class TokenPairSerializer(serializers.Serializer):
+    access = serializers.CharField()
+    refresh = serializers.CharField()
+
+
+class RefreshSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
 
