@@ -38,6 +38,7 @@ export default async function loginFunction(event)
 		username: username,
 		password: password
 	};
+	console.log("hi from loginFunction");
 
 	try {
 		const response = await fetch("http://127.0.0.1:8000/api/users/login/", {
@@ -54,10 +55,14 @@ export default async function loginFunction(event)
 			// const token_decoded1 = decode_jwt(token_copy, 0)
 			// const token_decoded2 = decode_jwt(token_copy, 1)
 			// const token_decoded3 = decode_jwt(token_copy, 2)
-			alert("Login successful! Token: " + data );
+			// alert("Login successful! Token: " + data );
 			// alert("Login successful! Token: " + data.token + "Decoded; part 1:" + token_decoded1 + "2: " + token_decoded2 + "3: " + token_decoded3);
-
-			return 0;
+			console.log("data in stringformat:" + JSON.stringify(data))
+			if (data["return_value"] == 0)
+				return 0;
+			else
+				return 1;
+			
 		} else {
 			const error = await response.json();
 			alert("Error: " + JSON.stringify(error));

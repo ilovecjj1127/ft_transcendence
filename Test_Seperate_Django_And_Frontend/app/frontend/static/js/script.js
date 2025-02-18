@@ -35,7 +35,6 @@ loginButton.addEventListener("click", async function(event)
 
 	if (username)
 	{
-	
 		const result = await loginFunction(event);
 		console.log("result =  ", result)
 		if (result == 0)

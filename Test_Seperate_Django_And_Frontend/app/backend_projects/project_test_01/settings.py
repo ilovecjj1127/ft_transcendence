@@ -13,7 +13,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+APP_BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BACKEND_PROJECT_DIR = Path(__file__).resolve().parent
+
 
 print("BASEDIR:")
 print(BASE_DIR)
@@ -52,13 +56,13 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'project_test_01.urls'
 
 print("DIR With .html:")
-print(BASE_DIR / 'frontend/templates')
+print(APP_BASE_DIR / 'frontend/templates')
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR / 'frontend/templates'
+            APP_BASE_DIR / 'frontend/templates'
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -80,7 +84,7 @@ WSGI_APPLICATION = 'project_test_01.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': APP_BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -119,7 +123,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'frontend/static',
+    APP_BASE_DIR / 'frontend/static',
 ]
 
 print("STATICFILES_DIRS with js and such")
