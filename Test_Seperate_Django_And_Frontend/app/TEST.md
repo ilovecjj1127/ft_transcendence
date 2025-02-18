@@ -15,6 +15,7 @@ dont forget;
 py manage.py migrate - django modules naar database
 makemigration - eigen modules toevoegen in de database
 
+manual POST request for testing;
 
 
 
