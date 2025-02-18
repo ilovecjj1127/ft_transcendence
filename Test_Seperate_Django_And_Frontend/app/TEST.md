@@ -24,3 +24,8 @@ https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
 bronnen;
 https://www.sqlite.org/whentouse.html
+
+
+https://medium.com/@extio/understanding-json-web-tokens-jwt-a-secure-approach-to-web-authentication-f551e8d66deb
+https://django-rest-registration.readthedocs.io/en/latest/detailed_configuration/register.html
+https://www.freecodecamp.org/news/how-to-use-jwt-and-django-rest-framework-to-get-tokens/
