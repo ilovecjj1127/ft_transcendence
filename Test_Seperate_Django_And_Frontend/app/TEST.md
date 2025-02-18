@@ -11,5 +11,15 @@ about simple default django database;
 for inspecting db.sqlite3;
 sudo apt install sqlite3
 
+dont forget;
+py manage.py migrate - django modules naar database
+makemigration - eigen modules toevoegen in de database
+
+
+
+
+ORM  python objects -> relational database
+https://www.fullstackpython.com/img/visuals/orms-bridge.png
+
 bronnen;
 https://www.sqlite.org/whentouse.html
