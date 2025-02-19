@@ -18,6 +18,15 @@ makemigration - eigen modules toevoegen in de database
 manual POST request for testing;
 
 
+test register endpoint;
+curl -X POST http://127.0.0.1:8000/api/register/
+-H "Content-Type: application/json" -d
+'{"username":"newuser",
+"email":"newuser@example.com",
+"password":"securepassword",
+"password2":"securepassword"}'
+
+
 ORM  python objects -> relational database
 https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
