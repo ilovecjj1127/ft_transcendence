@@ -18,7 +18,6 @@ makemigration - eigen modules toevoegen in de database
 manual POST request for testing;
 
 
-
 ORM  python objects -> relational database
 https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
@@ -29,3 +28,7 @@ https://www.sqlite.org/whentouse.html
 https://medium.com/@extio/understanding-json-web-tokens-jwt-a-secure-approach-to-web-authentication-f551e8d66deb
 https://django-rest-registration.readthedocs.io/en/latest/detailed_configuration/register.html
 https://www.freecodecamp.org/news/how-to-use-jwt-and-django-rest-framework-to-get-tokens/
+
+register and serializers;
+https://iheanyi.com/journal/user-registration-authentication-with-django-django-rest-framework-react-and-redux/
+https://www.django-rest-framework.org/api-guide/serializers/
