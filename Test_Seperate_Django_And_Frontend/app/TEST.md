@@ -1,5 +1,5 @@
-source venv/bin/activatepip
-install -r requirements_test_app.txt
+source venv/bin/activate
+pip install -r requirements_test_app.txt
 
 voor help/uitleg; django-admin [command]--help
 
@@ -25,6 +25,8 @@ curl -X POST http://127.0.0.1:8000/api/register/
 "email":"newuser@example.com",
 "password":"securepassword",
 "password2":"securepassword"}'
+
+curl -X GET http://127.0.0.1:8000/api/users/     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5OTg3OTMyLCJpYXQiOjE3Mzk5ODQzMzIsImp0aSI6ImVhMGNmNjUzMmJjYjQ0YmVhYmY4ZjcyYWZiNzc5ODdhIiwidXNlcl9pZCI6Mn0.UsFTFyPwAShC0Wn-aRwXNirJKJAwZpNT3VdnskbMZtM"
 
 
 ORM  python objects -> relational database

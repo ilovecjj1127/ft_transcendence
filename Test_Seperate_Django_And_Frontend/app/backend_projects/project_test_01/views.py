@@ -32,7 +32,7 @@ class CommentSerializer(serializers.Serializer):
 	#what for?
 	def create(self, validated_data):
 		return Comment(**validated_data)
-	def update(self, intance, validated_data):
+	def update(self, instance, validated_data):
 		instance.email = validated_data.get('email', instance.email)
 		instance.content = validated_data.get('content', instance.content)
 		instance.created = validated_data.get('created', instance.created)
@@ -48,7 +48,6 @@ serializer = CommentSerializer(comment)
 
 print_color("testprint comment object;", Fore.CYAN)
 print(comment)
-
 print_color("testprint serializer.data; converted to native python datatypes", Fore.CYAN)
 print(serializer.data)
 
@@ -81,6 +80,9 @@ print_color("register serializer and class_________", Fore.RED)
 
 from django.contrib.auth.models import User
 from rest_framework.permissions import AllowAny
+
+# userRegisterObject = Meta(email="yes@testmail.com", content='foo bar')
+
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
@@ -115,16 +117,94 @@ class UserRegistrationView(APIView):
 	permission_classes = [AllowAny]  # Allow anyone to register
 	def post(self, request):
 		print("hi from UserRegistration post")
+		print(request.data)
+		# print(request.header)
+
 		serializer = UserRegistrationSerializer(data=request.data)
 		if serializer.is_valid():
 			serializer.save()
 			return Response({
 			"message": "User registered successfully"
 			}, status=status.HTTP_201_CREATED)
-		print_color(serializer.data, Fore.CYAN)
+		# json_data = JSONRenderer().render(serializer)
+		# print(json_data)
+		# print_color(serializer.data, Fore.CYAN)
+		# print_color(serializer.error, Fore.CYAN)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 print_color("_________", Fore.RED)
+
+
+
+from rest_framework.permissions import IsAdminUser
+from django.contrib.auth.models import User
+
+class UserListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'date_joined']  # customize fields as needed
+        
+class UserListView(APIView):
+    # permission_classes = [IsAdminUser]  # Only admin users can access
+    
+    def get(self, request):
+        users = User.objects.all()
+        serializer = UserListSerializer(users, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+from django.contrib.auth import authenticate
+
+class LoginSerializer(serializers.Serializer):
+	username = serializers.CharField()
+	password = serializers.CharField(write_only=True)  # write_only=True means it won't be sent back in responses
+	print("hi from LoginSerializer")
+	def validate(self, data):
+		username = data.get('username')
+		password = data.get('password')
+
+		if username and password:
+			user = authenticate(username=username, password=password)
+			if user:
+				if user.is_active:
+					data['user'] = user
+				else:
+					raise serializers.ValidationError('User account is disabled.')
+			else:
+				raise serializers.ValidationError('Unable to log in with provided credentials.')
+		else:
+			raise serializers.ValidationError('Must include "username" and "password".')
+		
+		return data
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.tokens import RefreshToken
+
+class LoginView(APIView):
+	print("hi from LoginView post")
+	permission_classes = [AllowAny]
+	def post(self, request):
+		print("hi from postmethod")
+
+		serializer = LoginSerializer(data=request.data)
+		if serializer.is_valid():
+			user = serializer.validated_data['user']
+			
+			# Create JWT tokens
+			refresh = RefreshToken.for_user(user)
+
+			return Response({
+				'refresh': str(refresh),
+				'access': str(refresh.access_token),
+				'user': {
+					'id': user.id,
+					'username': user.username,
+					'email': user.email
+				}
+			}, status=status.HTTP_200_OK)
+		print("Serializer errors:", serializer.errors)
+		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @csrf_exempt
 def login_view(request):

@@ -17,6 +17,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views
+from .views import UserListView
+from .views import LoginView
+
 # from django.contrib.auth.views import RegisterView
 from .views import UserRegistrationView
 from rest_framework_simplejwt.views import (
@@ -26,7 +29,9 @@ from rest_framework_simplejwt.views import (
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('api/users/', UserListView.as_view(), name='user-list'),
     path('admin/', admin.site.urls),
+    path('api/login/', LoginView.as_view(), name='login'),
     path('api/users/login/', views.login_view),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
