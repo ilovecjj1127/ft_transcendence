@@ -1,6 +1,5 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from .models import ChatRoom
 import json
 
 
@@ -11,6 +10,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name: str = ""
 
     async def connect(self):
+        from .models import ChatRoom
+
         if self.scope['user'].is_anonymous:
             await self.close()
             return
@@ -55,6 +56,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         )
 
     async def receive(self, text_data):
+        from .models import ChatRoom
+        
         data = json.loads(text_data)
 
         self.room = await database_sync_to_async(ChatRoom.objects.get)(name=self.room_name)
