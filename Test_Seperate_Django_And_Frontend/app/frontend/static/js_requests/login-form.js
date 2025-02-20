@@ -10,6 +10,8 @@ function decode_jwt(token, index) {
         return null;
     }
     const parts = token.split(".");
+	console.log("Split token at " + index + "=" + parts[index]);
+
     if (parts.length !== 3) {
         console.error("Invalid JWT token format");
         return null;
@@ -49,14 +51,19 @@ export default async function loginFunction(event)
 
 		if (response.ok) {
 			const data = await response.json();
-			// const token_copy = data.token
-			// const token_decoded1 = decode_jwt(token_copy, 0)
-			// const token_decoded2 = decode_jwt(token_copy, 1)
-			// const token_decoded3 = decode_jwt(token_copy, 2)
-			// alert("Login successful! Token: " + data );
-			// alert("Login successful! Token: " + data.token + "Decoded; part 1:" + token_decoded1 + "2: " + token_decoded2 + "3: " + token_decoded3);
-			console.log("data in stringformat:" + JSON.stringify(data))
-			console.log("data['return_value'] in stringformat:" + data["return_value"])
+			const data_refresh = data.refresh
+			console.log("data_refresh:" + JSON.stringify(data_refresh))
+			console.log("data_access:" + JSON.stringify(data.access))
+			sessionStorage.setItem("access", data.access);
+			sessionStorage.setItem("refresh", data.refresh);
+			// document.cookie = "access=" + data.access + "refresh=" + data.refresh
+			// const token_decoded1 = decode_jwt(data_refresh, 0)
+			// const token_decoded2 = decode_jwt(data_refresh, 1)
+			// // const token_decoded3 = decode_jwt(data_refresh, 2)
+			// console.log("Login successful! Token: " + data );
+			// console.log("Login successful! Token: " + data.token + "Decoded; part 1:" + token_decoded1 + "2: " + token_decoded2 + "3: no");
+			// console.log("data in stringformat:" + JSON.stringify(data))
+			// console.log("data['return_value'] in stringformat:" + data["return_value"])
 
 			// if (data["return_value"] == 0)
 			// 	return 0;

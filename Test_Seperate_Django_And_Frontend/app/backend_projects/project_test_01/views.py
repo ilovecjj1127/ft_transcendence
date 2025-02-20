@@ -181,6 +181,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.decorators import api_view
 
 #fromchatgpt
 class LoginView(APIView):
@@ -207,6 +208,15 @@ class LoginView(APIView):
 		print("Serializer errors:", serializer.errors)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+@api_view(['GET']) #needs auth token
+def SecretInfoView(request):
+
+	# print("request.header;", request.header)
+	print("request.data;", request)
+	return Response({
+		'info': "The largest snowflake ever recorded was 15 inches wide and 8 inches thick. It fell in Fort Keogh, Montana, USA, in January 1887."}
+        , status=status.HTTP_200_OK) 
+
 # @csrf_exempt
 # def login_view(request):
 # 	try:
@@ -221,8 +231,6 @@ class LoginView(APIView):
 
 # 	except json.JSONDecodeError:
 # 			return JsonResponse({"error": "invalid JSON Format", "return_value": 1})
-
-
 
 def index(request):
 	# return HttpResponse("Hello world")

@@ -11,7 +11,6 @@ export default async function registerFunction(event)
 	const username = document.getElementById("username").value;
 	const email = document.getElementById("email").value;
 	const password = document.getElementById("password").value;
-
 	const payload = {
 		username: username,
 		email: email,
@@ -19,7 +18,6 @@ export default async function registerFunction(event)
 		password2: password
 	};
 	console.log("hi from registerFunction");
-
 	try {
 		const response = await fetch("http://127.0.0.1:8000/api/register/", {
 			method: "POST",
@@ -28,7 +26,6 @@ export default async function registerFunction(event)
 			},
 			body: JSON.stringify(payload)
 		});
-
 		if (response.ok) {
 			const data = await response.json();
 			// const token_copy = data.token
@@ -37,6 +34,8 @@ export default async function registerFunction(event)
 			// const token_decoded3 = decode_jwt(token_copy, 2)
 			// alert("Login successful! Token: " + data );
 			// alert("Login successful! Token: " + data.token + "Decoded; part 1:" + token_decoded1 + "2: " + token_decoded2 + "3: " + token_decoded3);
+			console.log("data:" + data)
+			// sessionStorage.setItem(data)
 			console.log("data in stringformat:" + JSON.stringify(data))
 			// if (data["return_value"] == 0)
 			// 	return 0;

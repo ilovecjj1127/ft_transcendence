@@ -8,6 +8,7 @@
 	<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 	<link rel="icon" href="{% static 'media/favicon.ico' %}">
 	<script src="{% static 'js/script.js' %}" type="module"></script>
+	<script src="{% static 'js_requests/test_button.js' %}" type="module"></script>
 	{% comment %} <script src="{% static 'js_requests/login-form.js'  %}"></script> {% endcomment %}
 	<title>Document</title>
 </head>
@@ -90,7 +91,13 @@
 			<div class="paddle right" id="player-paddle"></div>
 
 		</div>
-		<div class="chat-box">chat-box</div>
+		<div class="chat-box">chat-box
+			
+			<div class="secret-info">
+				<p id="secret-info-textbox">Initial Content</p>
+				<button type="button" id="info-request-button">Secret information request</button>
+			</div>
+		</div>
 	</div>
 	<p id="output"></p>
 	<p id="speed-output"></p>

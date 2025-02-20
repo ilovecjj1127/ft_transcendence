@@ -29,14 +29,14 @@ curl -X POST http://127.0.0.1:8000/api/register/
 "password2":"securepassword"}'
 
 
-get a single token;
+get list of all users fromd database;
 curl -X GET http://127.0.0.1:8000/api/users/ -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQwMDQzNjA1LCJpYXQiOjE3NDAwNDAwMDUsImp0aSI6IjUyMzEyN2FkODU1MjRhMmJiNGU3NTgwODFjM2I1ZjBhIiwidXNlcl9pZCI6MX0.fyo8uVXtS5v23uQajTdAy0oqD1EejUH61fEETIYBWII"
 
 
 ORM  python objects -> relational database
 https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
-# bronnen;
+## bronnen;
 https://www.sqlite.org/whentouse.html
 
 
@@ -48,6 +48,6 @@ register and serializers;
 https://iheanyi.com/journal/user-registration-authentication-with-django-django-rest-framework-react-and-redux/
 https://www.django-rest-framework.org/api-guide/serializers/
 
-# tokens;
+# over tokens;
 https://medium.com/django-unleashed/securing-django-rest-apis-with-jwt-authentication-using-simple-jwt-a-step-by-step-guide-28efa84666fe
 http://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html
