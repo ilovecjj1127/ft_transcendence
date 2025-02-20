@@ -7,7 +7,7 @@ const step = 10;
 let currentPosition = 50
 const playerPaddle = document.querySelector(".paddle.left"); // Select the left paddle
 
-import { start_game } from "./script.js";
+import { start_game } from "./game_script.js";
 // const start_game = false
 
 document.addEventListener('keydown', function(event) {

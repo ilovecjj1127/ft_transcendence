@@ -17,4 +17,5 @@ python manage.py runserver
 get list of all users from database;
 curl -X GET http://127.0.0.1:8000/api/users/ -H "Authorization: Bearer [insert jwt access token]"
 
+access token u can copy from browser->networktab->response header
 
