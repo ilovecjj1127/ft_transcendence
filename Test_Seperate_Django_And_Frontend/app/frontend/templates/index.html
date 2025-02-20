@@ -15,13 +15,59 @@
 	<div class="flex-containers">
 		<div class="menu-box">
 
+
+			<!-- Tab links
+			<div class="tab">
+				<button class="tablinks" onclick="openCity(event, 'London')">London</button>
+				<button class="tablinks" onclick="openCity(event, 'Paris')">Paris</button>
+				<button class="tablinks" onclick="openCity(event, 'Tokyo')">Tokyo</button>
+			</div> -->
+
+			<!-- Tab content -->
+			<!-- <div id="London" class="tabcontent">
+				<h3>London</h3>
+				<p>London is the capital city of England.</p>
+			</div>
+
+			<div id="Paris" class="tabcontent">
+				<h3>Paris</h3>
+				<p>Paris is the capital of France.</p>
+			</div>
+
+			<div id="Tokyo" class="tabcontent">
+				<h3>Tokyo</h3>
+				<p>Tokyo is the capital of Japan.</p>
+			</div> 
+
+			<script>
+				function openCity(evt, cityName) {
+				  var i, tabcontent, tablinks;
+				  tabcontent = document.getElementsByClassName("tabcontent");
+				  for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				  }
+				  tablinks = document.getElementsByClassName("tablinks");
+				  for (i = 0; i < tablinks.length; i++) {
+					tablinks[i].className = tablinks[i].className.replace(" active", "");
+				  }
+				  document.getElementById(cityName).style.display = "block";
+				  evt.currentTarget.className += " active";
+				}
+			</script> -->
+
 			<div class="login" id="login-stage">	
-				<p>Enter names in the fields, then click "Submit" to submit the form:</p>
-				<form id="login-form">
+				<!-- <p>Enter names in the fields, then click "Submit" to submit the form:</p> -->
+				<!-- <form id="login-form"> -->
+					<p>registering also needs email, login not</p>
+
 					username: <input type="text" id="username" name="username_" required><br>
-					password: <input type="password" id="password" name="password_" required><br><br>
+					password: <input type="password" id="password" name="password_" required><br>
+					email: <input type="email" id="email" name="email_" required><br><br>
 					<button type="submit" id="login-button">Login</button>
-				</form>
+					<button type="submit" id="register-button">Register</button>
+				<!-- </form> -->
+				<!-- <form id="register-form"> -->
+				<!-- </form> -->
 			</div>
 			<div class="hidden" id="logged-in-stage">	
         		<button type="button" id="start-game-button">Start game</button>

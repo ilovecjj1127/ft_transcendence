@@ -86,7 +86,7 @@ from rest_framework.permissions import AllowAny
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password2 = serializers.CharField(style={'input_type': 'password'}, write_only=True)
-
+    email = serializers.EmailField(required=True)  # add this line
     class Meta:
         model = User
         fields = ['username', 'email', 'password', 'password2']
@@ -129,7 +129,7 @@ class UserRegistrationView(APIView):
 		# json_data = JSONRenderer().render(serializer)
 		# print(json_data)
 		# print_color(serializer.data, Fore.CYAN)
-		# print_color(serializer.error, Fore.CYAN)
+		print_color(serializer.errors, Fore.CYAN)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 print_color("_________", Fore.RED)
@@ -154,6 +154,7 @@ class UserListView(APIView):
 
 from django.contrib.auth import authenticate
 
+#fromchatgpt
 class LoginSerializer(serializers.Serializer):
 	username = serializers.CharField()
 	password = serializers.CharField(write_only=True)  # write_only=True means it won't be sent back in responses
@@ -181,12 +182,12 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework_simplejwt.tokens import RefreshToken
 
+#fromchatgpt
 class LoginView(APIView):
 	print("hi from LoginView post")
 	permission_classes = [AllowAny]
 	def post(self, request):
 		print("hi from postmethod")
-
 		serializer = LoginSerializer(data=request.data)
 		if serializer.is_valid():
 			user = serializer.validated_data['user']
@@ -206,20 +207,20 @@ class LoginView(APIView):
 		print("Serializer errors:", serializer.errors)
 		return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
-def login_view(request):
-	try:
-		data = json.loads(request.body)
-		username = data.get("username")
-		password = data.get("password")
+# @csrf_exempt
+# def login_view(request):
+# 	try:
+# 		data = json.loads(request.body)
+# 		username = data.get("username")
+# 		password = data.get("password")
 		
-		if username == "ad" and password == "123":
-			return JsonResponse({"message": "Login is very succesfull", "token": "jwt_token", "return_value": 0})
-		else:
-			return JsonResponse({"message": "Login incorrect username and/or password man!!!", "token": "no token for you", "return_value": 1})
+# 		if username == "ad" and password == "123":
+# 			return JsonResponse({"message": "Login is very succesfull", "token": "jwt_token", "return_value": 0})
+# 		else:
+# 			return JsonResponse({"message": "Login incorrect username and/or password man!!!", "token": "no token for you", "return_value": 1})
 
-	except json.JSONDecodeError:
-			return JsonResponse({"error": "invalid JSON Format", "return_value": 1})
+# 	except json.JSONDecodeError:
+# 			return JsonResponse({"error": "invalid JSON Format", "return_value": 1})
 
 
 

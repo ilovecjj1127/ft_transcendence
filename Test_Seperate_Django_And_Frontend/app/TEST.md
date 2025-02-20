@@ -1,9 +1,10 @@
+# install
 source venv/bin/activate
 pip install -r requirements_test_app.txt
 
 voor help/uitleg; django-admin [command]--help
 
-starting;
+# starting;
 
 python(python interpreter) manage.py runserver [port]
 
@@ -15,8 +16,9 @@ dont forget;
 py manage.py migrate - django modules naar database
 makemigration - eigen modules toevoegen in de database
 
-manual POST request for testing;
+# use/testing
 
+manual POST request for testing;
 
 test register endpoint;
 curl -X POST http://127.0.0.1:8000/api/register/
@@ -26,13 +28,15 @@ curl -X POST http://127.0.0.1:8000/api/register/
 "password":"securepassword",
 "password2":"securepassword"}'
 
-curl -X GET http://127.0.0.1:8000/api/users/     -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzM5OTg3OTMyLCJpYXQiOjE3Mzk5ODQzMzIsImp0aSI6ImVhMGNmNjUzMmJjYjQ0YmVhYmY4ZjcyYWZiNzc5ODdhIiwidXNlcl9pZCI6Mn0.UsFTFyPwAShC0Wn-aRwXNirJKJAwZpNT3VdnskbMZtM"
+
+get a single token;
+curl -X GET http://127.0.0.1:8000/api/users/ -H "Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzQwMDQzNjA1LCJpYXQiOjE3NDAwNDAwMDUsImp0aSI6IjUyMzEyN2FkODU1MjRhMmJiNGU3NTgwODFjM2I1ZjBhIiwidXNlcl9pZCI6MX0.fyo8uVXtS5v23uQajTdAy0oqD1EejUH61fEETIYBWII"
 
 
 ORM  python objects -> relational database
 https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
-bronnen;
+# bronnen;
 https://www.sqlite.org/whentouse.html
 
 
@@ -43,3 +47,7 @@ https://www.freecodecamp.org/news/how-to-use-jwt-and-django-rest-framework-to-ge
 register and serializers;
 https://iheanyi.com/journal/user-registration-authentication-with-django-django-rest-framework-react-and-redux/
 https://www.django-rest-framework.org/api-guide/serializers/
+
+# tokens;
+https://medium.com/django-unleashed/securing-django-rest-apis-with-jwt-authentication-using-simple-jwt-a-step-by-step-guide-28efa84666fe
+http://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html

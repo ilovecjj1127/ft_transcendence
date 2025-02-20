@@ -3,7 +3,7 @@
 import Ball from "./Ball.js"
 import Paddle from "./Paddle.js"
 import loginFunction from "../js_requests/login-form.js"
-
+import registerFunction from "../js_requests/registerFunc.js"
 
 const ball = new Ball(document.getElementById("ball"))
 
@@ -13,6 +13,7 @@ const paddleRight = new Paddle(document.querySelector(".paddle.right"))
 const leftPlayerScoreElem = document.getElementById("left-player-score")
 const rightPlayerScoreElem = document.getElementById("right-player-score")
 
+const registerButton = document.getElementById("register-button")
 const loginButton = document.getElementById("login-button")
 const startButton = document.getElementById("start-game-button")
 const pauseButton = document.getElementById("pause-game-button")
@@ -26,6 +27,28 @@ const inGameStageBox = document.getElementById("in-game-stage")
 export let start_game = false
 
 let lastTime = null
+
+registerButton.addEventListener("click", async function(event)
+{
+	const username = document.getElementById("username").value;
+	console.log("input: " + username)
+	console.log("Hi click register Button");
+
+	if (username)
+	{
+		const result = await registerFunction(event);
+		console.log("result =  ", result)
+		// if (result == 0)
+		// {
+		// 	console.log("LoginF() == 0");
+		// 	loginStageBox.classList.add("hidden")
+		// 	loggedInStageBox.classList.remove("hidden")
+		// }
+	}
+	else {
+		alert("registering failed!")
+	}
+});
 
 loginButton.addEventListener("click", async function(event)
 {
@@ -48,7 +71,6 @@ loginButton.addEventListener("click", async function(event)
 	else {
 		alert("please enter username!")
 	}
-
 });
 
 startButton.addEventListener("click", () => 
