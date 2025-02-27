@@ -26,4 +26,23 @@ testSecretInfoButton.addEventListener("click", async function(event)
 	console.log("data from response stringified; " + JSON.stringify(data));
 });
 
-// if TestButton == active 
+
+// function checkIfAccessTokenExpired(token)
+// {
+// 	console.log("checkIfAccessTokenExpired")
+// 	console.log("token data: " + token)
+
+// 	if (!token)
+// 		return false;
+// 	expiration_data = token["exp"]
+// 	console.log("expiration data: " + expiration_data)
+
+// 	if (expir)
+// }
+
+// if TestButton == active && access == expired
+// 		hide content
+
+
+// check if access token is expired
+// request to refresh/token url with refresh token for new access token.
