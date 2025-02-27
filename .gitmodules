@@ -1,0 +1,3 @@
+[submodule "Test_Project_Seperate/RosBridge_Implementations"]
+	path = Test_Project_Seperate/RosBridge_Implementations
+	url = git@github.com:Rikkopanda/RosBridge_Implementations.git

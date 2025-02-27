@@ -37,6 +37,10 @@ ORM  python objects -> relational database
 https://www.fullstackpython.com/img/visuals/orms-bridge.png
 
 ## bronnen;
+https://www.django-rest-framework.org/api-guide/views/#api_view
+https://thomasstep.com/blog/a-guide-to-using-jwt-in-javascript`
+
+
 https://www.sqlite.org/whentouse.html
 
 
@@ -50,4 +54,5 @@ https://www.django-rest-framework.org/api-guide/serializers/
 
 # over tokens;
 https://medium.com/django-unleashed/securing-django-rest-apis-with-jwt-authentication-using-simple-jwt-a-step-by-step-guide-28efa84666fe
+https://www.descope.com/blog/post/developer-guide-jwt-storage
 http://www.cyberchief.ai/2023/05/secure-jwt-token-storage.html

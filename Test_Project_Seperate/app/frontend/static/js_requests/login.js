@@ -1,7 +1,8 @@
-	
+import java.time.LocalDataTime;
+
 const loginButton = document.getElementById("login-button")
 const loginStageBox = document.getElementById("login-stage")
-// const loggedInStageBox = document.getElementById("logged-in-stage")
+const loggedInStageBox = document.getElementById("logged-in-stage")
 const inGameStageBox = document.getElementById("in-game-stage")
 
 function decode_jwt(token, index) {
@@ -87,7 +88,7 @@ export default async function loginFunction(event)
 			// console.log("Login successful! Token: " + data.token + "Decoded; part 1:" + token_decoded1 + "2: " + token_decoded2 + "3: no");
 			// console.log("data in stringformat:" + JSON.stringify(data))
 			// console.log("data['return_value'] in stringformat:" + data["return_value"])
-
+			LocalDataTime
 			// if (data["return_value"] == 0)
 			// 	return 0;
 			// else

@@ -21,7 +21,9 @@ testSecretInfoButton.addEventListener("click", async function(event)
 	});
 
 	const data = await response.json()
-	testSecretInfoTextbox.textContent = JSON.stringify(data.info);
+	testSecretInfoTextbox.textContent = JSON.stringify(data);
 	console.log("data from response; " + data);
 	console.log("data from response stringified; " + JSON.stringify(data));
 });
+
+// if TestButton == active 
