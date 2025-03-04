@@ -20,9 +20,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_group_name = f'chat_{self.room_name}'
         self.username = self.scope['user'].username
         self.redis = self.scope['redis_pool']
-        if self.room.is_blocked:
-            await self.close()
-            return
         await self.channel_layer.group_add(
             self.room_group_name,
             self.channel_name
@@ -30,12 +27,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.accept()
         key_user_count = f'chat:{self.room_group_name}:user_count'
         await self.redis.incr(key_user_count)
-        self.load_previous_messages()
+        await self.load_previous_messages()
 
     async def load_previous_messages(self):
         history_messages = await database_sync_to_async(lambda: self.room.history)()
         for msg in history_messages:
-            await self.send_message(json.loads(msg))
+            await self.send_message(msg)
         key_messages = f'chat:{self.room_group_name}:messages'
         redis_messages = await self.redis.lrange(key_messages, 0, -1)
         for msg in redis_messages:
@@ -61,7 +58,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         data = json.loads(text_data)
 
         self.room = await database_sync_to_async(ChatRoom.objects.get)(name=self.room_name)
-        if self.room.is_blocked:
+        blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
+        if blocked_by:
+            await self.send(text_data=json.dumps({
+                'message': "This chatroom is blocked. You cannot send messages."
+            }))
             return
 
         chat_message = {
@@ -85,9 +86,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             'message': message
         }))
 
-    @database_sync_to_async
-    def save_messages(self):
-        messages = self.redis.lrange(f'chat:{self.room_group_name}:messages', 0, -1)
+    async def save_messages(self):
+        messages = await self.redis.lrange(f'chat:{self.room_group_name}:messages', 0, -1)
         messages = [json.loads(msg) for msg in messages]
         self.room.history.extend(messages)
-        self.room.save()
+        await database_sync_to_async(self.room.save)()
+

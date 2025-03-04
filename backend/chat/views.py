@@ -40,8 +40,9 @@ class ChatCreateView(APIView):
             )
             return Response(
                 {
+                    "chat_room_id": chatroom.id,
                     "chat_room": chatroom.name,
-                    "is_blocked": chatroom.is_blocked,
+                    "blocked_by": chatroom.blocked_by,
                     "created": created
                 }, status=status.HTTP_200_OK)
         except ValueError as e:
