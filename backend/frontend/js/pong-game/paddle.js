@@ -1,4 +1,3 @@
-import { getInputDirection } from "./input.js"
 import { getCanvasContent } from "../menu/select-menu.js"
 
 const SPEED_PADDLE_INCREASE = .01
@@ -31,12 +30,7 @@ export default class Paddle {
         ctx.fillRect(this.x, this.y, this.width, this.height)
     }
 
-    update(opponent) {
-        let inputDir
-        if (this.player == 1)
-            inputDir = getInputDirection().player1
-        else if (this.player == 2 && opponent)
-            inputDir = getInputDirection().player2
+    update(inputDir) {
         let nextY = this.y + inputDir * this.speed 
         if (nextY + this.height <= canvas.height && nextY > 0)
             this.y = nextY

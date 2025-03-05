@@ -22,6 +22,8 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
+    # path('', home_view, name='home'),
+    #path('home/', home, name='home'),
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk')),
     path('chat/', include('chat.urls')),

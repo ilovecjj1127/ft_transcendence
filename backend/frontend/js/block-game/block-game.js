@@ -20,6 +20,9 @@ let score = 0
 let scoreIncrement = 0
 let canScore = true
 let animationId = null
+let msPrev = window.performance.now()
+const fps = 60
+const msPerFrame = 1000 / fps
 
 function drawBackgroundLine() {
 	ctx.beginPath()
@@ -52,6 +55,7 @@ function startGame() {
 	score = 0
 	scoreIncrement = 0
 	canScore = true
+	msPrev = window.performance.now()
 }
 
 function restartGame() {
@@ -115,6 +119,15 @@ function increaseSpeed() {
 
 function animate() {
 	animationId = requestAnimationFrame(animate)
+
+	//control fps
+	const msNow = window.performance.now()
+	const msPassed = msNow - msPrev
+	if (msPassed < msPerFrame)	return
+
+	const excessTime = msPassed % msPerFrame
+	msPrev = msNow - excessTime
+
 	ctx.clearRect(0,0, canvas.width, canvas.height)
 	drawBackgroundLine()
 	drawScore()

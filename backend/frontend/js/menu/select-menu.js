@@ -48,22 +48,14 @@ export function setMenu (param) {
     menuOn = param
 }
 
-//CUBE IMG
-const cubeImg = new Image()
-cubeImg.src = "img-canvas/cube.png"
-cubeImg.width = 250
-cubeImg.height = 250
+const cubeImg = document.getElementById('cubeImg')
+const pongImg = document.getElementById('pongImg')
+
 let cubeImgX = ((canvas.width / 2 - cubeImg.width) /2)
 let cubeImgY = (canvas.height - cubeImg.width) / 2
-let hoverCube = false
-
-//PONG IMG
-const pongImg = new Image()
-pongImg.src = "img-canvas/pong.jpg"
-pongImg.width = 250
-pongImg.height = 250
 let pongImgX = ((canvas.width  / 2 - pongImg.width) / 2 + canvas.width / 2)
 let pongImgY = (canvas.height - pongImg.width) / 2
+let hoverCube = false
 let hoverPong = false
 
 function drawCube () {
@@ -141,13 +133,17 @@ canvas.addEventListener('mousedown', (e) => {
 
 })
 
-cubeImg.onload = function () {
-    if (menuOn)
-        drawCube()
-}
+// cubeImg.onload = function () {
+//     if (menuOn)
+//         drawCube()
+// }
 
-pongImg.onload = function () {
-    if (menuOn)
-        drawPong()
-}
+// pongImg.onload = function () {
+//     if (menuOn)
+//         drawPong()
+// }
 
+window.onload = function () {
+    if (menuOn)
+        drawMenu()
+}

@@ -1,10 +1,13 @@
 import { getCanvasContent, setMenu, drawMenu, getPongGameValue, setPongGameOff, setPongGameOn, getPongMenuValue} from "../menu/select-menu.js"
-import Game from "./pong-class.js"
+import GameOffline from "./pong-offline.js"
+import GameOnline from "./pong-online.js"
+
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx
 const backToMenu = getCanvasContent().backToMenu
 
 let Pong
+let OnlineGame = false
 
 const modeMenu = document.querySelector(".pong-mode")
 const SinglePlayer = document.getElementById("single-player")
@@ -15,8 +18,10 @@ backToMenu.addEventListener("click", function () {
     if (getPongGameValue()){
 
         backToMenu.style.display = "none"
-        cancelAnimationFrame(Pong.animationId)
-        Pong.animationId = null;
+        if (!OnlineGame) {
+            cancelAnimationFrame(Pong.animationId)
+            Pong.animationId = null;
+        }
         Pong = null
         ctx.clearRect(0,0, canvas.width, canvas.height)
 
@@ -35,10 +40,10 @@ backToMenu.addEventListener("click", function () {
     }
 })
 
-Event
+//Event
 addEventListener("keydown", e => {
 	if (e.code == "Space" || e.key == "32" || e.key == " " ) {
-        if(getPongGameValue()) {
+        if(getPongGameValue() && !OnlineGame) {  //check for online game
             if (Pong.animationId == null)
             Pong.animationId = requestAnimationFrame((time) => Pong.update(time))
         }
@@ -48,13 +53,20 @@ addEventListener("keydown", e => {
 SinglePlayer.addEventListener("click", function () {
     modeMenu.style.display = "none"
     setPongGameOn()
-    Pong = new Game("single")
+    Pong = new GameOffline("single")
 })
 
 MultiPlayer.addEventListener("click", function () {
     modeMenu.style.display = "none"
     setPongGameOn()
-    Pong = new Game("multi")
+    Pong = new GameOffline("multi")
+})
+
+OnlinePlayer.addEventListener("click", function () {
+    modeMenu.style.display = "none"
+    setPongGameOn()
+    OnlineGame = true
+    Pong = new GameOnline()
 })
 
 export function playPong() {
