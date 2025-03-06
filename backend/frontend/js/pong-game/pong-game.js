@@ -1,6 +1,7 @@
 import { getCanvasContent, setMenu, drawMenu, getPongGameValue, setPongGameOff, setPongGameOn, getPongMenuValue} from "../menu/select-menu.js"
 import GameOffline from "./pong-offline.js"
 import GameOnline from "./pong-online.js"
+import {onlineMenuFill} from "./online-menu.js"
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx
@@ -64,9 +65,12 @@ MultiPlayer.addEventListener("click", function () {
 
 OnlinePlayer.addEventListener("click", function () {
     modeMenu.style.display = "none"
-    setPongGameOn()
-    OnlineGame = true
-    Pong = new GameOnline()
+    //show online menu and game list
+    onlineMenuFill()
+    //onlineMenu.style.display = "block"
+    // setPongGameOn()
+    // OnlineGame = true
+    // Pong = new GameOnline()
 })
 
 export function playPong() {

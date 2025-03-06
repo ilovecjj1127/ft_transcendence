@@ -23,6 +23,7 @@ form.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         localStorage.setItem("access_token", data.access)
+        localStorage.setItem("refresh_token", data.refresh)
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {
