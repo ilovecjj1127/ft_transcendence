@@ -1,6 +1,6 @@
 import Ball from "./ball.js"
 import Paddle from "./paddle.js"
-import { getCanvasContent } from "../menu/select-menu.js"
+import { getCanvasContent } from "../menu/main.js"
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx

@@ -1,4 +1,4 @@
-import { getCanvasContent } from "../menu/select-menu.js"
+import { getCanvasContent } from "../menu/main.js"
 
 const SPEED_PADDLE_INCREASE = .01
 const COMPUTER_PADDLE_SPEED = .06

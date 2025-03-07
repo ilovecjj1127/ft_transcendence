@@ -1,4 +1,4 @@
-import { getCanvasContent } from "../menu/select-menu.js"
+import { getCanvasContent } from "../menu/main.js"
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx

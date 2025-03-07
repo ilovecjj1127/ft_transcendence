@@ -1,7 +1,8 @@
-import { getCanvasContent, setMenu, drawMenu, getPongGameValue, setPongGameOff, setPongGameOn, getPongMenuValue} from "../menu/select-menu.js"
+import { setMenu, drawMenu, getPongGameValue, setPongGameOff, setPongGameOn, getPongMenuValue } from "../menu/select-menu.js"
 import GameOffline from "./pong-offline.js"
 import GameOnline from "./pong-online.js"
 import {onlineMenuFill} from "./online-menu.js"
+import { getCanvasContent } from "../menu/main.js"
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx

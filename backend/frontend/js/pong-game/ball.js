@@ -1,4 +1,4 @@
-import { getCanvasContent } from "../menu/select-menu.js"
+import { getCanvasContent } from "../menu/main.js"
 
 const INITIAL_SPEED = .2
 const SPEED_BALL_INCREASE = .00001

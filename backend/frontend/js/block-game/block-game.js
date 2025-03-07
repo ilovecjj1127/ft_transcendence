@@ -1,6 +1,7 @@
-import { getCanvasContent, setMenu, drawMenu, setBlockGameOff, getBlockGameValue } from "../menu/select-menu.js"
+import {setMenu, drawMenu, setBlockGameOff, getBlockGameValue } from "../menu/select-menu.js"
 import Player from "./player.js"
 import Block from "./block.js"
+import { getCanvasContent } from "../menu/main.js"
 
 //canvas
 const canvas = getCanvasContent().canvas

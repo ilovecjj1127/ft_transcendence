@@ -1,12 +1,7 @@
 import { playBlock } from "../block-game/block-game.js"
 import { playPong } from "../pong-game/pong-game.js"
+import { getCanvasContent } from "./main.js"
 
-export function getCanvasContent () {
-    const canvas = document.getElementById("canvas")
-    const ctx = canvas.getContext("2d")
-    const backToMenu = document.getElementById("back-to-menu")
-    return {ctx : ctx, canvas : canvas, backToMenu : backToMenu}
-}
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx
@@ -46,6 +41,10 @@ export function setPongGameMenu () {
 
 export function setMenu (param) {
     menuOn = param
+}
+
+export function getMenu () {
+    return menuOn
 }
 
 const cubeImg = document.getElementById('cubeImg')
@@ -133,17 +132,3 @@ canvas.addEventListener('mousedown', (e) => {
 
 })
 
-// cubeImg.onload = function () {
-//     if (menuOn)
-//         drawCube()
-// }
-
-// pongImg.onload = function () {
-//     if (menuOn)
-//         drawPong()
-// }
-
-window.onload = function () {
-    if (menuOn)
-        drawMenu()
-}

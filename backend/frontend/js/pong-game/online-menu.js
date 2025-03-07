@@ -1,4 +1,6 @@
-import { getCanvasContent, setMenu, drawMenu } from "../menu/select-menu.js"
+import { setMenu, drawMenu } from "../menu/select-menu.js"
+import { getCanvasContent } from "../menu/main.js"
+import { checkToken } from "../profile/refresh-token.js"
 
 const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx
@@ -7,7 +9,9 @@ const backToMenu = getCanvasContent().backToMenu
 const onlineMenu = document.getElementById("online-menu")
 const list = document.getElementById("list")
 const createButton = document.getElementById("")
+
 export async function onlineMenuFill () {
+    if (!checkToken()) return
     list.innerHTML = ""
     const accessToken = localStorage.getItem('access_token')
     const response = await fetch(`http://${window.location.host}/api/games/show/`, {
@@ -36,7 +40,7 @@ export async function onlineMenuFill () {
         onlineMenu.style.display = "block"
 
     } else {
-        alert("Login failed. Check your credentials.");
+        alert("Cannot retrieve game list!");
     }
 }
 

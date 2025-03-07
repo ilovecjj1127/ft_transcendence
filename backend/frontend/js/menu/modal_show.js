@@ -1,9 +1,8 @@
-const myModal = new bootstrap.Modal('#staticBackdrop')
+import {hideLoginModal } from "./main.js";
 
 const form = document.getElementById("login-form");
 const loginButton = document.getElementById("login")
         
-
 form.onsubmit = async (e) => {
     e.preventDefault();
     const username = document.getElementById("username").value
@@ -27,7 +26,7 @@ form.onsubmit = async (e) => {
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {
-            myModal.hide()
+            hideLoginModal()
         }, 2000)
     } else {
         message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
@@ -38,9 +37,11 @@ loginButton.addEventListener('click', () => {
     form.requestSubmit()
 })
 
-window.addEventListener('DOMContentLoaded', () => {
-    //check for user login or not
-    const token = localStorage.getItem("access_token")
-    if (!token)
-        myModal.show();
-})
+// window.addEventListener('DOMContentLoaded', () => {
+//     //check for user login or not
+//     const token = localStorage.getItem("access_token")
+//     if (!token)
+//         myModal.show();
+
+// })
+
