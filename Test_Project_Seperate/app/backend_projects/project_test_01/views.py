@@ -134,8 +134,6 @@ class UserRegistrationView(APIView):
 
 print_color("_________", Fore.RED)
 
-
-
 from rest_framework.permissions import IsAdminUser
 from django.contrib.auth.models import User
 
@@ -146,7 +144,7 @@ class UserListSerializer(serializers.ModelSerializer):
         
 class UserListView(APIView):
     # permission_classes = [IsAdminUser]  # Only admin users can access
-    
+
     def get(self, request):
         users = User.objects.all()
         serializer = UserListSerializer(users, many=True)
@@ -195,6 +193,7 @@ class LoginView(APIView):
 			
 			# Create JWT tokens
 			refresh = RefreshToken.for_user(user)
+			# access = RefreshToken.for_user(user)
 
 			return Response({
 				'refresh': str(refresh),
