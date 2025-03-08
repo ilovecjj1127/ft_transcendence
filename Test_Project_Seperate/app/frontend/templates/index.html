@@ -11,8 +11,16 @@
 	<script src="{% static 'js_requests/test_button.js' %}" type="module"></script>
 	<script src="{% static 'js_requests/login.js' %}" type="module"></script>
 	<script src="{% static 'js_requests/register.js' %}" type="module"></script>
+	{% comment %} <script src="../templates/../ /ros_script.js"></script> {% endcomment %}
+	{% comment %} <script src="{% static 'js/game_script.js' %}" type="module"></script> {% endcomment %}
 	{% comment %} <script src="{% static 'js_requests/login-form.js'  %}"></script> {% endcomment %}
 	<title>Document</title>
+	<script src="https://cdn.jsdelivr.net/npm/eventemitter2@6/lib/eventemitter2.min.js"></script>
+	<script src="{% static 'js_controller/roslib.js' %}" type="module"></script>
+	<script src="{% static 'js_controller/joystick_listener.js' %}" type="module"></script>
+	<script src="{% static 'js_controller/ros_connection.js' %}" type="module"></script>
+
+	{% comment %} <script src="js/ros_script.js"></script> {% endcomment %}
 </head>
 <body>
 	<div class="flex-containers">
