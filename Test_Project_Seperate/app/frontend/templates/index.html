@@ -89,6 +89,14 @@
 				<button type="button" id="exit-game-button">Exit game</button>
 			</div>
 		</div>
+		<div class="hardware-connection-box">hardware-connection-box
+			<div class="info">
+				<p>status websocket:</p>
+				<div id="ws-status">~</div>
+				<p>status controller:</p>
+				<div id="joy_node-sub-status"></div>
+			</div>
+		</div>
 		<div class="game-box">game-box
 
 			<div class="score">
@@ -102,10 +110,17 @@
 
 		</div>
 		<div class="chat-box">chat-box
-			
+
 			<div class="secret-info">
 				<p id="secret-info-textbox">Initial Content</p>
 				<button type="button" id="info-request-button">Secret information request</button>
+			</div>
+
+			<div class="user_info">
+				<p>data about current user:</p>
+				<div id="data-about-current-user">Initial Content</div>
+				<button type="button" id="data-about-current-user-button">request:show/hide</button>
+				{% comment %} <button type="button" id="info-request-button">Secret information request</button> {% endcomment %}
 			</div>
 		</div>
 	</div>

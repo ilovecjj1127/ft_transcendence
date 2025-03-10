@@ -45,6 +45,23 @@ body {
 	background-color: lightslategrey;
 }
 
+/* .hardware-connection-box {
+	width: 20%;
+} */
+
+#joy_node-sub-status {
+	background-color: rgb(253, 0, 0);
+	width: 20px;
+	height: 20px;
+}
+
+#data-about-current-user {
+	overflow-x: scroll;
+	overflow-y: scroll;
+	width: 200px;
+	height: 200px;
+}
+
 .paddle {
 	--position: 50;
 
