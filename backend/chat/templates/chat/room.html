@@ -4,7 +4,7 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <h2>Room: {{ room_name }}</h2>
+    <h2>Room: {{ room_id }}</h2>
     <div id="chat-log"></div>
     <input id="chat-message-input" type="text" size="100">
     <button id="chat-message-submit">Send</button>
@@ -14,9 +14,9 @@
         if (!token) {
             window.location.href = "/pong/login";
         }
-        const roomName = "{{ room_name }}";
+        const roomId = "{{ room_id }}";
         const chatSocket = new WebSocket(
-            `ws://${window.location.host}/ws/chat/${roomName}/?token=${token}`
+            `ws://${window.location.host}/ws/chat/${roomId}/?token=${token}`
         );
 
         chatSocket.onmessage = function(event) {
@@ -27,6 +27,8 @@
         chatSocket.onclose = function(event) {
             if (event.code === 1006) {
                 alert('Unauthorized: please log in first');
+            } else if (event.code === 4004) {
+                alert('Chat room does not exist.');
             } else {
                 console.error('Chat socket closed unexpectedly');
             }

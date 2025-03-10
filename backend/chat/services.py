@@ -3,20 +3,21 @@ from users.models import UserProfile
 from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django.db.models import Q
+from django.core.exceptions import ValidationError
 
 class ChatRoomService:
 	@staticmethod
 	@transaction.atomic
-	def get_or_create_chat(name: str, user1: UserProfile, username: str):
+	def get_or_create_chat(user1: UserProfile, username: str):
+		if user1.username == username:
+			raise ValidationError("You cannot create a chat with yourself.")
 		user2 = UserProfile.objects.get(username=username)
 		chatroom = ChatRoom.objects.filter(
 			(Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1))
 		).first()
 		if chatroom:
 			return chatroom, False
-		if not name:
-			raise ValueError('chat room cannot be empty when creating a new one')
-		chatroom = ChatRoom.objects.create(user1=user1, user2=user2, name=name)
+		chatroom = ChatRoom.objects.create(user1=user1, user2=user2)
 		return chatroom, True
 	
 	@staticmethod
@@ -33,5 +34,5 @@ class ChatRoomService:
 			raise PermissionError('You are blocked by another user already.')
 		else:
 			chatroom.blocked_by = None
-			chatroom.save
+			chatroom.save()
 			return chatroom

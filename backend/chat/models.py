@@ -3,7 +3,6 @@ from users.models import UserProfile
 from django.contrib.postgres.fields import JSONField
 
 class ChatRoom(models.Model):
-    name = models.CharField(max_length=20)
     user1 = models.ForeignKey(UserProfile, related_name='chat_rooms1', on_delete=models.CASCADE)
     user2 = models.ForeignKey(UserProfile, related_name='chat_rooms2', on_delete=models.CASCADE)
     history = models.JSONField(default=list)
@@ -14,4 +13,4 @@ class ChatRoom(models.Model):
         return self.blocked_by is not None
     
     def __str__(self):
-        return f"Chatroom {self.name}: {self.user1.username} and {self.user2.username}"
+        return f"Chatroom: {self.user1.username} and {self.user2.username}"

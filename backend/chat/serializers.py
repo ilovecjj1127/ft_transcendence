@@ -4,7 +4,6 @@ from users.models import UserProfile
 
 class ChatCreateSerializer(serializers.Serializer):
 	username = serializers.CharField()
-	name = serializers.CharField(max_length=20)
 
 	def validate_username(self, value):
 		if not UserProfile.objects.filter(username=value).exists():

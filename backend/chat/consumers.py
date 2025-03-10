@@ -1,23 +1,28 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
+from django.core.exceptions import ObjectDoesNotExist
 import json
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.room_name: str = ""
+        self.room_id: int = 0
         self.room_group_name: str = ""
 
     async def connect(self):
         from .models import ChatRoom
 
         if self.scope['user'].is_anonymous:
-            await self.close()
+            await self.close(code=1006)
             return
-        self.room_name = self.scope['url_route']['kwargs']['room_name']
-        self.room = await database_sync_to_async(ChatRoom.objects.get)(name=self.room_name)
-        self.room_group_name = f'chat_{self.room_name}'
+        self.room_id = int(self.scope['url_route']['kwargs']['room_id'])
+        try:
+            self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
+        except ObjectDoesNotExist:
+            await self.close(code=4004)
+            return
+        self.room_group_name = f'chat_{self.room_id}'
         self.username = self.scope['user'].username
         self.redis = self.scope['redis_pool']
         await self.channel_layer.group_add(
@@ -57,7 +62,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
         data = json.loads(text_data)
 
-        self.room = await database_sync_to_async(ChatRoom.objects.get)(name=self.room_name)
+        self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
         if blocked_by:
             await self.send(text_data=json.dumps({

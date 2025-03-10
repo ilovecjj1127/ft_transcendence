@@ -80,7 +80,6 @@ class Command(BaseCommand):
         # Create test chat room
         if user1 and user2:
             ChatRoom.objects.create(
-                name='testroom',
                 user1=user1,
                 user2=user2
             )

@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.core.exceptions import ValidationError
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
@@ -8,13 +9,12 @@ from rest_framework.views import APIView
 
 from users.serializers.UserProfile import SuccessResponseSerializer
 from .serializers import ChatCreateSerializer
-from .models import ChatRoom
 from .services import ChatRoomService
 
 
-def room(request, room_name):
+def room(request, room_id):
     return render(request, 'chat/room.html', {
-        'room_name': room_name
+        'room_id': room_id
     })
 
 class ChatCreateView(APIView):
@@ -33,19 +33,17 @@ class ChatCreateView(APIView):
         
         user1 = request.user
         username = serializer.validated_data['username']
-        room_name = serializer.validated_data['name']
         try:
             chatroom, created = ChatRoomService.get_or_create_chat(
-                name=room_name, user1=user1, username=username
+                user1=user1, username=username
             )
             return Response(
                 {
                     "chat_room_id": chatroom.id,
-                    "chat_room": chatroom.name,
                     "blocked_by": chatroom.blocked_by,
-                    "created": created
+                    "is_newly_created": created
                 }, status=status.HTTP_200_OK)
-        except ValueError as e:
+        except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class BlockChatRoomView(APIView):
@@ -64,7 +62,11 @@ class BlockChatRoomView(APIView):
         user = request.user
         try:
             chatroom = ChatRoomService.block_action(user, chatroom_id)
-            return Response(
-                {'message': f'Chatroom {chatroom.name} is blocked by {chatroom.blocked_by.username}'}, status=status.HTTP_200_OK)
+            if chatroom.is_blocked:
+                return Response(
+                    {'message': f'Chatroom is blocked by {chatroom.blocked_by.username}'}, status=status.HTTP_200_OK)
+            else:
+                return Response(
+                    {'message': f'Chatroom is unblocked'}, status=status.HTTP_200_OK)
         except PermissionError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
