@@ -3,3 +3,4 @@ __pycache__/
 .env.example
 Dockerfile
 *.sqlite3
+static/

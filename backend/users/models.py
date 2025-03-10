@@ -5,8 +5,7 @@ from django.db import models
 from PIL import Image
 
 from .constants import AVATAR_DEFAULT, AVATAR_MAX_HEIGHT, AVATAR_MAX_WIDTH
-from .utils import avatar_upload_to
-from .validators import validate_avatar_size
+from .utils import avatar_upload_to, validate_avatar_size
 
 
 class UserProfile(AbstractUser):
@@ -18,6 +17,8 @@ class UserProfile(AbstractUser):
         default=AVATAR_DEFAULT,
         validators=[validate_avatar_size]
     )
+    otp_secret = models.CharField(max_length=32, blank=True, null=True)
+    is_2fa_enabled = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
@@ -35,7 +36,12 @@ class FriendshipRequest(models.Model):
                                 on_delete=models.CASCADE)
     status = models.CharField(
         max_length = 10,
-        choices=[('pending', 'Pending'), ('accepted', 'Accepted'), ('rejected', 'Rejected')],
+        choices=[ 
+            ('pending', 'Pending'),
+            ('accepted', 'Accepted'),
+            ('rejected', 'Rejected'), 
+            ('canceled', 'Canceled')
+        ],
         default = 'pending'
     )
     created_at = models.DateTimeField(auto_now_add=True)
