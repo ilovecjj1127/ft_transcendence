@@ -89,26 +89,7 @@ class GameCancelView(APIView):
 			return Response({'message': 'Game canceled', 'status': game.status}, status=status.HTTP_200_OK)
 		except ValueError as e:
 			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
-	
-class GameStartView(APIView):
-	permission_classes = [IsAuthenticated]
 
-	@extend_schema(
-		summary="Start the game",
-		request=GameActionSerializer,
-		responses={200: SuccessResponseSerializer},
-		tags=['Games'],
-	)
-	def patch(self, request: Request) -> Response:
-		serializer = GameActionSerializer(data=request.data)
-		if not serializer.is_valid():
-			return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-		game_id = serializer.validated_data['game_id']
-		try:
-			game = GameService.start_game(game_id, request.user)
-			return Response({'message': 'Game started', 'status': game.status}, status=status.HTTP_200_OK)
-		except ValueError as e:
-			return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class GameListView(APIView):
 	permission_classes = [IsAuthenticated]

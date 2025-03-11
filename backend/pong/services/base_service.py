@@ -48,7 +48,7 @@ class PongServiceBase:
             state_string = await self.redis.get(f'game/{self.game_id}')
             if state_string:
                 game_state = json.loads(state_string)
-                await self.finish_game(game_state)
+                await self.finish_pong(game_state)
 
     async def _get_player_num(self, user) -> int:
         from games.models import Game
@@ -85,32 +85,28 @@ class PongServiceBase:
         self.game.status = 'in_progress'
         await database_sync_to_async(self.game.save)()
 
-    async def finish_game(self, game_state: dict):
-        from games.models import Game
+    async def finish_pong(self, game_state: dict):
+        from games.services.games import GameService
 
-        game = await Game.objects.aget(id=self.game_id)
-        if game.status != 'in_progress':
+        try:
+            finish_game = database_sync_to_async(GameService.finish_game)
+            self.game = await finish_game(
+                game_id=self.game_id, 
+                new_score_player1=game_state['score1'],
+                new_score_player2=game_state['score2']
+            )
+        except ValueError:
             return
-        self.game.status = 'completed'
-        self.game.score_player1 = game_state['score1']
-        self.game.score_player2 = game_state['score2']
-        if game_state['score1'] == self.game.winning_score:
-            self.game.winner = self.game.player1
-        elif game_state['score2'] == self.game.winning_score:
-            self.game.winner = self.game.player2
-        else:
-            self.game.status = 'interrupted'
         await self.redis.delete(
             f'game/{self.game_id}',
             f'game/{self.game_id}/connected_players',
             f'game/{self.game_id}/paddle1_action',
             f'game/{self.game_id}/paddle2_action'
         )
-        await database_sync_to_async(self.game.save)()
 
     def get_new_ball(self, game_state: dict):
         direction_x = 0
-        while (abs(direction_x) < 0.2 or abs(direction_x) > 0.9):
+        while (abs(direction_x) < 0.3):
             random_angle = random.uniform(0, 2 * math.pi)
             direction_x = math.cos(random_angle)
             direction_y = math.sin(random_angle)
