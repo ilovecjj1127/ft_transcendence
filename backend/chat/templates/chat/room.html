@@ -27,8 +27,8 @@
         chatSocket.onclose = function(event) {
             if (event.code === 1006) {
                 alert('Unauthorized: please log in first');
-            } else if (event.code === 4004) {
-                alert('Chat room does not exist.');
+            } else if (event.code === 4000) {
+                alert(`Chat room ${roomId} does not exist.`);
             } else {
                 console.error('Chat socket closed unexpectedly');
             }

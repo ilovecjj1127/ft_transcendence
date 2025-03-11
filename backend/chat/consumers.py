@@ -9,6 +9,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.room_id: int = 0
         self.room_group_name: str = ""
+        self.room = None
 
     async def connect(self):
         from .models import ChatRoom
@@ -20,7 +21,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
         try:
             self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         except ObjectDoesNotExist:
-            await self.close(code=4004)
+            await self.accept()
+            await self.close(code=4000)
             return
         self.room_group_name = f'chat_{self.room_id}'
         self.username = self.scope['user'].username
@@ -45,6 +47,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         if self.scope['user'].is_anonymous:
+            return
+        if not self.room:
             return
         key_user_count = f'chat:{self.room_group_name}:user_count'
         user_count = await self.redis.decr(key_user_count)
