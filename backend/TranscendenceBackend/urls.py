@@ -28,7 +28,8 @@ from rest_framework_simplejwt.views import (
 )
 
 urlpatterns = [
-    path('', views_extra_tmp.index, name='index'),
+    # path('', home_view, name='home'),
+    #path('home/', home, name='home'),
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk')),
     path('chat/', include('chat.urls')),

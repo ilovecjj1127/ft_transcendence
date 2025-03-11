@@ -9,6 +9,11 @@ from rest_framework.views import APIView
 from users.serializers.UserProfile import SuccessResponseSerializer
 
 
+# def home(request):
+#     return render (request, '../../../../frontend/website/index.html')
+
+def home(request):
+    return render (request, 'index.html')
 
 def game(request, game_id):
     return render(request, 'pong/game.html', {
