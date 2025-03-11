@@ -26,6 +26,15 @@ body {
     align-items: center;
 }
 
+#chat-container{
+	height: 80vh;
+	width: 20vw;
+	/* display: flex; */
+	justify-content: right;
+	align-items: center;
+	color: rgba(255, 0, 0, 0.495);
+}
+
 #restart-block{
 	background: #55a012;
 	color: white;

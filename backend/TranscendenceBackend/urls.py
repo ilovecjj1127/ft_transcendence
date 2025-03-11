@@ -19,13 +19,11 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-from . import views_extra_tmp
-from .views_extra_tmp import UserRegistrationView
 
-from rest_framework_simplejwt.views import (
-    TokenObtainPairView,
-    TokenRefreshView,
-)
+# from rest_framework_simplejwt.views import (
+#     TokenObtainPairView,
+#     TokenRefreshView,
+# )
 
 urlpatterns = [
     # path('', home_view, name='home'),
@@ -34,9 +32,8 @@ urlpatterns = [
     path('silk/', include('silk.urls', namespace='silk')),
     path('chat/', include('chat.urls')),
     path('pong/', include('pong.urls')),
-    path('api/register/', UserRegistrationView.as_view(), name='register'),
-    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
-    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/users/', include('users.urls')),
 	path('api/games/', include('games.urls.games')),
 	path('api/tournament/', include('games.urls.tournament')),

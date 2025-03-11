@@ -69,13 +69,7 @@ ROOT_URLCONF = 'TranscendenceBackend.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-<<<<<<< HEAD
-        'DIRS': [
-            BASE_DIR / 'frontend/templates'    
-        ],
-=======
         'DIRS': [ os.path.join(BASE_DIR, 'frontend'),],
->>>>>>> carlo/frontend
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -97,10 +91,10 @@ ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
-        'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
-        # 'ENGINE': 'django.db.backends.postgresql',
-        # 'NAME': os.getenv('DB_NAME'),
+        # 'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
+        # 'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),
@@ -145,16 +139,8 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-<<<<<<< HEAD
-
-STATICFILES_DIRS = [
-    BASE_DIR / 'frontend/static',
-]
-
-=======
 STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'frontend'),  # Absolute path to the 'frontend' directory
 ]
->>>>>>> carlo/frontend
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
