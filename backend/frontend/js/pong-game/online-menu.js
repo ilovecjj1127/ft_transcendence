@@ -11,7 +11,10 @@ const list = document.getElementById("list")
 const createButton = document.getElementById("")
 
 export async function onlineMenuFill () {
-    if (!checkToken()) return
+	
+	const isTokenValid = await checkToken()
+	
+    if (!isTokenValid) return
     list.innerHTML = ""
     const accessToken = localStorage.getItem('access_token')
     const response = await fetch(`http://${window.location.host}/api/games/show/`, {

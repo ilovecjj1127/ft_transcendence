@@ -38,8 +38,11 @@ function createMenu (items) {
 
 async function handleLogout (e) {
     e.preventDefault()
-    if (!checkToken()) return
-    const refreshToken = localStorage.getItem('refresh_token')
+	
+	const isTokenValid = await checkToken()
+	if (!isTokenValid) return
+    
+	const refreshToken = localStorage.getItem('refresh_token')
     const accessToken = localStorage.getItem('access_token')
 
     const response = await fetch(`http://${window.location.host}/api/users/logout/`, {
