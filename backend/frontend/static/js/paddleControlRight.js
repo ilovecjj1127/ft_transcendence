@@ -10,8 +10,8 @@ const playerPaddle = document.querySelector(".paddle.right"); // Select the left
 import { start_game } from "./game_script.js";
 // const start_game = false
 
-document.addEventListener('keydown', function(event) {
 
+document.addEventListener('keydown', function(event) {
 	const currentTime = Date.now();  // Get current time in milliseconds
 	const timeDifference = currentTime - lastEventTime;  // Time between last event and this one
 	// const currentPosition = parseFloat(getComputedStyle(playerPaddle).getPropertyValue("--position")) || 50;

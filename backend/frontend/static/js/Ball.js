@@ -1,6 +1,7 @@
 const INITIAL_VELOCITY = 0.00025
 const ADD_VELOCITY = 0.0001
 
+
 function randomNumberBetween(min, max)
 {
 	const val =  Math.random() * (max - min) + min;
@@ -8,6 +9,8 @@ function randomNumberBetween(min, max)
 	console.log(val);
 	return val;
 }
+
+
 
 export default class Ball {
 	constructor(ballElem) {
