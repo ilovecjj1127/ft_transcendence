@@ -61,6 +61,8 @@ async function handleLogout (e) {
         }, 1000)
     } else {
         alert("Logout failed, please try again")
+        console.log("response.status =", response.status);
+        showLoginModal()
     }
 }
 

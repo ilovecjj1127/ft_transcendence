@@ -91,10 +91,10 @@ ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
-        # 'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': os.getenv('DB_NAME'),
+        'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
+        'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
+        # 'ENGINE': 'django.db.backends.postgresql',
+        # 'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
         'PASSWORD': os.getenv('DB_PASSWORD'),
         'HOST': os.getenv('DB_HOST'),

@@ -15,6 +15,13 @@ body {
 	font-family: 'Poppins', sans-serif;
 }
 
+/* #containers {
+	display: flex;
+	flex-direction: row;
+	background-color: rgb(194, 194, 196);
+	width: 90%;
+} */
+
 #canvas {
 	border-radius: 5px;
 	background-color: rgb(23, 26, 91);
@@ -23,16 +30,8 @@ body {
 #canvas-container{
     display: flex;
     justify-content: center;
-    align-items: center;
-}
-
-#chat-container{
-	height: 80vh;
-	width: 20vw;
-	/* display: flex; */
-	justify-content: right;
-	align-items: center;
-	color: rgba(255, 0, 0, 0.495);
+    align-items: end;
+	border-radius: 3px;
 }
 
 #restart-block{
