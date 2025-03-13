@@ -1,10 +1,14 @@
-import {hideLoginModal } from "./main.js";
+import {hideLoginModal, showLoginModal} from "./main.js"
 
-const form = document.getElementById("login-form");
+const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
+const loginForm = document.getElementById("login-form")
 const loginButton = document.getElementById("login")
-        
-form.onsubmit = async (e) => {
-    e.preventDefault();
+const registerButton = document.getElementById("register-button")
+const registerForm = document.getElementById("register-form")
+const registerSubmit = document.getElementById("register-submit")
+
+loginForm.onsubmit = async (e) => {
+    e.preventDefault()
     const username = document.getElementById("username").value
     const password = document.getElementById("password").value
     const message = document.getElementById("login-message")
@@ -33,8 +37,58 @@ form.onsubmit = async (e) => {
     }
 };
 
+registerForm.onsubmit = async (e) => {
+    e.preventDefault()
+    const username = document.getElementById("register-username").value
+    const password = document.getElementById("register-password").value
+    const confirmPassword = document.getElementById("confirm-password").value
+    const message = document.getElementById("register-message")
+
+    message.innerHTML = ""
+    
+    if (password != confirmPassword) {
+
+        message.innerHTML = "<p class='text-danger'>The passwords differ.</p>"
+        password.value = ""
+        confirmPassword.value = ""
+        return
+    }
+
+    const response = await fetch(`http://${window.location.host}/api/users/register/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+    });
+
+    if (response.ok) {
+        const data = await response.json()
+        message.innerHTML = "<p class='text-success'>Registered successful! Now you can login.</p>"
+                
+        setTimeout( () => {
+            registerModal.hide()
+            showLoginModal()
+        }, 2000)
+    } else {
+        const errorData = await response.json();
+        message.innerHTML = `<p class='text-danger'>Error: ${errorData.message || "An error occurred. Please try again."}</p>`;
+    }
+}
+
 loginButton.addEventListener('click', () => {
-    form.requestSubmit()
+    loginForm.requestSubmit()
+})
+
+registerButton.addEventListener('click', function () {
+    // Close the Login modal
+    hideLoginModal()
+    // Show the Register modal
+    registerModal.show();
+});
+
+registerSubmit.addEventListener("click", function () {
+    registerForm.requestSubmit()
 })
 
 // window.addEventListener('DOMContentLoaded', () => {

@@ -52,7 +52,7 @@ async function refreshAccessToken () {
 
 export async function checkToken () {
     const token = localStorage.getItem('access_token')
-
+    alert("checking token")
 	if (token)
 	{
 		if (isTokenExpired(token)){	

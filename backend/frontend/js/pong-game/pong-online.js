@@ -65,7 +65,7 @@ export default class GameOnline {
 
     handleKeyUp(event) {
         if (this.pressedKeys[event.key]) {
-            clearInterval(pressedKeys[event.key]);
+            clearInterval(this.pressedKeys[event.key]);
             this.pressedKeys[event.key] = null;
         }
     }
