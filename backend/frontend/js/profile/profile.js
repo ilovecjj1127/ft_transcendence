@@ -76,7 +76,7 @@ export function createMenuProfile () {
 }
 
 profileToggle.addEventListener('click', function () {
-	dropDownMenu.classList  .toggle('show')
+	dropDownMenu.classList.toggle('show')
 
     if (dropDownMenu.classList.contains('show'))
     {

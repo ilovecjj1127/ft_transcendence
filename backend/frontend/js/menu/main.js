@@ -21,6 +21,8 @@ export function hideLoginModal () {
 
 //manage what happens on page load
 window.onload = function () {
+    console.log("Hi from win")
+
     const accessToken = localStorage.getItem("access_token")
     const refreshToken = localStorage.getItem("refresh_token")
     if (!accessToken ) { //|| checkIfBackendKnowsUser()

@@ -8,7 +8,7 @@ const backToMenu = getCanvasContent().backToMenu
 
 const onlineMenu = document.getElementById("online-menu")
 const list = document.getElementById("list")
-const createButton = document.getElementById("")
+// const createButton = document.getElementById("")
 
 export async function onlineMenuFill () {
     if (!checkToken()) return

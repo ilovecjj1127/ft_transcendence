@@ -89,10 +89,13 @@
             <img id="pongImg" src="{% static 'img-canvas/pong.jpg' %}" alt="Image" width="250" height="250">
         </div>
     </div>
-    
+
+    <button type="button" class="social-menu" id="open-social-menu" onclick="openSocialMenu()">Open Social Menu</button>
     <!-- chat -->
     <div id="chat-container">
-        <h1>Chat</h1>
+        <button type="button" class="social-menu" onclick="closeSocialMenu()">Close Menu</button>
+
+        <!-- <h1>Chat</h1> -->
         <!-- <button class="open-friendship-menu-button" id="myForm">Open Friendship-Menu</button> -->
         <div id="friendship-menu">
             <button id="send-requests" onclick="openSendRequestsForm()">Send requests</button>
@@ -100,7 +103,8 @@
         </div>
         <form id="send-request-form">
             <label for="username"><b>Username</b></label>
-            <input type="text" placeholder="Enter Name" name="username" required>
+            <!-- <input id="username2"> -->
+            <input type="text" placeholder="Enter Name" name="username" id="username" required>
             <label for="message"><b>Message</b></label>
             <input type="text" placeholder="Send initial message if you want" name="message">
             <button type="submit" id="send-form-button">Send</button>
@@ -136,7 +140,25 @@
             </ul>
         </div>
     </div>
+    <div class="chatting-box" id="chatting-box-id" style="display: none;">
+        <!-- <label for="yeeeaah-man"><b>chatting box</b></label> -->
+        <label id="chat-label"><b>Chatting with: </b><span id="chat-user-name"></span></label>
+        <div class="chat-messages"></div> <!-- Message display area -->
+        <input type="text" id="chat-input" placeholder="Type a message...">
+        <button id="send-message">Send</button>
+    </div>
+    <div class="select-friend-box" id="select-friend-box-id" style="display: none;">
+        <!-- <label for="yeeeaah-man"><b>chatting box</b></label> -->
+        <label id="selected-label"><b>Selected: </b><span id="friend-user-name"></span></label>
+        <button id="remove-friend">Remove friend, very sad this is</button>
+    </div>
     <script>
+        function openSocialMenu() {
+            document.getElementById("chat-container").style.display = "flex"
+        }
+        function closeSocialMenu() {
+            document.getElementById("chat-container").style.display = "none"
+        }
         function openSendRequestsForm() {
             document.getElementById("send-request-form").style.display = "block"
         }
