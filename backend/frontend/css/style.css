@@ -247,6 +247,17 @@ body {
 	border: none;
 }
 
+#list-container ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+#list-container li::before{
+	content: attr(data-id);
+	margin-right: 10px;
+	font-weight: bold;
+}
+
 li {
 	padding: 8px;
 	color: #facf45;

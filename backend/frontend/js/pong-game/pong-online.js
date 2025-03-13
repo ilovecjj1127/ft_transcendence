@@ -6,11 +6,11 @@ const canvas = getCanvasContent().canvas
 const ctx = getCanvasContent().ctx
  
 export default class GameOnline {
-    constructor(mode) {
-        this.start(mode)
+    constructor(gameId) {
+        this.start(gameId)
     }
 
-    start() {
+    start(gameId) {
         this.ball = new Ball()
         this.paddle1 = new Paddle(1)
         this.paddle2 = new Paddle(2)
@@ -28,9 +28,9 @@ export default class GameOnline {
         window.addEventListener('keyup', this.handleKeyUp)
 
         // WebSocket connection setup
-        this.gameId = "{{ game_id }}"
+        this.gameId = gameId
         this.token = localStorage.getItem('access_token')
-        this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${gameId}/?token=${token}`)
+        this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
 
         this.socket.onmessage = this.handleOnmessage.bind(this)
         this.socket.onerror = this.handleOnerror.bind(this)
