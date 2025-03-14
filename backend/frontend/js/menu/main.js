@@ -35,6 +35,7 @@ window.onload = function () {
     if (!checkIfBackendSaysAccessTokenOk(`http://${window.location.host}/api/users/me/`, accessToken))
     {
         showLoginModal()
+        return;
     }
     if (!refreshToken) {
         console.log("Refresh token not found")
@@ -61,6 +62,7 @@ async function checkIfBackendSaysAccessTokenOk(url, accessToken)
     console.log("GET: api/users/me, status: ", response.status)
     const data = await response.json()
     console.log("data: ", response.data)
+    console.log("ok?: ", response.ok)
 	if (response.ok) {
         return true;
     } else {
