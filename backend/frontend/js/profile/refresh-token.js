@@ -1,6 +1,6 @@
 import { isTokenExpired } from "./check-token.js"
 
-function deleteTokenReload () {
+export function deleteTokenReload () {
 	alert("deleting token and reload ")
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')

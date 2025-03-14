@@ -1,5 +1,5 @@
 import { showLoginModal } from "../menu/main.js"
-import { checkToken } from "./refresh-token.js"
+import { checkToken, deleteTokenReload } from "./refresh-token.js"
 
 const profileToggle = document.querySelector('.profile-toggle')
 const dropDownMenu = document.querySelector('.profile-dropdown-menu')
@@ -55,7 +55,7 @@ async function handleLogout (e) {
     });
     
     if (response.ok) {
-        const data = await response.json()
+        const data = await response.json() //maybe remove this
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
         alert("Succesfully logged out")
@@ -63,7 +63,8 @@ async function handleLogout (e) {
             window.location.reload()
         }, 1000)
     } else {
-        alert("Logout failed, please try again")
+        alert("Logout failed, you will get logged out automatically")
+        deleteTokenReload()
     }
 }
 

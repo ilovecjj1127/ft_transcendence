@@ -80,8 +80,8 @@ export default class GameOnline {
             }
         }
         if (action) {
-            sendAction(action);
-            this.pressedKeys[event.key] = setInterval(() => sendAction(action), 50);
+            this.sendAction(action);
+            this.pressedKeys[event.key] = setInterval(() => this.sendAction(action), 50);
         }
     }
 

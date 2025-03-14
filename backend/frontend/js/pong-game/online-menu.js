@@ -38,10 +38,31 @@ export async function onlineMenuFill () {
             li.appendChild(button)
             list.appendChild(li)
     
-            button.onclick = () => {
+            button.onclick = async () => {
+
                 alert(`Button for ${game.id} clicked!`);
-                onlineMenu.style.display = "none"
-                let Pong = new GameOnline(game.id)
+
+                const isTokenValid = await checkToken()
+                if (!isTokenValid) return
+                
+                const accessToken = localStorage.getItem('access_token')
+                const response = await fetch(`http://${window.location.host}/api/games/join/`, {
+                    method: "PATCH",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${accessToken}`
+                    },
+                    body: JSON.stringify({game_id: game.id}),
+                });
+                if (response.ok) {
+                    alert("game joined " +  game.id)
+                    onlineMenu.style.display = "none"
+                    let Pong = new GameOnline(game.id)
+                    return true
+                } else {
+                    alert("error joining game")
+                    return false
+                }
             };
         })
         onlineMenu.style.display = "block"
