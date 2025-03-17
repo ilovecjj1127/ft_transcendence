@@ -98,7 +98,7 @@ export default class GameOnline {
             this.score1 = data.score1;
             this.score2 = data.score2;
             this.update();
-        }   
+        }
     }
 
     handleOnerror (error) {
