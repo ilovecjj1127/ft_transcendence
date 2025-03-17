@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from users.serializers.UserProfile import SuccessResponseSerializer
-from .serializers import ChatCreateSerializer
+from .serializers import ChatGetOrCreateSerializer
 from .services import ChatRoomService
 
 
@@ -17,17 +17,17 @@ def room(request, room_id):
         'room_id': room_id
     })
 
-class ChatCreateView(APIView):
+class ChatGetOrCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
-        summary="Create a chat room with another user",
-        request=ChatCreateSerializer,
+        summary="Get or Create a chat room with another user",
+        request=ChatGetOrCreateSerializer,
         responses={200: SuccessResponseSerializer},
         tags=['Chat'],
     )
     def post(self, request: Request) -> Response:
-        serializer = ChatCreateSerializer(data=request.data)
+        serializer = ChatGetOrCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
@@ -46,12 +46,12 @@ class ChatCreateView(APIView):
         except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
-class BlockChatRoomView(APIView):
+class ChatBlockorUnblockView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(
         parameters=[OpenApiParameter(name='chatroom_id', required=True, type=int)],
-        summary="Block the other user in the ChatRoom",
+        summary="Block or Unblock the other user in the ChatRoom",
         responses={200: SuccessResponseSerializer},
         tags=['Chat'],
     )

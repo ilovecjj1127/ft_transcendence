@@ -14,7 +14,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         from .models import ChatRoom
 
-        if self.scope['user'].is_anonymous:
+        user = self.scope['user']
+        if user.is_anonymous:
             await self.close(code=1006)
             return
         self.room_id = int(self.scope['url_route']['kwargs']['room_id'])
@@ -24,8 +25,12 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.accept()
             await self.close(code=4000)
             return
+        if user != self.room.user1 and user != self.room.user2:
+            await self.accept()
+            await self.close(code=4001)
+            return
         self.room_group_name = f'chat_{self.room_id}'
-        self.username = self.scope['user'].username
+        self.username = user.username
         self.redis = self.scope['redis_pool']
         await self.channel_layer.group_add(
             self.room_group_name,
