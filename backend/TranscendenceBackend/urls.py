@@ -22,10 +22,18 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
+    # path('', home_view, name='home'),
+    #path('home/', home, name='home'),
+    path('admin/', admin.site.urls),
+    path('silk/', include('silk.urls', namespace='silk')),
+    path('chat/', include('chat.urls')),
     path('pong/', include('pong.urls')),
     path('api/users/', include('users.urls')),
-    path('admin/', admin.site.urls),
+	path('api/games/', include('games.urls.games')),
+	path('api/tournament/', include('games.urls.tournament')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('silk/', include('silk.urls', namespace='silk')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Need to be replaced with Nginx
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
