@@ -1,0 +1,304 @@
+body {
+	background-color: black;
+	color: white;
+	height: 100vh;
+	width: 100vw;
+	position: fixed;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0;
+
+	text-rendering: optimizeSpeed;
+	line-height: 1.5;
+	font-family: 'Poppins', sans-serif;
+}
+
+#canvas {
+	border-radius: 5px;
+	background-color: rgb(23, 26, 91);
+}
+
+#canvas-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#restart-block{
+	background: #55a012;
+	color: white;
+	height: 75px;
+	width: 200px;
+	font-size: x-large;
+    position:absolute;
+	display: none;
+	border-radius: 0.5rem;
+}
+
+#restart-block:hover {
+	scale: 150%
+}
+
+.modal.fade {
+	color: black;
+}
+
+@keyframes cardIn {
+	0% {
+		opacity: 0;
+		transform: translateY(-50px);
+	}
+	100% {
+		opacity: 1;
+		transform: translateY(0px);
+	}
+}
+
+#cube-img {
+	display: none;
+}
+
+#pong-img {
+	display: none;
+}
+
+
+#back-to-menu {
+	position: relative;
+	color: #facf45;
+	font-size: 2rem;
+	left: 3rem;
+	bottom: 16.5rem;
+	display: none;
+}
+
+#back-to-menu:hover {
+	display: block;
+	border-radius: 1rem;
+	background-color: rgb(2, 2, 36);
+}
+
+.pong-mode  {
+	height: 75px;
+	width: auto;
+	top: 30%;
+	font-size: x-large;
+	position: absolute;
+	gap: 20px;
+	display: none;
+	flex-flow: column;
+	/* outline: none; */
+	/* align-items: stretch; */
+}
+
+.player {
+	background-color: rgba(0,0,0,0);
+	color: #facf45;
+	/* outline: none; */
+	/* box-shadow: none; */
+	border: none;
+	/* outline-color: "red"; */
+	font-family: "rixvideogame-pro", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 40pt;
+}
+
+.player:hover {
+	scale: 150%;
+}
+
+#cubeImg {
+	display: none;
+}
+
+#cubeImg:hover {
+	scale: 150%;
+}
+
+#pongImg {
+	display: none;
+}
+
+.profile-wrapper {
+	position: fixed;
+	top: 2rem;
+	left: 2rem;
+	width: 4rem;
+	height: 4rem;
+}
+
+.profile-toggle {
+	width: 100%;
+	height: 100%;
+	background: blue;
+	color: white;
+	font-size: 2rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	cursor: pointer;
+	transition: .2s;
+}
+
+.profile-toggle:active {
+	transform: scale(.9);
+}
+
+.profile-toggle img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%; /* Make the profile image circular */
+    object-fit: cover; /* Ensures the image doesn't stretch and maintains aspect ratio */
+}
+
+.profile-dropdown {
+	position: relative;
+    /* top: 0;
+    left: 100%;
+    margin-left: 0.5rem; */
+}
+
+/* .profile-dropdown-toggle {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 2.5rem;
+	height: 2.5rem;
+	font-size: 1.25rem;
+	cursor: pointer;
+	border-radius: 50%;
+} */
+
+.profile-dropdown-menu {
+	list-style: none;
+	margin: 0;
+	position: absolute;
+	top: 100%;
+	left: 20%;
+	background: blue;
+	padding: .5rem 0;
+	width: 120px;
+	box-shadow: .25rem .25rem 1.5rem rgba(0,0,0,.1);
+	transform: scale(0);
+	transform-origin: top left;
+	transition: .2s;
+    margin-top: 0.5rem;
+    border-radius: .5rem;
+}
+
+.profile-dropdown-menu.show {
+	transform: scale(1);
+}
+
+.profile-dropdown-menu a{
+	font-size: .875rem;
+	font-weight: 500;
+	color: white;
+	text-decoration: none;
+    display: block;
+    text-align: center;
+	padding: .5rem 1rem;
+}
+
+.profile-dropdown-menu a:hover{
+    color: black;
+	background: greenyellow;
+}
+
+#online-menu {
+	position: absolute;
+	z-index: 10;
+	background-color: rgba(0, 0, 0, 0);
+	padding: 10px;
+	border-radius: 10px;
+	display: none;
+	flex-direction: column;
+	font-family: "rixvideogame-pro", sans-serif;
+	font-size: 20px;
+}
+
+/* Create Button Styling */
+#create-game {
+	background-color: #facf45;
+	color: rgb(23, 26, 91);
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	padding: 5px 10px;
+	font-size: 16px;
+	margin-bottom: 10px; /* Space between the button and the list */
+}
+
+#create-game:hover {
+	background-color: #4c9009;
+}
+
+#list-container {
+	position: relative;
+	width: 600px;
+	height: 400px;
+	overflow-y: auto;  /* Makes the list scrollable */
+	z-index: 10;  /* Ensures the list appears over the canvas */
+	background-color: rgba(0, 0, 0, 0);  /* Semi-transparent background */
+	border: none;
+}
+
+#list-container ul {
+	list-style-type: none;
+	padding: 0;
+}
+
+#list-container li::before{
+	content: attr(data-id);
+	margin-right: 10px;
+	font-weight: bold;
+}
+
+li {
+	padding: 8px;
+	color: #facf45;
+	background-color: rgba(0, 0, 0, 0);
+	justify-content: flex-end;
+	margin: 4px 0;
+	cursor: pointer;
+}
+
+#list-container li button {
+    background-color: #facf45;
+    color: rgb(23, 26, 91);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    margin-left: auto; /* Pushes the button to the right */
+    position: absolute;
+    right: 10px; /* Places the button close to the right side */
+}
+
+#list-container li button:hover {
+    background-color: #4c9009;
+}
+
+/* Scrollbar styles */
+#list-container::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+}
+
+#list-container::-webkit-scrollbar-thumb {
+    background-color: #facf45;  /* Color of the scrollbar thumb (the part that moves) */
+    border-radius: 10px;  /* Rounded corners for the thumb */
+}
+
+#list-container::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0.1);  /* Background color of the track (area the thumb moves along) */
+    border-radius: 10px;
+}
+
+#list-container::-webkit-scrollbar-button {
+    background-color: transparent; /* Optional: change the button color of the scrollbar */
+}
