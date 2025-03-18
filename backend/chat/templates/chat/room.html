@@ -29,6 +29,8 @@
                 alert('Unauthorized: please log in first');
             } else if (event.code === 4000) {
                 alert(`Chat room ${roomId} does not exist.`);
+            } else if (event.code === 4001) {
+                alert(`You are not allowed to enter chat room ${roomId}`);
             } else {
                 console.error('Chat socket closed unexpectedly');
             }
