@@ -1,0 +1,11 @@
+
+.menuImg {
+    object-fit: cover;
+    border-radius: 10px;  /* Optional: Make it look nicer */
+    position: absolute;
+    transition: transform 0.3s ease-in-out;
+}
+
+.menuImg:hover {
+    scale: 150%;
+}

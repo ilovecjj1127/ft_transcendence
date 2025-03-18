@@ -1,0 +1,43 @@
+#back-to-menu {
+	position: absolute;
+	color: #facf45;
+	font-size: 2rem;
+	left: 1rem;
+	top: 1rem;
+}
+
+#back-to-menu:hover {
+	display: block;
+	border-radius: 1rem;
+	background-color: rgb(2, 2, 36);
+}
+
+.mode-container {
+    position: absolute;
+    top: 15%;
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Adjust horizontal positioning to center */
+    display: flex;
+    flex-direction: column; /* Arrange buttons in a column */
+    gap: 20px; /* Space between buttons */
+    align-items: center; /* Center buttons horizontally */
+    font-size: x-large;
+}
+
+.pongMode {
+	background-color: rgba(0,0,0,0);
+	color: #facf45;
+	/* outline: none; */
+	/* box-shadow: none; */
+	border: none;
+	/* outline-color: "red"; */
+	font-family: "rixvideogame-pro", sans-serif;
+	font-weight: 400;
+	font-style: normal;
+	font-size: 40pt;
+	
+}
+
+.pongMode:hover {
+	scale: 150%;
+}

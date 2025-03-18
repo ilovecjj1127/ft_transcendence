@@ -45,25 +45,39 @@ export function createMenuProfile () {
     }
 }
 
+function resetCloseTimeout () {
+    clearTimeout(closeTimeout)
+    closeTimeout = setTimeout(() => {
+        dropDownMenu.classList.remove('show')
+    }, 3000);
+}
+
 //event listeners
 
-profileToggle.addEventListener('click', function () {
-    dropDownMenu.classList  .toggle('show')
-
-    if (dropDownMenu.classList.contains('show'))
-    {
-        closeTimeout = setTimeout(() => {
-            dropDownMenu.classList.remove('show')
-        }, 3000);
+profileToggle.addEventListener('click', function (event) {
+    event.stopPropagation()
+    const isOpen = dropDownMenu.classList.contains('show')
+    dropDownMenu.classList.toggle('show')
+    if(!isOpen) {
+        resetCloseTimeout()
+    } else {
+        clearTimeout(closeTimeout)
     }
 })
 
 dropDownMenu.addEventListener('mouseenter', function () {
+    console.log("hover")
     clearTimeout(closeTimeout)
 })
 
 dropDownMenu.addEventListener('mouseleave', function () {
-    closeTimeout = setTimeout(() => {
-        dropDownMenu.classList.remove('show')
-    }, 3000)
+    resetCloseTimeout()
 })
+
+document.addEventListener('click', function (event) {
+    // If the click is outside of the dropdown menu and the profile toggle, close the menu
+    if (!profileToggle.contains(event.target) && !dropDownMenu.contains(event.target)) {
+        dropDownMenu.classList.remove('show')
+        clearTimeout(closeTimeout)
+    }
+});
