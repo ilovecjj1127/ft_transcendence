@@ -5,12 +5,6 @@ export const init = () => {
     ctx.clearRect( 0,0, canvas.width, canvas.height)
     createBackToMenu(overlay)
     createModeButtons(overlay)
-    
-    
-    //extracting parameters on route change
-    const params = new URLSearchParams(location.search)
-    const message = params.get('message')
-    console.log(message)
 };
 
 function createBackToMenu (overlay) {
@@ -33,12 +27,11 @@ function createModeButtons (overlay) {
         const btn = document.createElement('button')
         btn.textContent = button
         btn.id = button.toLowerCase().replace(/\s+/g, '')
-        console.log(btn.id)
         btn.classList.add('pongMode')
         btnContainer.appendChild(btn)
 
         btn.addEventListener('click', () => {
-            location.hash = `${btn.id}`
+            location.hash = `/pong/${btn.id}`
         })
     })
 

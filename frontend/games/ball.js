@@ -1,10 +1,8 @@
-import { getCanvasContent } from "../menu/main.js"
-
 const INITIAL_SPEED = .2
 const SPEED_BALL_INCREASE = .00001
 
-const canvas = getCanvasContent().canvas
-const ctx = getCanvasContent().ctx
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
 
 export default class Ball {
     constructor () {
@@ -14,7 +12,7 @@ export default class Ball {
     reset () {
         this.x =  canvas.width /2
         this.y = canvas.height /2
-        this.radius = 7
+        this.radius = 10
         let validDirection = false;
         while (!validDirection) {
             const heading = randomNumberBetween(0, 2 * Math.PI);
@@ -41,14 +39,31 @@ export default class Ball {
         this.speed += SPEED_BALL_INCREASE * delta
         
         //check wall collision
-        if (this.y + this.radius >= canvas.height || this.y - this.radius <= 0) {
+        if (this.y + this.radius >= canvas.height) {
+            this.y = canvas.height - this.radius
+            this.direction.y *= -1
+        } 
+        else if (this.y - this.radius <= 0) {
+            this.y = this.radius
             this.direction.y *= -1
         }
         
         //check paddle collision
-        if (Paddles.some((r => isCollision(r, this)))) {
-            this.direction.x *= -1
-        }
+        Paddles.forEach(paddle => {
+            if (isCollision(paddle, this)) {
+                let relativeIntersectY = (this.y - (paddle.y + paddle.height / 2)) / (paddle.height / 2)
+    
+                this.direction.y = relativeIntersectY
+                this.direction.x *= -1
+    
+                if (this.direction.x > 0) {
+                    this.x = paddle.x + paddle.width + this.radius
+                } else {
+                    this.x = paddle.x - this.radius
+                }
+            }
+        })
+
         this.draw()
     }
 }

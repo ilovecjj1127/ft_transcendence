@@ -7,18 +7,36 @@ const loadRoute = async (route) => {
     const canvas = document.getElementById("gameCanvas")
     const overlay = document.querySelector('.overlay')
 
+    //baseRoute used for canvas visibility
+    const baseRoute = route.split('/')[0]
+    
+    //gets the last part of route, to handle sub-route if present
+    const routeName = route.split('/').pop()
+    
     // Load the HTML file
-    const html = await fetch(`./routes/${route}/${route}.html`).then((res) => res.text());
-    app.innerHTML = html;
+    const res = await fetch(`./routes/${route}/${routeName}.html`)
+    if (res.ok) {
+        app.innerHTML = await res.text();
+    }
+    else {
+        console.log("route without html file")
+    }
 
-    // Load the CSS file
-    const cssLink = document.createElement('link');
-    cssLink.rel = 'stylesheet';
-    cssLink.href = `./routes/${route}/${route}.css`;
-    document.head.appendChild(cssLink);
+    // fectch HEAD to check only if the file exist then load the CSS file 
+    const cssPath = `./routes/${route}/${routeName}.css`
+    fetch(cssPath, {method: 'HEAD' }).then((res) => {
+        if (res.ok) {
+            const cssLink = document.createElement('link');
+            cssLink.rel = 'stylesheet';
+            cssLink.href = cssPath;
+            document.head.appendChild(cssLink);
+        } else {
+            console.log("route without css file")
+        }
+    })
 
     // Load the JavaScript file
-    import(`./routes/${route}/${route}.js`).then((module) => {
+    import(`./routes/${route}/${routeName}.js`).then((module) => {
         if (module.init) {
             module.init();
         }
@@ -27,7 +45,7 @@ const loadRoute = async (route) => {
     //array of routes with canvas visible
     const visibleCanvasRoutes = ["menu", "pong", "block"]
 
-    if (visibleCanvasRoutes.includes(route)) {
+    if (visibleCanvasRoutes.includes(baseRoute)) {
         canvas.classList.remove("hidden")
     } else {
         canvas.classList.add("hidden")
@@ -41,13 +59,17 @@ const routes = {
     '/': 'menu',
     '/block': 'block',
     '/pong': 'pong',
+    '/pong/singleplayer': 'pong/singleplayer',
+    '/pong/multiplayer': 'pong/multiplayer',
+    '/pong/onlineplayer': 'pong/onlineplayer',
+    '/pong/onlineplayer/onlinegame': 'pong/onlineplayer/onlinegame',
+    '/pong/tournament': 'pong/tournament',
     // '/stats': 'userStats',
-    // '/game': 'game',
 };
 
 const router = () => {
     const hash = location.hash.slice(1) || '/';
-    const route = routes[hash];
+    const route = routes[hash] || routes[hash.split('/')[0]]
     if (route) {
         loadRoute(route);
     } else {

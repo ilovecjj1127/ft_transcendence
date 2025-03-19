@@ -1,11 +1,10 @@
 import Ball from "./ball.js"
 import Paddle from "./paddle.js"
-import { getCanvasContent } from "../menu/main.js"
 
-const canvas = getCanvasContent().canvas
-const ctx = getCanvasContent().ctx
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
  
-export default class GameOnline {
+export default class PongOnline {
     constructor(gameId) {
         this.start(gameId)
     }
@@ -115,6 +114,15 @@ export default class GameOnline {
             action: action,
         }));
     }
+
+    closeSocket () {
+        if (this.socket)
+            this.socket.close()
+    }
+
+    stop () {
+        this.reset()
+        this.closeSocket()
+        location.hash = '/pong/onlineplayer'
+    }
 }
- // Initial canvas update
-// updateCanvas(); 

@@ -1,14 +1,21 @@
-import Ball from "./ball.js"
 import Paddle from "./paddle.js"
-import { getCanvasContent } from "../menu/main.js"
+import Ball from "./ball.js"
 
-const canvas = getCanvasContent().canvas
-const ctx = getCanvasContent().ctx
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
 const fps = 60
 const msPerFrame = 1000 / fps
 
 export default class PongOffline {
     constructor(mode) {
+        this.handleKeydown = this.handleKeydown.bind(this)
+        this.handleKeyUp = this.handleKeyUp.bind(this)
+        this.stop = this.stop.bind(this)
+        this.destroy = this.destroy.bind(this);
+        
+        //event listeners
+        window.addEventListener('keydown' , this.handleKeydown)
+        window.addEventListener('keyup', this.handleKeyUp)
         this.start(mode)
     }
 
@@ -27,12 +34,6 @@ export default class PongOffline {
         this.reset()
         this.draw()
 
-        //event listeners
-        this.handleKeydown = this.handleKeydown.bind(this)
-        this.handleKeyUp = this.handleKeyUp.bind(this)
-
-        window.addEventListener('keydown' , this.handleKeydown)
-        window.addEventListener('keyup', this.handleKeyUp)
     }
 
     draw() {
@@ -99,18 +100,11 @@ export default class PongOffline {
     }
 
     handleKeyUp(e) {
-        switch (e.key) {
-            case 'ArrowUp' :
-                this.player2Direction = 0
-                break
-            case 'ArrowDown' :
-                this.player2Direction = 0
-                break
-            case 'w' :
-                this.player1Direction = 0
-                break
-            case 's' :
-                this.player1Direction = 0
+        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+            this.player2Direction = 0
+        }
+        if (e.key === 'w' || e.key === 's') {
+            this.player1Direction = 0
         }
     }
 
@@ -127,14 +121,28 @@ export default class PongOffline {
                 break
             case 's' :
                 this.player1Direction = 0.5
+            case ' ' :
+                if (this.animationId == null) {
+                    this.animationId = requestAnimationFrame((time) => this.update(time))
+                }
+                break
         }
     }
 
     getInputDirection() {
         return { player1 : this.player1Direction, player2 : this.player2Direction }
     }
+
+    stop () {
+        this.destroy()
+        location.hash = '/pong'
+    }
+    
+    destroy () {
+        window.removeEventListener('keydown', this.handleKeydown);
+        window.removeEventListener('keyup', this.handleKeyUp);
+        cancelAnimationFrame(this.animationId)
+        this.animationId = null;
+        this.reset()
+    }
 }
-
-
-
-//update()

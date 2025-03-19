@@ -1,17 +1,27 @@
-#online-menu {
+#back-to-menu {
 	position: absolute;
-	z-index: 10;
-	background-color: rgba(0, 0, 0, 0);
+	color: #facf45;
+	font-size: 2rem;
+	left: 1rem;
+	top: 1rem;
+}
+
+#back-to-menu:hover {
+	display: block;
+	border-radius: 1rem;
+	background-color: rgb(2, 2, 36);
+}
+
+#menu {
 	padding: 10px;
 	border-radius: 10px;
-	display: none;
 	flex-direction: column;
 	font-family: "rixvideogame-pro", sans-serif;
 	font-size: 20px;
 }
 
 /* Create Button Styling */
-#create-game {
+#new-game {
 	background-color: #facf45;
 	color: rgb(23, 26, 91);
 	border: none;
@@ -22,7 +32,7 @@
 	margin-bottom: 10px; /* Space between the button and the list */
 }
 
-#create-game:hover {
+#new-game:hover {
 	background-color: #4c9009;
 }
 
@@ -90,51 +100,4 @@ li {
 
 #list-container::-webkit-scrollbar-button {
     background-color: transparent; /* Optional: change the button color of the scrollbar */
-}
-
-
-#restart-block{
-	background: #55a012;
-	color: white;
-	font-size: x-large;
-    position:absolute;
-	display: none;
-	border-radius: 0.5rem;
-	height: 75px;
-	width: 200px;
-}
-
-#restart-block:hover {
-	scale: 150%
-}
-
-
-.pong-mode  {
-	height: 75px;
-	width: auto;
-	top: 30%;
-	font-size: x-large;
-	position: absolute;
-	gap: 20px;
-	display: none;
-	flex-flow: column;
-	/* outline: none; */
-	/* align-items: stretch; */
-}
-
-.player {
-	background-color: rgba(0,0,0,0);
-	color: #facf45;
-	/* outline: none; */
-	/* box-shadow: none; */
-	border: none;
-	/* outline-color: "red"; */
-	font-family: "rixvideogame-pro", sans-serif;
-	font-weight: 400;
-	font-style: normal;
-	font-size: 40pt;
-}
-
-.player:hover {
-	scale: 150%;
 }

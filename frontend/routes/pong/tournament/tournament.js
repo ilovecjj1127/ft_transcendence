@@ -1,31 +1,24 @@
-import BlockGame from "../../games/block-game.js";
-
-let Block
-
 export const init = () => {
-    if (Block) {
-        Block.destroy()
-    }
-    
     const overlay = document.querySelector('.overlay')
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d');
     ctx.clearRect( 0,0, canvas.width, canvas.height)
-	
-	const restart = document.createElement('button')
-    restart.id = 'restart-block'
-    restart.innerText = 'Restart'
-    overlay.appendChild(restart)
-	
+    createBackToMenu(overlay)
+    
+    
+    // //extracting parameters on route change
+    // const params = new URLSearchParams(location.search)
+    // const message = params.get('message')
+    console.log("in single player")
+};
+
+function createBackToMenu (overlay) {
     const backToMenu = document.createElement('div')
     backToMenu.id = 'back-to-menu'
     backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
+
     overlay.appendChild(backToMenu)
-
-	Block = new BlockGame(restart)
-	Block.playBlock()
-
     backToMenu.addEventListener('click', () => {
-        Block.stop()
+        location.hash = '/pong'
     })
-};
+}

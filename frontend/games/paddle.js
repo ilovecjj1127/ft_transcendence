@@ -1,11 +1,9 @@
-import { getCanvasContent } from "../menu/main.js"
-
 const SPEED_PADDLE_INCREASE = .01
 const COMPUTER_PADDLE_SPEED = .06
 const INITIAL_PADDLE_SPEED = 5
 
-const canvas = getCanvasContent().canvas
-const ctx = getCanvasContent().ctx
+const canvas = document.getElementById("gameCanvas")
+const ctx = canvas.getContext("2d")
 
 
 export default class Paddle {
@@ -18,9 +16,9 @@ export default class Paddle {
         this.width = 10
         this.height = 100
         if (this.player == 1)
-            this.x = 0
+            this.x = 20
         else if (this.player == 2)
-            this.x = canvas.width - this.width
+            this.x = canvas.width - this.width - 20
         this.y = canvas.height / 2 - this.height /2
         this.speed = INITIAL_PADDLE_SPEED
     }

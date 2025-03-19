@@ -8,14 +8,13 @@ const fps = 60
 const msPerFrame = 1000 / fps
 
 export default class BlockGame {
-    constructor(restart, backToMenu) {
+    constructor(restart) {
         this.timeOutId = 0
         this.timeOutId2 = 0
         this.animationId = null
         this.msPrev = window.performance.now()
         this.start()
         this.restart = restart
-        this.backToMenu = backToMenu
 
         this.handleKeyDown = this.handleKeyDown.bind(this)
         this.restartGame = this.restartGame.bind(this)
@@ -24,7 +23,6 @@ export default class BlockGame {
 
         window.addEventListener('keydown', this.handleKeyDown)
         this.restart.addEventListener('click', this.restartGame)
-        this.backToMenu.addEventListener('click', this.stop)
     }
     
     start() {
@@ -170,11 +168,17 @@ export default class BlockGame {
     }
 
     stop() {
+        this.destroy()
+        location.hash = '/'
+    }
+
+    destroy () {
+        window.removeEventListenerEventListener('keydown', this.handleKeyDown)
+        this.restart.removeEventListener('click', this.restartGame)
         cancelAnimationFrame(this.animationId)
 		this.animationId = null;
 		clearTimeout(this.timeOutId)
 		clearTimeout(this.timeOutId2)
-        location.hash = '/'
     }
 }
 

@@ -44,8 +44,6 @@ export const init = () => {
         
         pongImg.addEventListener('click', () => {
             location.hash = '/pong'
-            //how to pass parameters to another route
-            location.search = '?message=hello'
         })
     }
 }
