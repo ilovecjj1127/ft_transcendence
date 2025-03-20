@@ -14,12 +14,11 @@ export const init = () => {
     overlay.appendChild(backToMenu)
 
     const gameId = localStorage.getItem('gameId')
-    localStorage.removeItem('gameId')
-    console.log(`in game ${gameId}`)
     
     Pong = new PongOnline(gameId)
 
     backToMenu.addEventListener('click', () => {
         Pong.stop()
+        localStorage.removeItem('gameId')
     })
 };

@@ -1,11 +1,14 @@
 import { showLoginModal } from "./modals.js"
 import { handleLogout } from "./logout.js"
+import { getUserToken, setUserAvatar } from "./userData.js"
+import { router } from "../app.js"
 
 const profileToggle = document.querySelector('.profile-toggle')
 const dropDownMenu = document.querySelector('.profile-dropdown-menu')
 
 const loggedMenu = [
-    {id: 'stats', label: 'Statistics', link: '#'},
+    {id: 'history', label: 'History', link: '#'},
+    {id: 'settings', label: 'Settings', link: '#'},
     {id: 'logout', label: 'Logout', link: '#'},
 ]
 
@@ -32,12 +35,24 @@ function createMenu (items) {
             case "login":
                 a.addEventListener('click', showLoginModal)
                 break
+            case "history":
+                a.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    location.hash = '/history'
+                })
+                break
+            case "settings":
+                a.addEventListener('click', (e) => {
+                    e.preventDefault()
+                    location.hash = '/settings'
+                })
+                break
         }
     })
 }
 
 export function createMenuProfile () {
-    const accessToken = localStorage.getItem('access_token')
+    const accessToken = getUserToken().access
     if (accessToken) {
         createMenu(loggedMenu)
     } else {

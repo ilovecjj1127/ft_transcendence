@@ -1,5 +1,6 @@
 import Ball from "./ball.js"
 import Paddle from "./paddle.js"
+import { getUserToken } from "../utils/userData.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
@@ -28,7 +29,7 @@ export default class PongOnline {
 
         // WebSocket connection setup
         this.gameId = gameId
-        this.token = localStorage.getItem('access_token')
+        this.token = getUserToken().access
         this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
 
         this.socket.onmessage = this.handleOnmessage.bind(this)

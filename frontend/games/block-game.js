@@ -173,7 +173,7 @@ export default class BlockGame {
     }
 
     destroy () {
-        window.removeEventListenerEventListener('keydown', this.handleKeyDown)
+        window.removeEventListener('keydown', this.handleKeyDown)
         this.restart.removeEventListener('click', this.restartGame)
         cancelAnimationFrame(this.animationId)
 		this.animationId = null;

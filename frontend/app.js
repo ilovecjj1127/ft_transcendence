@@ -57,6 +57,8 @@ const loadRoute = async (route) => {
 // Routing logic
 const routes = {
     '/': 'menu',
+    '/history':'history',
+    '/settings':'settings',
     '/block': 'block',
     '/pong': 'pong',
     '/pong/singleplayer': 'pong/singleplayer',
@@ -64,10 +66,9 @@ const routes = {
     '/pong/onlineplayer': 'pong/onlineplayer',
     '/pong/onlineplayer/onlinegame': 'pong/onlineplayer/onlinegame',
     '/pong/tournament': 'pong/tournament',
-    // '/stats': 'userStats',
 };
 
-const router = () => {
+export const router = () => {
     const hash = location.hash.slice(1) || '/';
     const route = routes[hash] || routes[hash.split('/')[0]]
     if (route) {

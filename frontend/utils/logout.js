@@ -1,4 +1,5 @@
 import {deleteTokenReload, checkToken } from "./token.js"
+import { getUserToken, removeUserData } from "./userData.js"
 
 export async function handleLogout (e) {
     e.preventDefault()
@@ -6,8 +7,8 @@ export async function handleLogout (e) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const refreshToken = localStorage.getItem('refresh_token')
-    const accessToken = localStorage.getItem('access_token')
+    const refreshToken = getUserToken().refresh
+    const accessToken = getUserToken().access
 
     const response = await fetch(`http://${window.location.host}/api/users/logout/`, {
         method: "POST",
@@ -20,11 +21,10 @@ export async function handleLogout (e) {
     
     if (response.ok) {
         const data = await response.json() //maybe remove this
-        localStorage.removeItem('access_token')
-        localStorage.removeItem('refresh_token')
+        localStorage.clear()
         alert("Succesfully logged out")
         setTimeout( () => {
-            window.location.reload()
+            window.location.href ='/'
         }, 1000)
     } else {
         alert("Logout failed, you will get logged out automatically")

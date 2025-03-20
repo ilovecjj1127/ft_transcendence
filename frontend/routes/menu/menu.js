@@ -40,10 +40,12 @@ export const init = () => {
         
         blockImg.addEventListener('click', () => {
             location.hash = '/block'
+
         })
         
         pongImg.addEventListener('click', () => {
-            location.hash = '/pong'
+            location.hash = '/history'
+            console.log("location after pong ", location.hash)
         })
     }
 }

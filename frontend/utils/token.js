@@ -1,3 +1,5 @@
+import { getUserToken, removeUserData, setUserToken } from "./userData.js"
+
 function decodeJWT(token) {
     const parts = token.split('.')
     const payload = parts[1]
@@ -29,13 +31,12 @@ export function isTokenExpired(token)
 
 export function deleteTokenReload () {
 	alert("deleting token and reload ")
-    localStorage.removeItem('access_token')
-    localStorage.removeItem('refresh_token')
+    removeUserData()
     window.location.reload()
 }
 
 async function refreshAccessToken () {
-    const refreshToken = localStorage.getItem('refresh_token')
+    const refreshToken = getUserToken().refresh
 
     if (!refreshToken){
 		alert("no refresh token")
@@ -51,8 +52,7 @@ async function refreshAccessToken () {
     });
     if (response.ok) {
         const data = await response.json()
-        localStorage.setItem("access_token", data.access)
-        localStorage.setItem("refresh_token", data.refresh)
+        setUserToken(data.access, data.refresh)
 		alert("token refreshed correctly")
 		return true
     } else {
@@ -63,7 +63,7 @@ async function refreshAccessToken () {
 }
 
 export async function checkToken () {
-    const token = localStorage.getItem('access_token')
+    const token = getUserToken().access
     alert("checking token")
     if (token)
     {
