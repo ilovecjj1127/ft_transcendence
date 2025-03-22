@@ -31,7 +31,7 @@ export function isTokenExpired(token)
 
 export function deleteTokenReload () {
 	alert("deleting token and reload ")
-    removeUserData()
+    localStorage.clear()
     window.location.reload()
 }
 
@@ -68,8 +68,12 @@ export async function checkToken () {
     if (token)
     {
         if (isTokenExpired(token)){	
-            alert("refreshing token")
-            return (await refreshAccessToken())	
+            alert("access token expired")
+            if(isTokenExpired(getUserToken().refresh)){
+                deleteTokenReload()
+                return false
+            }
+            return (await refreshAccessToken())
         }
         return true
     }

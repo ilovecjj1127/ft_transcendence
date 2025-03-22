@@ -1,5 +1,11 @@
+import { checkToken } from "./token.js";
+
 export async function saveUserInfo (access) {
     console.log("saving user info")
+
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+
     const response = await fetch(`http://${window.location.host}/api/users/me`, {
         method: "GET",
         headers: {
@@ -12,6 +18,8 @@ export async function saveUserInfo (access) {
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
+        console.log("username:", userData.username)
+        setTimeout( () => {}, 2000)
         return true
     } else {
         alert("error saving user info")
@@ -43,7 +51,15 @@ export function getUserAvatar () {
     return (localStorage.getItem("avatar"))
 }
 
+export function getUsername () {
+    return (localStorage.getItem("username"))
+}
+
 export async function setUserAvatar () {
+
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+    
     const response = await fetch(`http://${window.location.host}/api/users/avatar`, {
         method: "POST",
         headers: {

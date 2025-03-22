@@ -2,8 +2,10 @@ import { showLoginModal } from "./modals.js"
 import { createMenuProfile } from "./profile-toggle.js"
 import { checkToken } from "./token.js"
 import { saveUserInfo, getUserToken} from "./userData.js"
+import { moveFaces } from "./bg-animation.js"
 
 export function onloadInit () {
+    moveFaces()
     const accessToken = getUserToken().access
     const refreshToken = getUserToken().refresh
     
@@ -13,8 +15,10 @@ export function onloadInit () {
     }
     else {
         console.log("Access token found:" + accessToken)
-        checkToken()
-        saveUserInfo(accessToken)
+        const isTokenValid = checkToken()
+        if (isTokenValid){
+            saveUserInfo(accessToken)
+        }
         // if (getUserAvatar()) {
         //     const userAvatar = document.getElementById('profile-img')
         //     userAvatar.src = getUserAvatar()

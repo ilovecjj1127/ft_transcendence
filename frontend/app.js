@@ -4,6 +4,7 @@ import {onloadInit} from "./utils/onload.js"
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
     const app = document.getElementById('app');
+    const gameContainer = document.getElementById('game-container')
     const canvas = document.getElementById("gameCanvas")
     const overlay = document.querySelector('.overlay')
 
@@ -46,9 +47,9 @@ const loadRoute = async (route) => {
     const visibleCanvasRoutes = ["menu", "pong", "block"]
 
     if (visibleCanvasRoutes.includes(baseRoute)) {
-        canvas.classList.remove("hidden")
+        gameContainer.classList.remove("hidden")
     } else {
-        canvas.classList.add("hidden")
+        gameContainer.classList.add("hidden")
     }
 
     overlay.innerHTML = ""

@@ -44,8 +44,7 @@ export const init = () => {
         })
         
         pongImg.addEventListener('click', () => {
-            location.hash = '/history'
-            console.log("location after pong ", location.hash)
+            location.hash = '/pong'
         })
     }
 }

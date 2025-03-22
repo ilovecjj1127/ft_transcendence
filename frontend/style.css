@@ -1,7 +1,14 @@
 /* general */
 
+:root {
+	--app-blue:  rgb(23, 26, 91);
+	--app-yellow:  #facf45;
+	--app-greenyellow: greenyellow;
+	--app-hover-blue: rgb(2, 2, 36);
+}
+
 .hidden {
-	display: none;
+	display: none !important;
 }
 
 /* elements */
@@ -38,7 +45,7 @@ body {
 
 #gameCanvas {
     border-radius: 5px;
-	background-color: rgb(23, 26, 91);
+	background-color: var(--app-blue);
 	z-index: 1;
 }
 
@@ -67,7 +74,7 @@ body {
 .profile-toggle {
 	width: 100%;
 	height: 100%;
-	background: blue;
+	background:	var(--app-blue);
 	color: white;
 	font-size: 2rem;
 	display: flex;
@@ -99,7 +106,7 @@ body {
 	position: absolute;
 	top: 100%;
 	left: 20%;
-	background: blue;
+	background: var(--app-blue);
 	padding: .5rem 0;
 	width: 120px;
 	box-shadow: .25rem .25rem 1.5rem rgba(0,0,0,0.1);
@@ -127,5 +134,24 @@ body {
 
 .profile-dropdown-menu a:hover{
     color: black;
-	background: greenyellow;
+	background: var(--app-greenyellow);
+}
+
+/* bg animation */
+#bganimation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none; /* Ensures the background doesn't interfere with user interaction */
+    z-index: -1; /* Ensures the background stays behind other content */
+  
+  /* Style for the faces (images) */
+  .face {
+    position: absolute;
+    width: 200px; /* Adjust size of faces */
+    height: 200px;
+    object-fit: contain;
+  }
 }

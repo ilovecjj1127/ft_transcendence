@@ -1,6 +1,6 @@
 #back-to-menu {
 	position: absolute;
-	color: #facf45;
+	color: var(--app-yellow);
 	font-size: 2rem;
 	left: 1rem;
 	top: 1rem;
@@ -9,7 +9,7 @@
 #back-to-menu:hover {
 	display: block;
 	border-radius: 1rem;
-	background-color: rgb(2, 2, 36);
+	background-color: var(--app-hover-blue);
 }
 
 #restart-block{
