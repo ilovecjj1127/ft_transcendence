@@ -10,10 +10,9 @@ export const init = () => {
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
     getUserStats()
-    // if (getUserAvatar()){
-    //     profileImg.src = getUserAvatar()
-    //     console.log(profileImg.src)
-    // }
+    if (getUserAvatar())
+        profileImg.src = getUserAvatar()
+
     if (getUsername())
         username.innerText = getUsername()
     
@@ -67,18 +66,14 @@ export const init = () => {
         });
         if (checkUserExist.ok)
         {
-            // deleteStatsEvents()
-            console.log("user found")
-            //change route to user page
+            deleteStatsEvents()
             localStorage.setItem("userSearched", user)
             location.hash = '/users'
         } else {
-            console.log("user search error")
             searchError.style.display = 'block'
             setTimeout( () => {
                 searchError.style.display = 'none'
             }, 3000)
-            //create user not found dropdown
         }
     }
             

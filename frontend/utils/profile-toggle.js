@@ -81,7 +81,6 @@ profileToggle.addEventListener('click', function (event) {
 })
 
 dropDownMenu.addEventListener('mouseenter', function () {
-    console.log("hover")
     clearTimeout(closeTimeout)
 })
 

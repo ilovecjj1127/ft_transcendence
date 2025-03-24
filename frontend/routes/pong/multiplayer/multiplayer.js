@@ -19,7 +19,10 @@ export const init = () => {
     
     Pong = new PongOffline('multi', backToMenu)
 
-    backToMenu.addEventListener('click', () => {
+    function back () {
+        backToMenu.removeEventListener('click', back)
         Pong.stop()
-    })
+    }
+
+    backToMenu.addEventListener('click', back)
 };

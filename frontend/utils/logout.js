@@ -20,7 +20,6 @@ export async function handleLogout (e) {
     });
     
     if (response.ok) {
-        const data = await response.json() //maybe remove this
         localStorage.clear()
         alert("Succesfully logged out")
         setTimeout( () => {

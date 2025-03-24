@@ -18,7 +18,11 @@ function createBackToMenu (overlay) {
     backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
 
     overlay.appendChild(backToMenu)
-    backToMenu.addEventListener('click', () => {
-        location.hash = '/pong'
-    })
+    
+    function back () {
+        backToMenu.removeEventListener('click', back)
+        location.hash = "/pong"
+    }
+
+    backToMenu.addEventListener('click', back)
 }

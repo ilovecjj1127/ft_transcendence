@@ -19,29 +19,24 @@ function getExpirationDate(token) {
 
 export function isTokenExpired(token)
 {
+    if (!token)
+        return  true
     const expirationDate = getExpirationDate(token)
     const currentDate = new Date()
     if (currentDate > expirationDate){
         alert("token is expired")
         return true         
     }
-    alert("token not expired")
     return false
 }
 
 export function deleteTokenReload () {
-	alert("deleting token and reload ")
     localStorage.clear()
-    window.location.reload()
+    window.location.href ='/'
 }
 
 async function refreshAccessToken () {
     const refreshToken = getUserToken().refresh
-
-    if (!refreshToken){
-		alert("no refresh token")
-        return false
-	}
 
     const response = await fetch(`http://localhost:8000/api/users/token_refresh/`, {
         method: "POST",
@@ -53,22 +48,19 @@ async function refreshAccessToken () {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-		alert("token refreshed correctly")
 		return true
     } else {
-		alert("refresh token not valid")
         deleteTokenReload()
 		return false
     }
 }
 
+//check if access token is valid, if not check refresh token, if valid refresh token
+//if not valid delete data and reload page
 export async function checkToken () {
     const token = getUserToken().access
-    alert("checking token")
-    if (token)
-    {
+    if (token) {
         if (isTokenExpired(token)){	
-            alert("access token expired")
             if(isTokenExpired(getUserToken().refresh)){
                 deleteTokenReload()
                 return false

@@ -1,3 +1,5 @@
+//!!!!!!!!remove event listeners for onlinegame.js!!!!!!!!!!!
+
 import { checkToken } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js";
 

@@ -1,8 +1,6 @@
 import { checkToken } from "./token.js";
 
 export async function saveUserInfo (access) {
-    console.log("saving user info")
-
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
 
@@ -18,11 +16,10 @@ export async function saveUserInfo (access) {
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
-        console.log("username:", userData.username)
         setTimeout( () => {}, 2000)
         return true
     } else {
-        alert("error saving user info")
+        console.log("error saving user info")
         return false
     }
 }

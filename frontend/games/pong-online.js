@@ -124,6 +124,8 @@ export default class PongOnline {
     stop () {
         this.reset()
         this.closeSocket()
+        window.removeEventListener('keydown', this.handleKeydown);
+        window.removeEventListener('keyup', this.handleKeyUp);
         location.hash = '/pong/onlineplayer'
     }
 }

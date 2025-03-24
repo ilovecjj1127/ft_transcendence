@@ -19,7 +19,40 @@ export const init = () => {
     
     Pong = new PongOffline('single')
 
-    backToMenu.addEventListener('click', () => {
+    function exitCheck() {
+        const exitContainer = document.createElement('div')
+        exitContainer.id = 'exit-container'
+
+        const exitMessage = document.createElement('p')
+        exitMessage.innerText = 'Are you sure you want to exit the game?'
+
+        const yesButton = document.createElement('button')
+        yesButton.id = 'exit-yes'
+        yesButton.innerText = 'Yes'
+        yesButton.addEventListener('click', () => {
+            back()
+            exitContainer.remove()
+        })
+
+        const noButton = document.createElement('button')
+        noButton.id = 'exit-no'
+        noButton.innerText = 'No'
+        noButton.addEventListener('click', () => {
+            exitContainer.remove()
+        })
+
+        exitContainer.appendChild(exitMessage)
+        exitContainer.appendChild(yesButton)
+        exitContainer.appendChild(noButton)
+
+        
+        overlay.appendChild(exitContainer)
+    }
+
+    function back () {
+        backToMenu.removeEventListener('click', back)
         Pong.stop()
-    })
-};
+    }
+
+    backToMenu.addEventListener('click', exitCheck)
+}; 

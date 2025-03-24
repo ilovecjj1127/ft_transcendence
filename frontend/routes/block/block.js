@@ -25,7 +25,10 @@ export const init = () => {
 	Block = new BlockGame(restart)
 	Block.playBlock()
 
-    backToMenu.addEventListener('click', () => {
+    function back () {
         Block.stop()
-    })
+        backToMenu.removeEventListener('click', back)
+    }
+    
+    backToMenu.addEventListener('click', back)
 };

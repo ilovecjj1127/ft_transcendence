@@ -19,9 +19,6 @@ const loadRoute = async (route) => {
     if (res.ok) {
         app.innerHTML = await res.text();
     }
-    else {
-        console.log("route without html file")
-    }
 
     // fectch HEAD to check only if the file exist then load the CSS file 
     const cssPath = `./routes/${route}/${routeName}.css`
@@ -31,8 +28,6 @@ const loadRoute = async (route) => {
             cssLink.rel = 'stylesheet';
             cssLink.href = cssPath;
             document.head.appendChild(cssLink);
-        } else {
-            console.log("route without css file")
         }
     })
 

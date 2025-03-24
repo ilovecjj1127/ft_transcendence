@@ -33,12 +33,10 @@ export const init = () => {
         if (searchUser.ok)
         {
             const userSearched = await searchUser.json()
-            console.log("user found")
             username.innerText = userSearched.username
-            // profileImg.src = userSearched.avatar
+            profileImg.src = userSearched.avatar
         } else {
             console.log("user search error")
-            //create user not found dropdown
         }
     }
             

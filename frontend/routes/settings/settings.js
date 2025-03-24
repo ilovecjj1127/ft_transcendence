@@ -12,8 +12,8 @@ export const init = () => {
     const closeBtn = document.getElementById('close-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
-    // if (getUserAvatar())
-    //     profileImg.src = getUserAvatar()
+    if (getUserAvatar())
+        profileImg.src = getUserAvatar()
     
     if (getUsername())
         username.innerText = getUsername()
@@ -38,8 +38,9 @@ export const init = () => {
                 reader.onload = function(e) {
                     const imageUrl = e.target.result;
                     profileImg.src = imageUrl;
+                    document.getElementById('profile-img').src = imageUrl
                 };
-                // reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
             }
         }
     }
@@ -53,17 +54,17 @@ export const init = () => {
         const response = await fetch(`http://${window.location.host}/api/users/avatar/`, {
             method: "POST",
             headers: {
-                "Content-Type": "multipart/form-data",
                 "Authorization": `Bearer ${getUserToken().access}`
             },
             body: formData,
         });
         
         if (response.ok) {
+            console.log("uploaded correctly")
             return true
         } else {
-            console.log("error message failed to upload avatar")
-            //return false
+            console.log("failed to upload avatar")
+            return false
         }
     }
 
@@ -84,43 +85,41 @@ export const init = () => {
         document.getElementById('confirm-password-change').value = ''
         setTimeout( () => {
            message.innerHTML = ''
-        }, 2000)
+        }, 4000)
     }
 
     form.onsubmit = async (e) => {
         e.preventDefault()
         
-        const oldPassword = document.getElementById('old-password').value
-        const newPassword = document.getElementById('new-password').value
+        const old_password = document.getElementById('old-password').value
+        const new_password = document.getElementById('new-password').value
         const confirmPassword = document.getElementById('confirm-password-change').value
         const message = document.getElementById('change-message')
         
         message.innerHTML = ''
         
-        if (newPassword != confirmPassword){
+        if (new_password != confirmPassword){
             message.innerHTML = "<p class='text-danger'>Failed. New password do not match.</p>"
             clearInputs()
         }
         else {
             const isTokenValid = await checkToken()
             if (!isTokenValid) return
-            console.log(oldPassword, newPassword)
             const response = await fetch(`http://${window.location.host}/api/users/password_change/`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${getUserToken().access}`
                 },
-                body: JSON.stringify({ oldPassword, newPassword }),
+                body: JSON.stringify({ old_password, new_password }),
             });
             
             if (response.ok) {
                 message.innerHTML = "<p class='text-success'>Password changed.</p>"
+                clearInputs()
             } else {
                 const errorData = await response.json()
-                console.log("error message", errorData.new_password)
-                //want to get message error from response
-                // const errorMessage = errorData.detail || "Password change failed. Please check your credentials."
+                const errorMessage = errorData.new_password || "Password change failed. Please check your credentials."
                 message.innerHTML = `<p class='text-danger'>${errorMessage}</p>`
                 clearInputs()
             }
