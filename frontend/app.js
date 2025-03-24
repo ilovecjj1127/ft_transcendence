@@ -58,8 +58,9 @@ const loadRoute = async (route) => {
 // Routing logic
 const routes = {
     '/': 'menu',
-    '/history':'history',
+    '/stats':'stats',
     '/settings':'settings',
+    '/users' : 'users',
     '/block': 'block',
     '/pong': 'pong',
     '/pong/singleplayer': 'pong/singleplayer',

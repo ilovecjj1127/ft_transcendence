@@ -7,7 +7,7 @@ const profileToggle = document.querySelector('.profile-toggle')
 const dropDownMenu = document.querySelector('.profile-dropdown-menu')
 
 const loggedMenu = [
-    {id: 'history', label: 'History', link: '#'},
+    {id: 'stats', label: 'Statistics', link: '#'},
     {id: 'settings', label: 'Settings', link: '#'},
     {id: 'logout', label: 'Logout', link: '#'},
 ]
@@ -35,10 +35,10 @@ function createMenu (items) {
             case "login":
                 a.addEventListener('click', showLoginModal)
                 break
-            case "history":
+            case "stats":
                 a.addEventListener('click', (e) => {
                     e.preventDefault()
-                    location.hash = '/history'
+                    location.hash = '/stats'
                 })
                 break
             case "settings":

@@ -5,7 +5,6 @@ import { saveUserInfo, getUserToken} from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
 
 export function onloadInit () {
-    moveFaces()
     const accessToken = getUserToken().access
     const refreshToken = getUserToken().refresh
     
@@ -34,5 +33,6 @@ export function onloadInit () {
     }
     
     createMenuProfile()
+    //moveFaces()
 }
 

@@ -38,13 +38,23 @@ export const init = () => {
         overlay.appendChild(pongImg)
         overlay.appendChild(blockImg)
         
-        blockImg.addEventListener('click', () => {
-            location.hash = '/block'
+        function deleteEvents() {
+            blockImg.removeEventListener('click', changeBlock)
+            pongImg.removeEventListener('click', changePong)
+        }
 
-        })
-        
-        pongImg.addEventListener('click', () => {
+        function changeBlock () {
+            deleteEvents()
+            location.hash = '/block'
+        }
+
+        function changePong () {
+            deleteEvents()
             location.hash = '/pong'
-        })
+        }
+
+        blockImg.addEventListener('click', changeBlock)
+        
+        pongImg.addEventListener('click', changePong)
     }
 }
