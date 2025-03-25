@@ -3,6 +3,7 @@ import Ball from "./ball.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
+const overlay = document.querySelector('.overlay')
 const fps = 60
 const msPerFrame = 1000 / fps
 
@@ -31,6 +32,7 @@ export default class PongOffline {
         this.msPrev = window.performance.now()
         this.player1Direction = 0
         this.player2Direction = 0
+        this.winScore = 1
         this.reset()
         this.draw()
 
@@ -85,9 +87,14 @@ export default class PongOffline {
             this.score1++
         else if (this.ball.x - this.ball.radius <= 0)
             this.score2++
-    
         cancelAnimationFrame(this.animationId)
         this.reset()
+        if (this.score1 == this.winScore || this.score2 == this.winScore ){
+            ctx.clearRect(0,0, canvas.width, canvas.height)
+            this.drawScore()
+            this.drawEndGame()
+            return
+        }
         requestAnimationFrame((time) => this.update(time))
     }
     
@@ -131,6 +138,23 @@ export default class PongOffline {
 
     getInputDirection() {
         return { player1 : this.player1Direction, player2 : this.player2Direction }
+    }
+
+    drawEndGame () {
+        const winnerContainer = document.createElement('div')
+        winnerContainer.id = 'winner-container'
+
+        const winnerMessage = document.createElement('p')
+        if (this.score1 == this.winScore)
+            winnerMessage.innerText = 'Player 1 Won'
+        else {
+            if (this.mode == "multi")
+                winnerMessage.innerText = 'Player 2 Won'
+            else
+                winnerMessage.innerText = 'Computer Won'       
+        }
+        winnerContainer.appendChild(winnerMessage)
+        overlay.appendChild(winnerContainer)
     }
 
     stop () {

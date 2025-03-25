@@ -9,7 +9,7 @@ export const init = () => {
     // //extracting parameters on route change
     // const params = new URLSearchParams(location.search)
     // const message = params.get('message')
-    console.log("in single player")
+    console.log("in tournament")
 };
 
 function createBackToMenu (overlay) {

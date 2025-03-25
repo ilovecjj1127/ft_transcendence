@@ -52,24 +52,24 @@ export function getUsername () {
     return (localStorage.getItem("username"))
 }
 
-export async function setUserAvatar () {
+// export async function setUserAvatar () {
 
-    const isTokenValid = await checkToken()
-    if (!isTokenValid) return
+//     const isTokenValid = await checkToken()
+//     if (!isTokenValid) return
     
-    const response = await fetch(`http://${window.location.host}/api/users/avatar`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${getUserToken().access}`
-        },
-    });
-    if (response.ok) {
-        const userData = await response.json()
-        localStorage.setItem("avatar", userData.avatar)
-        return true
-    } else {
-        alert("error uploading avatar")
-        return false
-    }
-}
+//     const response = await fetch(`http://${window.location.host}/api/users/avatar`, {
+//         method: "POST",
+//         headers: {
+//             "Content-Type": "application/json",
+//             "Authorization": `Bearer ${getUserToken().access}`
+//         },
+//     });
+//     if (response.ok) {
+//         const userData = await response.json()
+//         localStorage.setItem("avatar", userData.avatar)
+//         return true
+//     } else {
+//         alert("error uploading avatar")
+//         return false
+//     }
+// }

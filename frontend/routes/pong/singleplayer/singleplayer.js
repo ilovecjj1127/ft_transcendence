@@ -50,7 +50,7 @@ export const init = () => {
     }
 
     function back () {
-        backToMenu.removeEventListener('click', back)
+        backToMenu.removeEventListener('click', exitCheck)
         Pong.stop()
     }
 

@@ -37,6 +37,7 @@ export const init = () => {
                 const reader = new FileReader();
                 reader.onload = function(e) {
                     const imageUrl = e.target.result;
+                    localStorage.setItem("avatar", imageUrl)
                     profileImg.src = imageUrl;
                     document.getElementById('profile-img').src = imageUrl
                 };

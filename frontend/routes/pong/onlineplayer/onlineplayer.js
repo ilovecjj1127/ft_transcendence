@@ -1,12 +1,12 @@
 //!!!!!!!!remove event listeners for onlinegame.js!!!!!!!!!!!
 
 import { checkToken } from "../../../utils/token.js"
-import { getUserToken } from "../../../utils/userData.js";
+import { getUserToken } from "../../../utils/userData.js"
 
 export const init = () => {
     const overlay = document.querySelector('.overlay')
     const canvas = document.getElementById('gameCanvas')
-    const ctx = document.getElementById('gameCanvas').getContext('2d');
+    const ctx = document.getElementById('gameCanvas').getContext('2d')
     ctx.clearRect( 0,0, canvas.width, canvas.height)
     createBackToMenu(overlay)
     createMenu(overlay)
@@ -48,7 +48,7 @@ async function createGamesList (list) {
     if (!isTokenValid) return
     list.innerHTML = ""
 
-    //Fill with ready games
+    //Fill with pending games
     const pendingGamesResponse = await fetch(`http://${window.location.host}/api/games/show/pending`, {
         method: "GET",
         headers: {
@@ -202,4 +202,3 @@ function createNewGameButton (menu) {
         }
     })
 }
-

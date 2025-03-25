@@ -1,7 +1,6 @@
 import { showLoginModal } from "./modals.js"
 import { handleLogout } from "./logout.js"
-import { getUserToken, setUserAvatar } from "./userData.js"
-import { router } from "../app.js"
+import { getUserToken } from "./userData.js"
 
 const profileToggle = document.querySelector('.profile-toggle')
 const dropDownMenu = document.querySelector('.profile-dropdown-menu')
