@@ -54,6 +54,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         redis_messages = await self.redis.lrange(key_messages, 0, -1)
         for msg in redis_messages:
             await self.send_message(json.loads(msg))
+        # set the unread message number to 0
 
     async def disconnect(self, close_code):
         if self.scope['user'].is_anonymous:
@@ -98,6 +99,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': data['message']
             }
         )
+        # if only one user online add unread message to another user
 
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"
