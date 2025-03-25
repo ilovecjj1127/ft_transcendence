@@ -6,3 +6,5 @@ __pycache__/
 .vscode/
 db/postgres/
 temp/
+avatars/*
+!avatars/default.jpeg
