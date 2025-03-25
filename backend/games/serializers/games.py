@@ -2,9 +2,6 @@ from rest_framework import serializers
 
 from games.models import Game
 
-class SuccessResponseSerializer(serializers.Serializer):
-    message = serializers.CharField()
-
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
@@ -28,6 +25,9 @@ class GameCreateResponseSerializer(serializers.Serializer):
 	game = GameCreateSerializer()
 
 class GameDetailSerializer(serializers.ModelSerializer):
+	player1 = serializers.CharField(source='player1.username')
+	player2 = serializers.CharField(source='player2.username', allow_null=True)
+
 	class Meta:
 		model = Game
 		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'winning_score', 'status', 'winner', 'tournament', 'created_at', 'modified_at']
