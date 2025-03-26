@@ -10,10 +10,12 @@ class TournamentCreateSerializer(serializers.ModelSerializer):
 		fields = ['name', 'min_players', 'max_players', 'winning_score', 'alias']
 	
 	def validate(self, data):
-		if data.get('min_players', 4) > data.get('max_players', 8):
+		if data.get('min_players', 3) > data.get('max_players', 5):
 			raise serializers.ValidationError("Minimum players cannot be greater than minimum players")
-		if data.get('min_players', 3) <= 2:
-			raise serializers.ValidationError("Minimum 3 players required for a tournament")
+		if data.get('min_players', 3) <= 2 or data.get('max_players', 5) > 10:
+			raise serializers.ValidationError("Minimum 3 Maximum 10 players required for a tournament")
+		if not (0 < data.get('winning_score', 10) <= 20):
+			raise serializers.ValidationError("Winning score must be between 1 and 20")
 		return data
 
 class TournamentJoinSerializer(serializers.Serializer):

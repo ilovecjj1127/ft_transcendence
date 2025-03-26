@@ -44,6 +44,7 @@ class TournamentCreateView(APIView):
 			return Response(
 				{
 					'message': 'Tournament created successfully',
+					'tournament_name': tournament.name,
 					'status': tournament.status,
 				}, status=status.HTTP_201_CREATED)
 		except ValueError as e:
@@ -70,6 +71,7 @@ class TournamentJoinView(APIView):
 			return Response(
 				{
 					'message': f'{tournament_player.alias} joined Tournament {tournament_player.tournament.name}',
+					'tournament_name': tournament_player.tournament.name,
 					'status': tournament_player.tournament.status,
 				}, status=status.HTTP_200_OK
 			)
