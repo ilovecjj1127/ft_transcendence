@@ -30,6 +30,7 @@ class TournamentPlayerSerialier(serializers.ModelSerializer):
 class TournamentDetailSerializer(serializers.ModelSerializer):
 	players = TournamentPlayerSerialier(many=True)
 	matches = GameDetailSerializer(many=True)
+	creator = serializers.CharField(source='creator.username')
 	class Meta:
 		model = Tournament
 		fields = ['id', 'name', 'status', 'created_at', 'modified_at', 'creator', 'winning_score',
