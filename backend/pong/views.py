@@ -8,8 +8,6 @@ from rest_framework.views import APIView
 
 from users.serializers.UserProfile import SuccessResponseSerializer
 
-
-
 def game(request, game_id):
     return render(request, 'pong/game.html', {
         'game_id': game_id

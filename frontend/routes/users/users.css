@@ -1,0 +1,73 @@
+#users-container {
+    width: 800px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--app-blue);
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+}
+
+#users-img-container {
+    position: absolute;
+    top: 4rem;
+    right: 4rem;
+    width: 20rem;
+    height: 20rem;
+}
+
+#users-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    transition: filter 0.3s ease;
+}
+
+#users-name-container {
+    position: absolute;
+    top: 4rem;
+    left: 4rem;
+    flex-direction: column;
+}
+
+#users-username {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+}
+
+/* Close button styling */
+#users-close-button {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    top: 1rem;
+    right: 1rem;
+    padding: 0;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+#users-close-button i {
+    font-size: 20px;  /* Icon size */
+    margin: 0;        /* Remove default margin */
+    color: white;
+    line-height: 1;    /* Ensure vertical alignment */
+    text-align: center; /* Horizontal centering */
+}
+
+#users-close-button:hover {
+    background-color: #c0392b;
+}
