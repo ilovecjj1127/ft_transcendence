@@ -23,6 +23,7 @@ class TournamentJoinSerializer(serializers.Serializer):
 	alias = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
 class TournamentPlayerSerialier(serializers.ModelSerializer):
+	player = serializers.CharField(source='player.username')
 	class Meta:
 		model = TournamentPlayer
 		fields = ['player', 'alias']

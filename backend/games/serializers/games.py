@@ -5,10 +5,12 @@ from games.models import Game
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'status']
+		fields = ['id', 'player1', 'player2', 'winning_score' 'status']
 		read_only_fields = ['player1', 'status']
 	def validate(self, data):
 		request = self.context.get('request')
+		if not (0 < data.get('winning_score', 10) <= 20):
+			raise serializers.ValidationError("Winning score must be between 1 and 20")
 		if not request or not request.user:
 			raise serializers.ValidationError("User info is required to create a game.")
 		data['player1'] = request.user
