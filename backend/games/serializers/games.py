@@ -5,7 +5,7 @@ from games.models import Game
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'winning_score' 'status']
+		fields = ['id', 'player1', 'player2', 'winning_score', 'status']
 		read_only_fields = ['player1', 'status']
 	def validate(self, data):
 		request = self.context.get('request')
@@ -27,12 +27,16 @@ class GameCreateResponseSerializer(serializers.Serializer):
 	game = GameCreateSerializer()
 
 class GameDetailSerializer(serializers.ModelSerializer):
-	player1 = serializers.CharField(source='player1.username')
-	player2 = serializers.CharField(source='player2.username', allow_null=True)
+	player1_username = serializers.CharField(source='player1.username')
+	player2_username = serializers.CharField(source='player2.username', allow_null=True)
 
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'winning_score', 'status', 'winner', 'tournament', 'created_at', 'modified_at']
+		fields = [
+			'id', 'player1', 'player1_username', 'player2', 'player2_username',
+			'score_player1', 'score_player2', 'winning_score', 'status', 'winner',
+			'tournament', 'created_at', 'modified_at'
+		]
 
 class GameActionSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField()

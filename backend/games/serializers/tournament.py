@@ -23,19 +23,19 @@ class TournamentJoinSerializer(serializers.Serializer):
 	alias = serializers.CharField(max_length=50, required=False, allow_blank=True)
 
 class TournamentPlayerSerialier(serializers.ModelSerializer):
-	player = serializers.CharField(source='player.username')
+	player_username = serializers.CharField(source='player.username')
 	class Meta:
 		model = TournamentPlayer
-		fields = ['player', 'alias']
+		fields = ['player', 'player_username', 'alias']
 
 class TournamentDetailSerializer(serializers.ModelSerializer):
 	players = TournamentPlayerSerialier(many=True)
 	matches = GameDetailSerializer(many=True)
-	creator = serializers.CharField(source='creator.username')
+	creator_username = serializers.CharField(source='creator.username')
 	class Meta:
 		model = Tournament
-		fields = ['id', 'name', 'status', 'created_at', 'modified_at', 'creator', 'winning_score',
-				'min_players', 'max_players', 'players', 'matches']
+		fields = ['id', 'name', 'status', 'created_at', 'modified_at', 'creator', 'creator_username',
+				'winning_score', 'min_players', 'max_players', 'players', 'matches']
 
 class TournamentActionSerializer(serializers.Serializer):
 	tournament_id = serializers.IntegerField()
