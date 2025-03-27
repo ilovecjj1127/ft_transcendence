@@ -54,7 +54,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         redis_messages = await self.redis.lrange(key_messages, 0, -1)
         for msg in redis_messages:
             await self.send_message(json.loads(msg))
-        # set the unread message number to 0
+        await self.update_unread_by(self.scope['user'])
 
     async def disconnect(self, close_code):
         if self.scope['user'].is_anonymous:
@@ -85,6 +85,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }))
             return
 
+        key_user_count = f'chat:{self.room_group_name}:user_count'
+        user_count = int(await self.redis.get(key_user_count) or 0)
+        if user_count == 1:
+            await self.update_unread_by(self.scope['user'])
+
         chat_message = {
             'username': self.username,
             'message': data['message']
@@ -99,7 +104,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': data['message']
             }
         )
-        # if only one user online add unread message to another user
+
+    @database_sync_to_async
+    def update_unread_by(self, user):
+        if self.room.unread_by == user:
+            self.room.unread_by = None
+        elif self.room.user1 == user:
+            self.room.unread_by = self.room.user2
+        else:
+            self.room.unread_by = self.room.user1
+        self.room.save()
 
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"
