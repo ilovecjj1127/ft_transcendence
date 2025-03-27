@@ -1,5 +1,5 @@
 import { createMenuProfile } from "./profile-toggle.js"
-import { setUserToken } from "./userData.js"
+import { saveUserInfo, setUserToken } from "./userData.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -40,6 +40,7 @@ loginForm.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
+        saveUserInfo(data.access)
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {

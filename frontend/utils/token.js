@@ -24,7 +24,6 @@ export function isTokenExpired(token)
     const expirationDate = getExpirationDate(token)
     const currentDate = new Date()
     if (currentDate > expirationDate){
-        alert("token is expired")
         return true         
     }
     return false
@@ -38,7 +37,7 @@ export function deleteTokenReload () {
 async function refreshAccessToken () {
     const refreshToken = getUserToken().refresh
 
-    const response = await fetch(`http://localhost:8000/api/users/token_refresh/`, {
+    const response = await fetch(`http://${window.location.host}/api/users/token_refresh/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -60,8 +59,10 @@ async function refreshAccessToken () {
 export async function checkToken () {
     const token = getUserToken().access
     if (token) {
-        if (isTokenExpired(token)){	
+        if (isTokenExpired(token)){
+            alert('access token expired')	
             if(isTokenExpired(getUserToken().refresh)){
+                alert('refresh token is expired')
                 deleteTokenReload()
                 return false
             }

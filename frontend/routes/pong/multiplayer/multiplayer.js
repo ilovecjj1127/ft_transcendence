@@ -32,6 +32,7 @@ export const init = () => {
         yesButton.addEventListener('click', () => {
             back()
             exitContainer.remove()
+            backToMenu.addEventListener('click', exitCheck)
         })
 
         const noButton = document.createElement('button')
@@ -39,6 +40,7 @@ export const init = () => {
         noButton.innerText = 'No'
         noButton.addEventListener('click', () => {
             exitContainer.remove()
+            backToMenu.addEventListener('click', exitCheck)
         })
 
         exitContainer.appendChild(exitMessage)
@@ -47,6 +49,7 @@ export const init = () => {
 
         
         overlay.appendChild(exitContainer)
+        backToMenu.removeEventListener('click', exitCheck )
     }
 
     function back () {

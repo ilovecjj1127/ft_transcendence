@@ -129,3 +129,14 @@
 #close-button:hover {
     background-color: #c0392b;
 }
+
+#upload-error {
+    margin-top: 10px;
+    font-size: 12px;
+    background-color: white;
+    color: red;
+    display: none;
+    position: absolute;
+    top: 100%;
+    padding: 8px;
+}

@@ -17,6 +17,7 @@ export async function saveUserInfo (access) {
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
         setTimeout( () => {}, 2000)
+        document.getElementById('profile-img').src = userData.avatar 
         return true
     } else {
         console.log("error saving user info")

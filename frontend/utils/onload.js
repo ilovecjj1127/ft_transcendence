@@ -17,10 +17,6 @@ export function onloadInit () {
         const isTokenValid = checkToken()
         if (isTokenValid){
             saveUserInfo(accessToken)
-            if (getUserAvatar()) {
-                const userAvatar = document.getElementById('profile-img')
-                userAvatar.src = getUserAvatar()
-            }
         }
     }
     if (!refreshToken) {
