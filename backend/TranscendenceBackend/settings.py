@@ -66,6 +66,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'TranscendenceBackend.urls'
 
+
+print("os.path.join(BASE_DIR, 'frontend'): ")
+
+print(os.path.join(BASE_DIR, 'frontend'))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
