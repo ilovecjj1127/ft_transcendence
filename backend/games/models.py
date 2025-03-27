@@ -19,13 +19,17 @@ class Tournament(models.Model):
 		],
 		default='registration'
 	)
-	min_players = models.PositiveIntegerField(default=4)
-	max_players = models.PositiveIntegerField(default=8)
+	min_players = models.PositiveIntegerField(default=3)
+	max_players = models.PositiveIntegerField(default=5)
 	winning_score = models.PositiveIntegerField(default=10)
 
 	def clean(self):
-		if self.min_players <= 2:
+		if self.min_players < 3:
 			raise ValidationError("Minimum 3 players required for a tournament")
+		if self.max_players > 10:
+			raise ValidationError("Maximum 10 players is allowed for a tournament")
+		if not (1 <= self.winning_score <= 20):
+			raise ValidationError("Winning score must be between 1 and 20")
 		if self.max_players < self.min_players:
 			raise ValidationError("Maximum players must be greater than minimum players")
 

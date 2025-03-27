@@ -7,7 +7,8 @@ from rest_framework.views import APIView
 
 from games.serializers.tournament import TournamentCreateSerializer, TournamentJoinSerializer, \
 							TournamentActionSerializer, TournamentDetailSerializer
-from games.serializers.games import GameDetailSerializer, SuccessResponseSerializer
+from games.serializers.games import GameDetailSerializer
+from users.serializers.UserProfile import SuccessResponseSerializer
 from games.models import Tournament, Game
 from games.services.tournament import TournamentService
 from django.db.models import Q
@@ -28,8 +29,8 @@ class TournamentCreateView(APIView):
 		name = serializer.validated_data['name']
 		alias = serializer.validated_data.get('alias', None)
 		user = request.user
-		min_players = serializer.validated_data.get('min_players', 4)
-		max_players = serializer.validated_data.get('max_players', 8)
+		min_players = serializer.validated_data.get('min_players', 3)
+		max_players = serializer.validated_data.get('max_players', 5)
 		winning_score = serializer.validated_data.get('winning_score', 10)
 		try:
 			tournament = TournamentService.create_tournament(
@@ -43,6 +44,7 @@ class TournamentCreateView(APIView):
 			return Response(
 				{
 					'message': 'Tournament created successfully',
+					'tournament_name': tournament.name,
 					'status': tournament.status,
 				}, status=status.HTTP_201_CREATED)
 		except ValueError as e:
@@ -69,6 +71,7 @@ class TournamentJoinView(APIView):
 			return Response(
 				{
 					'message': f'{tournament_player.alias} joined Tournament {tournament_player.tournament.name}',
+					'tournament_name': tournament_player.tournament.name,
 					'status': tournament_player.tournament.status,
 				}, status=status.HTTP_200_OK
 			)

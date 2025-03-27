@@ -2,16 +2,15 @@ from rest_framework import serializers
 
 from games.models import Game
 
-class SuccessResponseSerializer(serializers.Serializer):
-    message = serializers.CharField()
-
 class GameCreateSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'status']
+		fields = ['id', 'player1', 'player2', 'winning_score', 'status']
 		read_only_fields = ['player1', 'status']
 	def validate(self, data):
 		request = self.context.get('request')
+		if not (0 < data.get('winning_score', 10) <= 20):
+			raise serializers.ValidationError("Winning score must be between 1 and 20")
 		if not request or not request.user:
 			raise serializers.ValidationError("User info is required to create a game.")
 		data['player1'] = request.user
@@ -28,9 +27,16 @@ class GameCreateResponseSerializer(serializers.Serializer):
 	game = GameCreateSerializer()
 
 class GameDetailSerializer(serializers.ModelSerializer):
+	player1_username = serializers.CharField(source='player1.username')
+	player2_username = serializers.CharField(source='player2.username', allow_null=True)
+
 	class Meta:
 		model = Game
-		fields = ['id', 'player1', 'player2', 'score_player1', 'score_player2', 'winning_score', 'status', 'winner', 'tournament', 'created_at', 'modified_at']
+		fields = [
+			'id', 'player1', 'player1_username', 'player2', 'player2_username',
+			'score_player1', 'score_player2', 'winning_score', 'status', 'winner',
+			'tournament', 'created_at', 'modified_at'
+		]
 
 class GameActionSerializer(serializers.Serializer):
 	game_id = serializers.IntegerField()

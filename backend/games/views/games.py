@@ -8,7 +8,8 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from games.serializers.games import GameCreateSerializer, GameDetailSerializer, GameActionSerializer, \
-									SuccessResponseSerializer, GameCreateResponseSerializer
+									GameCreateResponseSerializer
+from users.serializers.UserProfile import SuccessResponseSerializer
 from games.models import Game
 from games.services.games import GameService
 
@@ -95,13 +96,17 @@ class GameListView(APIView):
 	permission_classes = [IsAuthenticated]
 
 	@extend_schema(
-		summary="List all games",
+		summary="List all the pending games, user's ready and in-progress games for frontend",
 		request=GameDetailSerializer,
 		responses={200: GameDetailSerializer(many=True)},
 		tags=['Games'],
 	)
 	def get(self, request: Request) -> Response:
-		games = Game.objects.all()
+		user = request.user
+		games = Game.objects.filter(
+			(Q(status__in=['ready', 'in_progress']) & (Q(player1=user) | Q(player2=user))) |
+			Q(status='pending')
+		)
 		serializer = GameDetailSerializer(games, many=True)
 		return Response(serializer.data, status=status.HTTP_200_OK)
 	
