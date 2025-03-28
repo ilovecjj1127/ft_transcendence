@@ -62,15 +62,11 @@
     position: relative;
     width: 700px;
     height: 400px;
-    overflow-y: auto;
-    z-index: 10;
-    background-color: rgba(0, 0, 0, 0);
+    overflow-y: auto;  /* Makes the list scrollable */
+    z-index: 10;  /* Ensures the list appears over the canvas */
+    background-color: rgba(0, 0, 0, 0);  /* Semi-transparent background */
     border: none;
-    box-sizing: border-box;
-}
-
-#dropdown-container::-webkit-scrollbar {
-    width: 0px;
+    box-sizing: border-box;  /* Ensures padding is included in total width/height */
 }
 
 .dropdown {
@@ -107,15 +103,16 @@
     padding: 0;
     margin: 0;
     overflow: hidden;
-    /* max-height: 0;  reactivate for scrolling on list */
+    max-height: 0;
     margin-top: 5px;
-    transition: max-height 1.5s ease-out, opacity 2s ease-out 1s;
-    opacity: 0;
+    transition: max-height 1.5s ease-out, opacity 2s ease-out 1s; /* Smooth transition for height and opacity */
+    opacity: 0; /* Initially invisible */
 }
 
 .dropdown-list li {
     color: var(--app-yellow);
     padding: 10px 15px;
+    cursor: pointer;
     border: none;
     font-size: 20px;
     width: 100%;
@@ -147,17 +144,11 @@
 
 .dropdown-list.show {
     display: block;
-    /* max-height: 150px; reactivate for scrollin */
-    opacity: 1;
-    /* overflow-y: auto; reactivate for scrollin*/
+    max-height: 150px; /* Scrollable menu if too many items */
+    opacity: 1; /* Make it fully visible */
+    overflow-y: auto;
 }
-/* reactivate for scrollin */
-/* .dropdown-list::-webkit-scrollbar {
-    display: none;
-} */
 
-
-/* join tournament modal */
 
 #join-modal{
     display: block;
@@ -174,29 +165,13 @@
     z-index: 10;
 }
 
-#join-modal input, 
-#join-modal select, 
-#join-modal textarea {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: none;
-    font-size: 1rem;
-}
-
-#join-btn-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 10px;
-}
-
 #reg-button, #cancel-reg {
     color: black;
     background-color: white;
     font-size: 1rem;
     width: 50%;
     padding: 10px 20px;
+    margin: 10px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
@@ -206,9 +181,6 @@
 #reg-button:hover, #cancel-reg:hover {
     background-color:var(--app-yellow);
 }
-
-
-/* new tournament modal */
 
 #tour-modal {
     display: block;
@@ -223,7 +195,7 @@
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     z-index: 10;
-    width: 300px;
+    width: 300px; /* Adjust width as needed */
 }
 
 #tour-form {
@@ -242,12 +214,6 @@
     font-size: 1rem;
 }
 
-#tour-form-btn-container {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-}
-
 #tour-form button {
     color: black;
     background-color: white;
@@ -256,7 +222,6 @@
     border: none;
     cursor: pointer;
     border-radius: 5px;
-    width: 50%;
     transition: background-color 0.3s;
 }
 
@@ -265,3 +230,8 @@
 }
 
 
+
+/* Scrollbar styles */
+#dropdown-container::-webkit-scrollbar {
+    width: 0px; /* Set the width of the scrollbar */
+}

@@ -1,6 +1,10 @@
 
 import { checkToken } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
+import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
+import { createOpenRegistration } from "./list-creation/openRegistration.js"
+import { createUpcomingGames } from "./list-creation/upcomingGames.js"
+import { createUpcomingTour } from "./list-creation/upcomingTournament.js"
 
 export const init = () => {
     const overlay = document.querySelector('.overlay')
@@ -9,13 +13,7 @@ export const init = () => {
     ctx.clearRect( 0,0, canvas.width, canvas.height)
     createBackToMenu(overlay)
     createTourMenu(overlay)
-    // //extracting parameters on route change
-    // const params = new URLSearchParams(location.search)
-    // const message = params.get('message')
-    console.log("in tournament")
 };
-
-
 
 function createBackToMenu (overlay) {
     const backToMenu = document.createElement('div')
@@ -35,18 +33,37 @@ function createBackToMenu (overlay) {
 function createTourMenu (overlay) {
     const menu = document.createElement('div')
     menu.id = 'tour-menu'
-    createTopButtons(menu)
-    createLists(menu)
+    
+    const topBtnContainer = document.createElement('div')
+    topBtnContainer.id = "top-btn-container"
+    const dropDownContainer = document.createElement('div')
+    dropDownContainer.id = ('dropdown-container')
+    
+    //top buttons
+    createNewTourButton(topBtnContainer)
+    //createLeaderButton(topBtnContainer)
+    
+    //lists
+    createOpenRegistration(dropDownContainer)
+    createUpcomingGames(dropDownContainer)
+    createOnGoingTour(dropDownContainer)
+    createUpcomingTour(dropDownContainer)
+    
+    menu.appendChild(topBtnContainer)
+    menu.appendChild(dropDownContainer)
     overlay.appendChild(menu)
 }
 
-function createTopButtons (menu) {
-    const topBtnContainer = document.createElement('div')
-    topBtnContainer.id = "top-btn-container"
-    createNewTourButton(topBtnContainer)
-    createLeaderButton(topBtnContainer)
-    menu.appendChild(topBtnContainer)
-}
+// function createLeaderButton (container) {
+//     const leader = document.createElement('button')
+//     leader.id = 'leader'
+//     leader.innerText = 'Leaderboard'
+
+//     leader.addEventListener('click', () => {
+//         location.hash = '/pong/tournament/leaderboard'
+//     })
+//     container.appendChild(leader)
+// }
 
 function createNewTourButton (container) {
     const newTour = document.createElement('button')
@@ -54,217 +71,100 @@ function createNewTourButton (container) {
     newTour.innerText = 'Create new tournament'
     container.appendChild(newTour)
     
-    // newTour.addEventListener("click", async function () {
-    //     //create modal to insert the info for tournament
+    newTour.addEventListener("click", async function () {
+        //create modal to insert the info for tournament
+        const formData = await createNewTourModal()
+        if (formData) {
+            const isTokenValid = await checkToken()
+            if (!isTokenValid) return
         
-    //     const isTokenValid = await checkToken()
-    //     if (!isTokenValid) return
-    
-    //     const response = await fetch(`http://${window.location.host}/api/tournament/create/`, {
-    //         method: "POST",
-    //         headers: {
-    //             "Content-Type": "application/json",
-    //             "Authorization": `Bearer ${getUserToken().access}`
-    //         },
-    //         body: JSON.stringify(),
-    //     });
-    //     if (response.ok) {
-    //         const data = await response.json()
-    //         alert("tournament created " + data.game.id)
-    //         localStorage.setItem("gameId", data.game.id)
-    //         //location.hash = '/pong/onlineplayer/onlinegame'
-    //         return true
-    //     } else {
-    //         alert("error creating tournament")
-    //         return false
-    //     }
-    // })
-}
-
-function createLeaderButton (container) {
-    const leader = document.createElement('button')
-    leader.id = 'leader'
-    leader.innerText = 'Leaderboard'
-    container.appendChild(leader)
-
-    //change route to leaderboard
-}
-
-function createLists (menu) {
-    const dropDownContainer = document.createElement('div')
-    dropDownContainer.id = ('dropdown-container')
-    //function to create list
-    createOpenRegistration(dropDownContainer)
-    createUpcomingGames(dropDownContainer)
-    menu.appendChild(dropDownContainer)
-}
-
-//list of joinable tournaments (show/registration)
-function createOpenRegistration (container) {
-    
-    
-    const listContainer = document.createElement('div')
-    listContainer.classList.add('dropdown')
-    const listBtn = document.createElement('button')
-    listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Registration open"
-    const list = document.createElement('ul')
-    list.classList.add('dropdown-list')
-
-    listBtn.addEventListener('click', async () => {
-        //request to create the list
-
-        list.innerHTML = ''
-
-        const isTokenValid = await checkToken()
-        if (!isTokenValid) return
-
-        const listResponse = await fetch(`http://${window.location.host}/api/tournament/show/registration`, {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${getUserToken().access}`
-            },
-        });
-        if (listResponse.ok) {
-            const data = await listResponse.json()
-            if (data.length === 0) {
-                // Handle the empty case, for example:
-                const noTournamentsMessage = document.createElement('p');
-                noTournamentsMessage.textContent = "No tournaments available for registration.";
-                list.appendChild(noTournamentsMessage);
+            const response = await fetch(`http://${window.location.host}/api/tournament/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getUserToken().access}`
+                },
+                body: JSON.stringify({
+                    name: formData["tour-name"],
+                    min_players: formData["min"],
+                    max_players: formData["max"],
+                    winning_score: formData["score"],
+                    alias: formData["alias"],
+                }),
+            });
+            if (response.ok) {
+                const data = await response.json()
+                return true
             } else {
-            data.forEach((tour) => {
-                const li = document.createElement('li')
-                li.textContent = tour.name
-                const button = document.createElement('button')
-                button.innerText = "Register"
-                li.appendChild(button)
-                list.appendChild(li)
-                
-                // button.addEventListener('click', async () => {
-                //     //create the modal for info
-                //     const alias = joinModal()
-                //     if (alias) {
-                //         const isTokenValid = await checkToken()
-                //         if (!isTokenValid) return
-                        
-                //         const registrResponse = await fetch(`http://${window.location.host}/api/tournament/show/registration`, {
-                //             method: "POST",
-                //             headers: {
-                //                 "Content-Type": "application/json",
-                //                 "Authorization": `Bearer ${getUserToken().access}`
-                //             },
-                //             body: JSON.stringify({
-                //                 tournament_id: tour.id,
-                //                 alias: alias 
-                //             }),
-                //         });
-                //         if (registrResponse.ok) {
-                //             alert('registered correctly')
-                //         } else {
-                //             //add error box
-                //             alert('error registration')
-                //         }
-                //     }                    
-                // })
-            })
-        }
-        } else {
-            const li = document.createElement()
-            li.textContent = "Error retrieving Tournament. Try again later"
-            list.appendChild(li)
-        }
-        list.classList.toggle('show')
-        if (list.classList.contains('show')) {
-            listContainer.style.marginBottom = `${list.offsetHeight + 10}px`; // Move the entire dropdown down
-        } else {
-            listContainer.style.marginBottom = ''; // Reset the margin when closed
+                alert("error creating tournament")
+                return false
+            }
         }
     })
-    listContainer.appendChild(list)
-    listContainer.appendChild(listBtn)
-    container.appendChild(listContainer)
 }
 
-//list of next games to play (show/ready/games)
-function createUpcomingGames (container) {
-    const listContainer = document.createElement('div')
-    listContainer.classList.add('dropdown')
-    const listBtn = document.createElement('button')
-    listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Upcoming Games"
-    const list = document.createElement('ul')
-    list.classList.add('dropdown-list')
+async function createNewTourModal() {
+    return new Promise((resolve) => {
+        const overlay = document.querySelector('.overlay')
+        const newTourModal = document.createElement('div')
+        newTourModal.id = 'tour-modal'
+        const form = document.createElement('form')
+        form.id = 'tour-form'
 
-    listBtn.addEventListener('click', () => {
-        const elements = [
-            {id: 'stats', label: 'Statistics'},
-            {id: 'settings', label: 'Settings'},
-            {id: 'logout', label: 'Logout'},
-        ]
-        elements.forEach((element) => {
-            const li = document.createElement('li')
-            li.textContent = element.label
-            list.appendChild(li)
+        const fields = [
+            { label: "Your Alias", id: "alias", type: "text", required: true },
+            { label: "Tournament Name", id: "tour-name", type: "text", required: true },
+            { label: "Min player (min 4)", id: "min", type: "text", required: true },
+            { label: "Max Player (max 8)", id: "max", type: "text", required: true },
+            { label: "Win Score", id: "score", type: "text", required: true },
+        ];
+
+        const inputs = {}
+
+        fields.forEach(field => {
+            const label = document.createElement('label')
+            label.innerText = field.label
+            const input = document.createElement('input')
+            input.type = field.type
+            input.id = field.id
+            if (field.required) input.required = true
+
+            inputs[field.id] = input
+
+            form.appendChild(label)
+            form.appendChild(input)
         });
 
-        list.classList.toggle('show')
-        if (list.classList.contains('show')) {
-            listContainer.style.marginBottom = `${list.offsetHeight + 10}px`; // Move the entire dropdown down
-        } else {
-            listContainer.style.marginBottom = ''; // Reset the margin when closed
-        }
-    })
-    listContainer.appendChild(list)
-    listContainer.appendChild(listBtn)
-    container.appendChild(listContainer)
-}
+        const createTourBtn = document.createElement('button')
+        createTourBtn.type = 'submit'
+        createTourBtn.innerText = 'Create'
 
-//list of upcoming tournament where user is registered but not yet started (show/upcoming)
-function createUpcomingTour () {
+        const cancelTourBtn = document.createElement('button')
+        cancelTourBtn.type = 'button'
+        cancelTourBtn.innerText = 'Cancel'
+        cancelTourBtn.addEventListener('click', () => {
+            newTourModal.remove()
+            resolve(null)
+        });
 
-}
+        form.addEventListener('submit', (event) => {
+            event.preventDefault()
+            const formData = {};
+            Object.keys(inputs).forEach(key => {
+                formData[key] = inputs[key].value
+            })
 
-//list of ongoing tournament, use this to pick created by user by id and give the possibility to cancel
-function createOnGoingTour () {
+            resolve(formData)
+            newTourModal.remove()
+        });
 
-}
+        const formBtnContainer = document.createElement('div')
+        formBtnContainer.id = "tour-form-btn-container"
 
-function joinModal() {
-    const overlay = document.getElementById('overlay')
-    const joinModal = document.createElement('div')
-    joinModal.id = 'join-modal'
-
-    const aliasInput = document.createElement('input')
-    aliasInput.id = 'alias-input'
-    const exitMessage = document.createElement('p')
-    exitMessage.innerText = 'Choose your alias for the tournament'
-
-
-    const registerButton = document.createElement('button')
-    registerButton.id = 'reg-button'
-    registerButton.innerText = 'Register'
-    registerButton.addEventListener('click', () => {
-        const alias = aliasInput.value()
-        joinModal.remove()
-        return (alias)
-    })
-
-    const cancelButton = document.createElement('button')
-    cancelButton.id = 'cancel-reg'
-    cancelButton.innerText = 'Cancel'
-    cancelButton.addEventListener('click', () => {
-        joinModal.remove()
-        return (null)
-    })
-
-
-    joinModal.appendChild(exitMessage)
-    joinModal.appendChild(aliasInput)
-    joinModal.appendChild(yesButton)
-    joinModal.appendChild(noButton)
-
-    
-    overlay.appendChild(exitContainer)
+        formBtnContainer.appendChild(createTourBtn)
+        formBtnContainer.appendChild(cancelTourBtn)
+        form.appendChild(formBtnContainer)
+        newTourModal.appendChild(form)
+        overlay.appendChild(newTourModal)
+    });
 }

@@ -1,6 +1,6 @@
 import { checkToken } from "./token.js";
 
-export async function saveUserInfo (access) {
+export async function saveUserInfo () {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
 
@@ -8,11 +8,12 @@ export async function saveUserInfo (access) {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${access}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
     });
     if (response.ok) {
         const userData = await response.json()
+        localStorage.setItem("id", userData.id)
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
@@ -51,6 +52,10 @@ export function getUserAvatar () {
 
 export function getUsername () {
     return (localStorage.getItem("username"))
+}
+
+export function getUserId () {
+    return (localStorage.getItem("id"))
 }
 
 // export async function setUserAvatar () {

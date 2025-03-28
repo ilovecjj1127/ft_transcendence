@@ -14,10 +14,7 @@ export function onloadInit () {
     }
     else {
         console.log("Access token found:" + accessToken)
-        const isTokenValid = checkToken()
-        if (isTokenValid){
-            saveUserInfo(accessToken)
-        }
+        saveUserInfo()
     }
     if (!refreshToken) {
         console.log("Refresh token not found")
