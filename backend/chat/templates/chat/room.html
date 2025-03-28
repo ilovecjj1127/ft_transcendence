@@ -5,11 +5,17 @@
 </head>
 <body>
     <h2>Room: {{ room_id }}</h2>
-    <div id="chat-log"></div>
+    <div id="chat-log" type="text" size="100"></div>
     <input id="chat-message-input" type="text" size="100">
     <button id="chat-message-submit">Send</button>
+    <button id="create-chatroom-with-bob">Create w/ bob</button>
+    <button id="create-chatroom-with-cathy">Create w/cathy</button>
+
+    <button id="block-chatroom">Block</button>
 
     <script>
+        let accessToken;
+
         const token = localStorage.getItem('access_token');
         if (!token) {
             window.location.href = "/pong/login";
@@ -18,31 +24,76 @@
         const chatSocket = new WebSocket(
             `ws://${window.location.host}/ws/chat/${roomId}/?token=${token}`
         );
+        console.log(chatSocket.url);
+        console.log("err :",   JSON.stringify(chatSocket.error));
+        console.log("readyState :", chatSocket.readyState);
 
+        
         chatSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
+            console.log("data onmessage; ", data.message)
             document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
         };
 
         chatSocket.onclose = function(event) {
             if (event.code === 1006) {
-                alert('Unauthorized: please log in first');
+                alert(`Unauthorized: please log in first, reason; ${event.reason}`);
             } else if (event.code === 4000) {
                 alert(`Chat room ${roomId} does not exist.`);
             } else {
                 console.error('Chat socket closed unexpectedly');
             }
         };
+        console.log("readyState :", chatSocket.readyState);
 
-        document.querySelector('#chat-message-submit').onclick = function() {
+        document.querySelector('#chat-message-submit').onclick = async function() {
             const messageInput = document.querySelector('#chat-message-input');
             const message = messageInput.value;
 
             chatSocket.send(JSON.stringify({
                 'message': message
             }));
+            console.log("data #chat-message-submit; ", message)
 
             messageInput.value = '';
+        };
+        document.querySelector('#create-chatroom-with-cathy').onclick = async function() {
+            accessToken = localStorage.getItem("access_token")
+
+            const response = await fetch(`http://${window.location.host}/chat/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ "username": "cathy" })  // Fixed object syntax
+            });
+        };
+        
+        document.querySelector('#create-chatroom-with-bob').onclick = async function() {
+            accessToken = localStorage.getItem("access_token")
+
+            const response = await fetch(`http://${window.location.host}/chat/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ "username": "bob" })  // Fixed object syntax
+            });
+        };
+        
+        document.querySelector('#block-chatroom').onclick = async function() {
+            accessToken = localStorage.getItem("access_token")
+
+            const response = await fetch(`http://${window.location.host}/chat/block/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ "username": "bob" })  // Wrapped in an object
+            });
         };
     </script>
 </body>

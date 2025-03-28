@@ -19,7 +19,7 @@ class ChatRoomService:
 			return chatroom, False
 		chatroom = ChatRoom.objects.create(user1=user1, user2=user2)
 		return chatroom, True
-	
+
 	@staticmethod
 	@transaction.atomic
 	def block_action(user: UserProfile, chatroom_id: int) -> ChatRoom:

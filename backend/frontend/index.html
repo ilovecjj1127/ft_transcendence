@@ -23,9 +23,14 @@
     </script>
 </head>
 <body>
-    
+
+    <b class="aaaa" id="username-label-home-page" visability="visible" display="block">User: </b>
+    <b class="aaaa" id="username-text-home-page" visability="visible" display="block">~</b>
+
     <!-- Profile -->
+
     <div class="profile-wrapper">
+        <!-- <label id="username-label"><b>User: </b><span id="profile-user-name"></span></label> -->
 		<div class="profile-toggle">
 			<img src="{% static 'img-canvas/default.jpeg' %}" alt="Profile" />
 		</div>
@@ -146,6 +151,7 @@
         <div class="chat-messages"></div> <!-- Message display area -->
         <input type="text" id="chat-input" placeholder="Type a message...">
         <button id="send-message">Send</button>
+        <textarea id="chat-log">hi</textarea>
     </div>
     <div class="select-friend-box" id="select-friend-box-id" style="display: none;">
         <!-- <label for="yeeeaah-man"><b>chatting box</b></label> -->

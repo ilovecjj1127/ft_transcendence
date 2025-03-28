@@ -33,6 +33,7 @@ async function get()
     });
     console.log("GET: api/users/me, status: ", response.status)
     const data_ini = await response.json()
+    document.getElementById("username-text-home-page").innerHTML = data_ini.username
     console.log("data: ", data_ini)
     console.log("data fr: ", data_ini.friends)
     console.log("after")
@@ -237,6 +238,18 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
 
 	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
 })
+
+
+
+const response = await fetch(`http://${window.location.host}/api/users/remove_friend/`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${accessToken}`
+    },
+    body: JSON.stringify({username})
+});
+
 
 async function post(url, body_data) {
 
