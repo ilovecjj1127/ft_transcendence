@@ -28,7 +28,6 @@
         console.log("err :",   JSON.stringify(chatSocket.error));
         console.log("readyState :", chatSocket.readyState);
 
-        
         chatSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
             console.log("data onmessage; ", data.message)
