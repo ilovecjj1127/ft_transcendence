@@ -26,12 +26,11 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 # )
 
 urlpatterns = [
-    # path('', home_view, name='home'),
-    #path('home/', home, name='home'),
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk')),
-    path('chat/', include('chat.urls')),
+    path('chat/', include('chat.urls.ws_urls')),
     path('pong/', include('pong.urls')),
+    path('api/chat/', include('chat.urls.api_urls')),
     # path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     # path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/users/', include('users.urls')),

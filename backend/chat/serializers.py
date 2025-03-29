@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import ChatRoom
 from users.models import UserProfile
 
-class ChatCreateSerializer(serializers.Serializer):
+class ChatGetOrCreateSerializer(serializers.Serializer):
 	username = serializers.CharField()
 
 	def validate_username(self, value):

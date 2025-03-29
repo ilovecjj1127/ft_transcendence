@@ -1,0 +1,28 @@
+#back-to-menu {
+	position: absolute;
+	color: var(--app-yellow);
+	font-size: 2rem;
+	left: 1rem;
+	top: 1rem;
+}
+
+#back-to-menu:hover {
+	display: block;
+	border-radius: 1rem;
+	background-color: var(--app-hover-blue);
+}
+
+#restart-block{
+	background: #55a012;
+	color: white;
+	font-size: x-large;
+    position:absolute;
+	display: none;
+	border-radius: 0.5rem;
+	height: 75px;
+	width: 200px;
+}
+
+#restart-block:hover {
+	scale: 150%
+}

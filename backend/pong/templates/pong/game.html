@@ -28,7 +28,7 @@
         // WebSocket connection setup
         const gameId = "{{ game_id }}";
         const token = localStorage.getItem('access_token');
-        const socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`);
+        const socket = new WebSocket(`ws://${window.location.host}/ws/pong/${gameId}/?token=${token}`);
 
         // Canvas and paddle setup
         const canvas = document.getElementById("gameCanvas");

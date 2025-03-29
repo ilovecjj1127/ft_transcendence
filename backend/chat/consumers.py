@@ -12,17 +12,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room = None
 
     async def connect(self):
-        from .models import ChatRoom
-
-        if self.scope['user'].is_anonymous:
+        print(self)
+        print(f"New WS connection: {self.scope.get('user')}")
+        user = self.scope['user']
+        if user.is_anonymous:
             await self.close(code=1006)
             return
         self.room_id = int(self.scope['url_route']['kwargs']['room_id'])
-        try:
-            self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
-        except ObjectDoesNotExist:
+        is_valid_user, error_code = await self.is_user_in_room(self.scope['user'])
+        if not is_valid_user:
             await self.accept()
-            await self.close(code=4000)
+            await self.close(code=error_code)
             return
         self.room_group_name = f'chat_{self.room_id}'
         self.username = self.scope['user'].username
@@ -35,6 +35,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         key_user_count = f'chat:{self.room_group_name}:user_count'
         await self.redis.incr(key_user_count)
         await self.load_previous_messages()
+    
+    @database_sync_to_async
+    def is_user_in_room(self, user):
+        from .models import ChatRoom
+
+        try:
+            self.room = ChatRoom.objects.get(id=self.room_id)
+            if user == self.room.user1 or user == self.room.user2:
+                return True, 0
+            return False, 4001
+        except ObjectDoesNotExist:
+            return False, 4000
 
     async def load_previous_messages(self):
         history_messages = await database_sync_to_async(lambda: self.room.history)()
@@ -44,6 +56,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         redis_messages = await self.redis.lrange(key_messages, 0, -1)
         for msg in redis_messages:
             await self.send_message(json.loads(msg))
+        await self.update_unread_by(self.scope['user'])
 
     async def disconnect(self, close_code):
         if self.scope['user'].is_anonymous:
@@ -74,6 +87,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }))
             return
 
+        key_user_count = f'chat:{self.room_group_name}:user_count'
+        user_count = int(await self.redis.get(key_user_count) or 0)
+        if user_count == 1:
+            await self.update_unread_by(self.scope['user'])
+
         chat_message = {
             'username': self.username,
             'message': data['message']
@@ -88,6 +106,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'message': data['message']
             }
         )
+
+    @database_sync_to_async
+    def update_unread_by(self, user):
+        if self.room.unread_by == user:
+            self.room.unread_by = None
+        elif self.room.user1 == user:
+            self.room.unread_by = self.room.user2
+        else:
+            self.room.unread_by = self.room.user1
+        self.room.save()
 
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"

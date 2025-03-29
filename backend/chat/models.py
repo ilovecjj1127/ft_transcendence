@@ -6,7 +6,8 @@ class ChatRoom(models.Model):
     user1 = models.ForeignKey(UserProfile, related_name='chat_rooms1', on_delete=models.CASCADE)
     user2 = models.ForeignKey(UserProfile, related_name='chat_rooms2', on_delete=models.CASCADE)
     history = models.JSONField(default=list)
-    blocked_by = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.SET_NULL)
+    blocked_by = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.SET_NULL, related_name="blocked_chat")
+    unread_by = models.ForeignKey(UserProfile, null=True, blank=True, on_delete=models.SET_NULL, related_name="unread_chat")
 
     @property
     def is_blocked(self):

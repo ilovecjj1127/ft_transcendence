@@ -73,7 +73,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],
-        'DIRS': [os.path.join(BASE_DIR, 'frontend')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -143,8 +142,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-STATICFILES_DIRS = [ os.path.join(BASE_DIR, 'frontend'),  # Absolute path to the 'frontend' directory
-]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
@@ -179,11 +177,15 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+REDIS_HOST = os.getenv("REDIS_HOST", "transcendence_redis")  # Defaults to service name
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")  # Defaults to service name
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
+            "hosts": [(REDIS_HOST, int(REDIS_PORT))],  # Ensure this matches your Redis host and port
+            # 'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
         },
     }
 }
