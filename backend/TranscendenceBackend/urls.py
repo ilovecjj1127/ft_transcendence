@@ -24,8 +24,9 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk')),
-    path('chat/', include('chat.urls')),
+    path('chat/', include('chat.urls.ws_urls')),
     path('pong/', include('pong.urls')),
+    path('api/chat/', include('chat.urls.api_urls')),
     path('api/users/', include('users.urls')),
 	path('api/games/', include('games.urls.games')),
 	path('api/tournament/', include('games.urls.tournament')),
