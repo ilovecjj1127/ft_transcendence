@@ -1,6 +1,6 @@
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
-import { showLoginModal } from "../menu/main.js"
+import { showLoginModal } from "../../utils/modals.js"
 
 let url;
 let accessToken;
@@ -8,7 +8,7 @@ let friends;
 let data;
 
 window.addEventListener("load",  async function () {
-    accessToken = localStorage.getItem("access_token")
+    accessToken = localStorage.getItem("accessToken")
 
     if (!accessToken ) { //|| checkIfBackendKnowsUser()
         console.log("Access token not found")
@@ -71,11 +71,24 @@ function openChattingBox(frienda)
     console.log("hi openning chat box with:", frienda)
     const chattingBox = document.getElementById("chatting-box-id");
     if (chattingBox && switch_bool) {
+
+        // Check if script is already loaded
+        if (!document.getElementById("chat-script")) {
+            const script = document.createElement("script");
+            script.src = "/routes/social/chatbox.js"; // Make sure the path is correct
+            script.id = "chat-script";
+            document.body.appendChild(script);
+        }
+
         chattingBox.style.display = "block";
         document.getElementById("chat-user-name").textContent = frienda;
         switch_bool = false
     }
     else if (chattingBox && !switch_bool) {
+        const script = document.getElementById("chat-script");
+        if (script) {
+            script.remove(); // Remove script to clean up
+        }
         chattingBox.style.display = "none";
         switch_bool = true
     } else {
@@ -235,27 +248,15 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
 
 	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
-
+    console.log("hi send")
 	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
 })
-
-
-
-const response = await fetch(`http://${window.location.host}/api/users/remove_friend/`, {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${accessToken}`
-    },
-    body: JSON.stringify({username})
-});
-
 
 async function post(url, body_data) {
 
 	// if (!checkToken()) return
-	const refreshToken = localStorage.getItem('refresh_token')
-    const accessToken = localStorage.getItem('access_token')
+	// const refreshToken = localStorage.getItem('refresh_token')
+    const accessToken = localStorage.getItem('accessToken')
 
     const response = await fetch(url, {
         method: "POST",

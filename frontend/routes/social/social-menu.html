@@ -1,0 +1,78 @@
+<!-- Social menu -->
+
+<button type="button" class="social-menu" id="open-social-menu" onclick="openSocialMenu()">Open Social Menu</button>
+<!-- chat -->
+<div id="chat-container">
+	<button type="button" class="social-menu" onclick="closeSocialMenu()">Close Menu</button>
+
+	<!-- <h1>Chat</h1> -->
+	<!-- <button class="open-friendship-menu-button" id="myForm">Open Friendship-Menu</button> -->
+	<div id="friendship-menu">
+		<button id="send-requests" onclick="openSendRequestsForm()">Send requests</button>
+		<button id="show-requests" onclick="openShowRequestsForm()">Show requests</button>
+	</div>
+	<form id="send-request-form">
+		<label for="username"><b>Username</b></label>
+		<!-- <input id="username2"> -->
+		<input type="text" placeholder="Enter Name" name="username" id="username" required>
+		<label for="message"><b>Message</b></label>
+		<input type="text" placeholder="Send initial message if you want" name="message">
+		<button type="submit" id="send-form-button">Send</button>
+		<button type="button" class="cancel-button" onclick="closeSendRequestsForm()">Cancel</button>
+	</form>
+	<div id="show-requests-box">
+		<label for="incoming-requests"><b>Incoming requests</b></label>
+		<ul id="incoming-requests">
+			<div class="friend">
+				<div class="friend-name">Name</div>
+				<div class="friend-buttons">
+					<button id="accept-friend">accept</button>
+					<button id="decline-friend">decline</button>
+				</div>
+			</div>
+		</ul>
+		<label for="outgoing-requests"><b>Outgoing requests</b></label>
+		<ul id="outgoing-requests">
+			<div class="friend-name">Name</div>
+		</ul>
+		<button type="button" class="cancel-button" onclick="closeShowRequestsForm()">Cancel</button>
+	</div>
+	<div id="friend-list-container">
+		Friend list
+		<ul id="friend-list">
+			<div class="friend">
+				<div class="friend-name">Name</div>
+				<div class="friend-buttons">
+					<button id="chat-friend">chat</button>
+					<button id="select-friend">select</button>
+				</div>
+			</div>
+		</ul>
+	</div>
+</div>
+
+<!-- chatbox -->
+
+<div class="chatting-box" id="chatting-box-id" style="display: none;">
+	<!-- <label for="yeeeaah-man"><b>chatting box</b></label> -->
+
+    <h2>Room: {{ room_id }}</h2>
+    <div id="chat-log" type="text" size="100"></div>
+    <input id="chat-message-input" type="text" size="100">
+    <button id="chat-message-submit">Send</button>
+    <button id="create-chatroom-with-bob">Create w/ bob</button>
+    <button id="create-chatroom-with-cathy">Create w/cathy</button>
+
+    <button id="block-chatroom">Block</button>
+
+	<label id="chat-label"><b>Chatting with: </b><span id="chat-user-name"></span></label>
+	<div class="chat-messages"></div> <!-- Message display area -->
+	<input type="text" id="chat-input" placeholder="Type a message...">
+	<button id="send-message">Send</button>
+	<textarea id="chat-log">hi</textarea>
+</div>
+<div class="select-friend-box" id="select-friend-box-id" style="display: none;">
+	<!-- <label for="yeeeaah-man"><b>chatting box</b></label> -->
+	<label id="selected-label"><b>Selected: </b><span id="friend-user-name"></span></label>
+	<button id="remove-friend">Remove friend, very sad this is</button>
+</div>

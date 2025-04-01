@@ -3,10 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SPA carlo</title>
+    <!-- {% load static %} -->
+    <script src="routes/social/friendships.js" type="module"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./routes/social/chat-style.css">
+
     <script>
         (function(d) {
           var config = {
@@ -21,11 +25,17 @@
 <body>
     <!-- bg animation -->
     <div id="bganimation">
-        <img src="media/face1.png" class="face">
+        <!-- <img src="media/face1.png" class="face">
         <img src="media/face2.png" class="face">
         <img src="media/face3.png" class="face">
-        <img src="media/face4.png" class="face">
-      </div>
+        <img src="media/face4.png" class="face"> -->
+    </div>
+
+    <!-- Logged in profile -->
+
+    <b class="aaaa" id="username-label-home-page" visability="visible" display="block">User: </b>
+    <b class="aaaa" id="username-text-home-page" visability="visible" display="block">~</b>
+
     <!-- Profile-toggle -->
     <div class="profile-wrapper">
 		<div class="profile-toggle">
@@ -65,7 +75,7 @@
                 </div>
             </div>
         </div>
-    </div>    
+    </div>
 
     <!-- Register Modal -->
     <div class="modal fade" id="registerModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
@@ -99,15 +109,56 @@
             </div>
         </div>
     </div>
-    
+
     <!-- canvas -->
     <div id="game-container" class="canvas-container">
         <canvas id="gameCanvas" width="800" height="600"></canvas>
         <div class="overlay"></div>
     </div>
 
+    <!-- Social Menu -->
+    <!-- <iframe src="routes/social/social-menu.html" width="100%" height="500px" style="border:none;"></iframe>Z -->
+    <!-- Load Social Menu -->
+    <!-- <script src="routes/social/loadSocialMenu.js"></script> -->
+    <div id="social-menu"></div>
+    <script>
+        // Load social-menu.html directly into the placeholder
+        fetch('routes/social/social-menu.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('social-menu').innerHTML = html;
+            })
+            .catch(error => console.error('Error loading social menu:', error));
+    </script>
+    <script>
+        function openSocialMenu() {
+            document.getElementById("chat-container").style.display = "flex"
+        }
+        function closeSocialMenu() {
+            document.getElementById("chat-container").style.display = "none"
+        }
+        function openSendRequestsForm() {
+            document.getElementById("send-request-form").style.display = "block"
+        }
+        function closeSendRequestsForm() {
+            document.getElementById("send-request-form").style.display = "none"
+        }
+        function openShowRequestsForm() {
+            document.getElementById("show-requests-box").style.display = "block"
+        }
+        function closeShowRequestsForm() {
+            document.getElementById("show-requests-box").style.display = "none"
+        }
+    </script>
+
 
     <main id="app"></main>
     <script src="app.js" type="module"></script>
+    <!-- Load Social Menu -->
+    <!-- <script src="routes/social/loadSocialMenu.js"></script> -->
+    <!-- <script src="routes/social/buttons.js"></script> -->
+    <!-- <script src="routes/social/chatbox.js"></script> -->
+    <!-- <script src="routes/social/friendships.js"></script> -->
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
