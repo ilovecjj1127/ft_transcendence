@@ -19,13 +19,16 @@
     </script>
 </head>
 <body>
+
+    
     <!-- bg animation -->
     <div id="bganimation">
         <img src="media/face1.png" class="face">
         <img src="media/face2.png" class="face">
         <img src="media/face3.png" class="face">
         <img src="media/face4.png" class="face">
-      </div>
+    </div>
+
     <!-- Profile-toggle -->
     <div class="profile-wrapper">
 		<div class="profile-toggle">
@@ -107,8 +110,64 @@
     </div>
 
 
+    <!-- friends list -->
+
+    <div id="friends-container">
+        <button id="add-friend-btn">
+            <i class='bx bxs-user-plus'></i>
+        </button>
+        <button id="request-friend-btn">
+            <i class='bx bxs-user-detail'></i>
+        </button>
+        <div id="friends-list-container">
+            <ul id="friends-list"></ul>
+        </div>
+    </div>
+    
+    <!-- chat -->
+
+    <div id="chat-container">
+        <div class="chatbox-message-wrapper">
+			<div class="chatbox-message-header">
+				<div class="chatbox-message-profile">
+					<img src="./media/default.jpeg" alt="" class="chatbox-message-image">
+					<div>
+						<h4 class="chatbox-message-name">Name NAME</h4>
+						<p class="chatbox-message-status">online</p>
+					</div>
+				</div>
+                <div class="chatbox-header-actions">
+                    <div class="chatbox-message-dropdown">
+                        <i class='bx bx-dots-vertical-rounded chatbox-message-dropdown-toggle' ></i>
+                        <ul class="chatbox-message-dropdown-menu">
+                            <li>
+                                <a href="#">Invite</a>
+                            </li>
+                            <li>
+                                <a href="#">Remove</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="chatbox-message-close">
+                        <i class='bx bx-x'></i>
+                    </div>
+                </div>
+            </div>
+			<div class="chatbox-message-content">
+				<h4 class="chatbox-message-no-message">You don't have any message</h4>
+			</div>
+			<div class="chatbox-message-bottom">
+				<form action="#" class="chatbox-message-form">
+					<textarea rows="1" placeholder="Type message..." class="chatbox-message-input"></textarea>
+					<button type="submit" class="chatbox-message-submit"><i class='bx bxs-send' ></i></button>
+				</form>
+			</div>
+        </div>
+    </div>
+
     <main id="app"></main>
     <script src="app.js" type="module"></script>
+    <script src="chat.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
 </html>

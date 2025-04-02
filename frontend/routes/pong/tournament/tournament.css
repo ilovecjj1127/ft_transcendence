@@ -114,7 +114,8 @@
 }
 
 .dropdown-list li {
-    color: var(--app-yellow);
+    background-color: #f1f1f1;
+    color: var(--app-blue);
     padding: 10px 15px;
     border: none;
     font-size: 20px;
@@ -140,10 +141,10 @@
 }
 
 
-.dropdown-list li:hover {
+/* .dropdown-list li:hover {
     background-color: #f1f1f1;
     color: var(--app-blue)
-}
+} */
 
 .dropdown-list.show {
     display: block;
