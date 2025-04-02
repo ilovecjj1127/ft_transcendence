@@ -16,7 +16,7 @@
     <script>
         let accessToken;
 
-        const token = localStorage.getItem('access_token');
+        const token = localStorage.getItem('accessToken');
         if (!token) {
             window.location.href = "/pong/login";
         }
@@ -59,9 +59,9 @@
             messageInput.value = '';
         };
         document.querySelector('#create-chatroom-with-cathy').onclick = async function() {
-            accessToken = localStorage.getItem("access_token")
+            accessToken = localStorage.getItem("accessToken")
 
-            const response = await fetch(`http://${window.location.host}/chat/create/`, {
+            const response = await fetch(`http://${window.location.host}/get_or_create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -74,7 +74,7 @@
         document.querySelector('#create-chatroom-with-bob').onclick = async function() {
             accessToken = localStorage.getItem("access_token")
 
-            const response = await fetch(`http://${window.location.host}/chat/create/`, {
+            const response = await fetch(`http://${window.location.host}/get_or_create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
