@@ -1,5 +1,9 @@
 <!-- Social menu -->
 
+<script src="./routes/social/buttons.js"></script>
+<link rel="stylesheet" href="./routes/social/chat-menu.css">
+<link rel="stylesheet" href="./routes/social/chat-menu.js">
+
 <button type="button" class="social-menu" id="open-social-menu" onclick="openSocialMenu()">Open Social Menu</button>
 <!-- chat -->
 <div id="chat-container">
@@ -39,6 +43,7 @@
 	</div>
 	<div id="friend-list-container">
 		Friend list
+		<button id="show-hide" onclick="showHide('friend-list','flex')">Show/Hide</button>
 		<ul id="friend-list">
 			<div class="friend">
 				<div class="friend-name">Name</div>
@@ -49,6 +54,27 @@
 			</div>
 		</ul>
 	</div>
+	<div id="chat-menu-container">
+		Chat menu
+		<button id="show-hide" onclick="showHide('chat-menu','flex')">Show/Hide</button>
+		<div id="chat-menu" style="display: none;">
+			<!-- <label for="type_of_search_drop_down_options"><b>Type of search</b></label> -->
+			<!-- Rooms -->
+			
+			<div id="filter-options">
+				<label for="chat_room_name"><b>Apply search filter</b></label>
+				<input type="text" placeholder="Apply filter for chatroom..." name="chat_room_search" id="chat_room_search" required>
+				<label for="filter-value"><b>Applied filter: </b></label>
+				<div id="filter-value"><b>None</b></div>
+			</div>
+			<button id="load-rooms" onclick="showHide('chat-room-list','flex'), loadChatRooms()">Load rooms / Hide</button>
+			<div id="chat-room-list-container">
+				<label for="chat-room-list"><b>Rooms</b></label>
+				<ul id="chat-room-list"></ul>  <!-- List will be populated dynamically -->
+			</div>
+		</div>
+	</div>
+
 </div>
 
 <!-- chatbox -->

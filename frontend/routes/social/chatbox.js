@@ -1,11 +1,14 @@
 let accessToken;
+
 const chattingBox = document.getElementById("chatting-box-id");
 
 const token = localStorage.getItem('accessToken');
 if (!token) {
 	window.location.href = "/pong/login";
 }
-const roomId = "{{ room_id }}";
+let roomId = "{{ room_id }}";
+roomId = 2;
+
 const chatSocket = new WebSocket(
 	`ws://${window.location.host}/ws/chat/${roomId}/?token=${token}`
 );
@@ -45,7 +48,8 @@ document.querySelector('#chat-message-submit').onclick = async function() {
 };
 
 document.querySelector('#create-chatroom-with-cathy').onclick = async function() {
-	accessToken = localStorage.getItem("access_token")
+	accessToken = localStorage.getItem("accessToken")
+	console.log("accessToken: ", accessToken)
 
 	const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
 		method: "POST",
@@ -58,7 +62,7 @@ document.querySelector('#create-chatroom-with-cathy').onclick = async function()
 };
 
 document.querySelector('#create-chatroom-with-bob').onclick = async function() {
-	accessToken = localStorage.getItem("access_token")
+	accessToken = localStorage.getItem("accessToken")
 
 	const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
 		method: "POST",
@@ -71,7 +75,7 @@ document.querySelector('#create-chatroom-with-bob').onclick = async function() {
 };
 
 document.querySelector('#block-chatroom').onclick = async function() {
-	accessToken = localStorage.getItem("access_token")
+	accessToken = localStorage.getItem("accessToken")
 
 	const response = await fetch(`http://${window.location.host}/chat/block/`, {
 		method: "POST",

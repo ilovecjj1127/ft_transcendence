@@ -1,10 +1,11 @@
 div#chat-container{
-	position: fixed;
-	/* max-width: 30%; */
+	position: absolute;
+	right: 0;
+	top: 0;
+	max-width: 30%;
 	flex-direction: column;
 	width: 20%;
 	height: 90%;
-	right: 0;
 	display: none;
 	justify-content: left;
 	align-items: right;
