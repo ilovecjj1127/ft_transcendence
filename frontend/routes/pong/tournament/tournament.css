@@ -107,8 +107,6 @@
     padding: 0;
     margin: 0;
     overflow: hidden;
-    /* max-height: 0;  reactivate for scrolling on list */
-    margin-top: 5px;
     transition: max-height 1.5s ease-out, opacity 2s ease-out 1s;
     opacity: 0;
 }
@@ -123,6 +121,10 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+
 }
 
 .dropdown-list li button {

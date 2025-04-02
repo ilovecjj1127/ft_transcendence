@@ -1,7 +1,7 @@
 //!!!!!!!!remove event listeners for onlinegame.js!!!!!!!!!!!
 
 import { checkToken } from "../../../utils/token.js"
-import { getUserToken } from "../../../utils/userData.js"
+import { getUsername, getUserToken } from "../../../utils/userData.js"
 
 export const init = () => {
     const overlay = document.querySelector('.overlay')
@@ -48,8 +48,8 @@ async function createGamesList (list) {
     if (!isTokenValid) return
     list.innerHTML = ""
 
-    //Fill with pending games
-    const pendingGamesResponse = await fetch(`http://${window.location.host}/api/games/show/pending`, {
+    //Fill with games
+    const listGamesResponse = await fetch(`http://${window.location.host}/api/games/show/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -57,120 +57,120 @@ async function createGamesList (list) {
         },
     });
 
-    if (pendingGamesResponse.ok) {
-        const data = await pendingGamesResponse.json();
-        
-        
-        data.forEach((game) => {
-            const li = document.createElement("li")
-            li.textContent = 'vs - ' + game.player1
-            li.setAttribute('data-id', game.id + ' -')
-            
-            const button = document.createElement("button")
-            button.textContent = "Join"
-            
-            li.appendChild(button)
-            list.appendChild(li)
-    
-            button.onclick = async () => {
-
-                alert(`Button for ${game.id} clicked!`);
-
-                const isTokenValid = await checkToken()
-                if (!isTokenValid) return
-                
-                const response = await fetch(`http://${window.location.host}/api/games/join/`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${getUserToken().access}`
-                    },
-                    body: JSON.stringify({game_id: game.id}),
-                });
-                if (response.ok) {
-                    alert("game joined " +  game.id)
-                    localStorage.setItem("gameId", game.id)
-                    location.hash = '/pong/onlineplayer/onlinegame'
-                    return true
-                } else {
-                    alert("error joining game")
-                    return false
-                }
-            };
-        })        
-    } else {
-        alert("Cannot retrieve pending game list!");
-    }
-
-    //Fill with ready games
-    const readyGamesResponse = await fetch(`http://${window.location.host}/api/games/show/ready`, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${getUserToken().access}`
-        },
-    });
-
-    if (readyGamesResponse.ok) {
-        const data = await readyGamesResponse.json();
+    if (listGamesResponse.ok) {
+        const data = await listGamesResponse.json();
         
         data.forEach((game) => {
             
             const li = document.createElement("li")
-            li.textContent = 'vs - ' + game.player1
-            li.setAttribute('data-id', game.id + ' -')
-            
-            const buttonContainer = document.createElement('div')
-            buttonContainer.classList.add("button-container")
 
-            const joinButton = document.createElement("button")
-            joinButton.textContent = "Rejoin"
-            buttonContainer.appendChild(joinButton)
+            const gameDetails = document.createElement('div')
+            gameDetails.classList.add('game-details')
+            gameDetails.innerHTML = `${game.id} 
+            ${
+                game.player1_username && game.player1_username !== getUsername()
+                    ? '- vs ' + game.player1_username
+                    : game.player1_username === getUsername() && !game.player2_username
+                    ? '- WAITING FOR OPPONENT'
+                    : ''
+            }
+            ${
+                game.player2_username && game.player2_username !== getUsername()
+                    ? '- vs ' + game.player2_username
+                    : game.player2_username === getUsername() && !game.player1_username
+                    ? '- WAITING FOR OPPONENT'
+                    : ''
+            } 
+            ${game.tournament ? " - TOURNAMENT: " + game.tournament : ''}`
             
-            const cancelButton = document.createElement("button")
-            cancelButton.textContent = "Cancel"
-            buttonContainer.appendChild(cancelButton)
+            const status = document.createElement('span')
+            const listButton = document.createElement("button")
             
-            li.appendChild(buttonContainer)
+            switch (game.status){
+                case "ready":
+                    status.innerHTML = `${game.status.toUpperCase()}`
+                    status.style.color = 'green'
+                    listButton.textContent = "Start"
+                    listButton.addEventListener('click', ()=> startGame(game.id))
+                    break
+                case "in_progress":
+                    status.innerHTML = `${game.status.toUpperCase()}`
+                    status.style.color = 'white'
+                    listButton.textContent = "Rejoin"
+                    listButton.addEventListener('click', ()=> startGame(game.id))
+                    break
+                case "pending":
+                    status.innerHTML = `${game.status.toUpperCase()}`
+                    status.style.color = 'orange'
+                    if (game.player1_username == getUsername() || game.player2_username == getUsername()) {
+                        listButton.textContent = "Cancel"
+                        listButton.addEventListener('click', ()=> cancelGame(game.id, li))
+                    } else {
+                        listButton.textContent = "Join"
+                        listButton.addEventListener('click', ()=> joinGame(game.id))
+                    }
+                    break
+            }
+
+            li.appendChild(gameDetails);
+            li.appendChild(status)
+            li.appendChild(listButton)
             list.appendChild(li)
-            
-            cancelButton.onclick = async () => {
-
-                alert(`Button to cancel ${game.id} clicked!`);
-
-                const isTokenValid = await checkToken()
-                if (!isTokenValid) return
-                
-                const response = await fetch(`http://${window.location.host}/api/games/cancel/`, {
-                    method: "PATCH",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${getUserToken().access}`
-                    },
-                    body: JSON.stringify({game_id: game.id}),
-                });
-                if (response.ok) {
-                    alert("game cancelled " +  game.id)
-                    li.remove()
-                    return true
-                } else {
-                    alert("error cancelling game")
-                    return false
-                }
-            }
-
-            joinButton.onclick = async () => {
-
-                alert(`Button for ${game.id} clicked!`);
-                    localStorage.setItem("gameId", game.id)
-                    location.hash = '/pong/onlineplayer/onlinegame'
-            }
         })        
     } else {
         alert("Cannot retrieve ready game list!");
     }
 }
 
+async function startGame (gameId) {
+    localStorage.setItem("gameId", gameId)
+    location.hash = '/pong/onlineplayer/onlinegame'
+}
+
+async function joinGame (gameId) {
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+    
+    const response = await fetch(`http://${window.location.host}/api/games/join/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getUserToken().access}`
+        },
+        body: JSON.stringify({game_id: gameId}),
+    });
+    if (response.ok) {
+        alert("game joined " +  gameId)
+        localStorage.setItem("gameId", gameId)
+        location.hash = '/pong/onlineplayer/onlinegame'
+        return true
+    } else {
+        alert("error joining game")
+        return false
+    }
+}
+
+async function cancelGame(gameId, li) {
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+    
+    const response = await fetch(`http://${window.location.host}/api/games/cancel/`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getUserToken().access}`
+        },
+        body: JSON.stringify({game_id: gameId}),
+    });
+    if (response.ok) {
+        alert("game cancelled " +  gameId)
+        li.remove()
+        return true
+    } else {
+        alert("error cancelling game")
+        return false
+    }
+}
 
 function createNewGameButton (menu) {
     const newGame = document.createElement('button')
