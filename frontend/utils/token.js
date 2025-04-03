@@ -66,6 +66,7 @@ export async function checkToken () {
                 deleteTokenReload()
                 return false
             }
+            alert("refresh token not expired")
             return (await refreshAccessToken())
         }
         return true

@@ -41,7 +41,6 @@ function createTourMenu (overlay) {
     
     //top buttons
     createNewTourButton(topBtnContainer)
-    //createLeaderButton(topBtnContainer)
     
     //lists
     createOpenRegistration(dropDownContainer)
@@ -53,17 +52,6 @@ function createTourMenu (overlay) {
     menu.appendChild(dropDownContainer)
     overlay.appendChild(menu)
 }
-
-// function createLeaderButton (container) {
-//     const leader = document.createElement('button')
-//     leader.id = 'leader'
-//     leader.innerText = 'Leaderboard'
-
-//     leader.addEventListener('click', () => {
-//         location.hash = '/pong/tournament/leaderboard'
-//     })
-//     container.appendChild(leader)
-// }
 
 function createNewTourButton (container) {
     const newTour = document.createElement('button')

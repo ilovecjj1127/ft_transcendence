@@ -1,12 +1,10 @@
-import PongOffline from "../../../games/pong-offline.js";
+import PongOnline from "../../../../games/pong-online.js";
 
 let Pong
 
 export const init = () => {
-    if (Pong){
-        Pong.destroy()
-    }
 
+    console.log("in tournament game")
     const overlay = document.querySelector('.overlay')
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d');
@@ -17,7 +15,9 @@ export const init = () => {
     backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
     overlay.appendChild(backToMenu)
     
-    Pong = new PongOffline('multi')
+    const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
+
+    Pong = new PongOnline(gameInfo)
 
     function exitCheck() {
         const exitContainer = document.createElement('div')
@@ -55,6 +55,7 @@ export const init = () => {
     function back () {
         backToMenu.removeEventListener('click', exitCheck )
         Pong.stop()
+        localStorage.removeItem('gameInfo')
     }
 
     backToMenu.addEventListener('click', exitCheck)

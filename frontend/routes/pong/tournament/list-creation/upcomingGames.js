@@ -1,5 +1,5 @@
 import { checkToken } from "../../../../utils/token.js"
-import { getUserId, getUserToken } from "../../../../utils/userData.js"
+import { getUserId, getUserToken, getUsername} from "../../../../utils/userData.js"
 
 //list of next games to play (show/ready/games)
 export function createUpcomingGames (container) {
@@ -40,13 +40,27 @@ async function requestList (list, listContainer) {
         } else {
             data.forEach((game) => {
                 const li = document.createElement('li')
-                //change player with alias and check for right one 
-                li.textContent = game.id + ' vs ' + game.player2
+                li.innerHTML = `${game.id} 
+                ${
+                    game.player1_username && game.player1_username !== getUsername()
+                        ? '- vs ' + game.player1_username
+                        : game.player1_username === getUsername() && !game.player2_username
+                        ? '- WAITING FOR OPPONENT'
+                        : ''
+                }
+                ${
+                    game.player2_username && game.player2_username !== getUsername()
+                        ? '- vs ' + game.player2_username
+                        : game.player2_username === getUsername() && !game.player1_username
+                        ? '- WAITING FOR OPPONENT'
+                        : ''
+                } 
+                ${game.tournament ? " - TOURNAMENT: " + game.tournament : ''}`
                 const button = document.createElement('button')
                 button.innerText = "Play"
                 li.appendChild(button)
                 list.appendChild(li)
-                button.addEventListener('click', playGame)
+                button.addEventListener('click', ()=> playGame(game))
             })
         }
     } else {
@@ -64,6 +78,19 @@ async function requestList (list, listContainer) {
     }
 }
 
-async function playGame () {
-    alert('button to play the game pressed')
+async function playGame (game) {
+    const gameInfo = {}
+    gameInfo.gameId = game.id
+    gameInfo.winScore = game.winning_score
+    gameInfo.hash = '/pong/tournament'
+    if (game.tournament) {
+        gameInfo.player1 = game.player1_alias
+        gameInfo.player2 = game.player2_alias
+    } else {
+        gameInfo.player1 = game.player1_username
+        gameInfo.player2 = game.player2_username
+    }
+    
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
+    location.hash = '/pong/tournament/tournamentgame'
 }

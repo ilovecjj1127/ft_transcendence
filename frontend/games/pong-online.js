@@ -6,11 +6,17 @@ const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
  
 export default class PongOnline {
-    constructor(gameId) {
-        this.start(gameId)
+    constructor(gameInfo) {
+        this.start(gameInfo)
+        this.stop = this.stop.bind(this)
+        this.destroy = this.destroy.bind(this);
+        this.winScore = gameInfo.winScore
+        this.player1 = gameInfo.player1
+        this.player2 = gameInfo.player2
+        this.hash = gameInfo.hash
     }
 
-    start(gameId) {
+    start(gameInfo) {
         this.ball = new Ball()
         this.paddle1 = new Paddle(1)
         this.paddle2 = new Paddle(2)
@@ -28,7 +34,7 @@ export default class PongOnline {
         window.addEventListener('keyup', this.handleKeyUp)
 
         // WebSocket connection setup
-        this.gameId = gameId
+        this.gameId = gameInfo.gameId
         this.token = getUserToken().access
         this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
 
@@ -97,8 +103,24 @@ export default class PongOnline {
             this.ball.y = data.ball_y;
             this.score1 = data.score1;
             this.score2 = data.score2;
-            this.update();
+            if (this.score1 == this.winScore || this.score2 == this.winScore)
+                this.drawEndGame
+            else
+                this.update();
         }
+    }
+
+    drawEndGame () {
+        const winnerContainer = document.createElement('div')
+        winnerContainer.id = 'winner-container'
+
+        const winnerMessage = document.createElement('p')
+        if (this.score1 == this.winScore)
+            winnerMessage.innerText = this.player1
+        else
+            winnerMessage.innerText = this.player2
+        winnerContainer.appendChild(winnerMessage)
+        overlay.appendChild(winnerContainer)
     }
 
     handleOnerror (error) {
@@ -122,10 +144,14 @@ export default class PongOnline {
     }
 
     stop () {
+        this.destroy()
+        location.hash = this.hash
+    }
+    
+    destroy () {
         this.reset()
         this.closeSocket()
         window.removeEventListener('keydown', this.handleKeydown);
         window.removeEventListener('keyup', this.handleKeyUp);
-        location.hash = '/pong/onlineplayer'
     }
 }

@@ -91,23 +91,23 @@ async function createGamesList (list) {
                     status.innerHTML = `${game.status.toUpperCase()}`
                     status.style.color = 'green'
                     listButton.textContent = "Start"
-                    listButton.addEventListener('click', ()=> startGame(game.id))
+                    listButton.addEventListener('click', ()=> startGame(game))
                     break
                 case "in_progress":
                     status.innerHTML = `${game.status.toUpperCase()}`
                     status.style.color = 'white'
                     listButton.textContent = "Rejoin"
-                    listButton.addEventListener('click', ()=> startGame(game.id))
+                    listButton.addEventListener('click', ()=> startGame(game))
                     break
                 case "pending":
                     status.innerHTML = `${game.status.toUpperCase()}`
                     status.style.color = 'orange'
                     if (game.player1_username == getUsername() || game.player2_username == getUsername()) {
                         listButton.textContent = "Cancel"
-                        listButton.addEventListener('click', ()=> cancelGame(game.id, li))
+                        listButton.addEventListener('click', ()=> cancelGame(game.id, li, listButton))
                     } else {
                         listButton.textContent = "Join"
-                        listButton.addEventListener('click', ()=> joinGame(game.id))
+                        listButton.addEventListener('click', ()=> joinGame(game.id, listButton))
                     }
                     break
             }
@@ -122,12 +122,23 @@ async function createGamesList (list) {
     }
 }
 
-async function startGame (gameId) {
-    localStorage.setItem("gameId", gameId)
+async function startGame (game) {
+    const gameInfo = {}
+    gameInfo.gameId = game.id
+    gameInfo.winScore = game.winning_score
+    gameInfo.hash = '/pong/onlineplayer'
+    if (game.tournament) {
+        gameInfo.player1 = game.player1_alias
+        gameInfo.player2 = game.player2_alias
+    } else {
+        gameInfo.player1 = game.player1_username
+        gameInfo.player2 = game.player2_username
+    }
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
     location.hash = '/pong/onlineplayer/onlinegame'
 }
 
-async function joinGame (gameId) {
+async function joinGame (gameId, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
@@ -145,12 +156,15 @@ async function joinGame (gameId) {
         location.hash = '/pong/onlineplayer/onlinegame'
         return true
     } else {
-        alert("error joining game")
+        button.innerText = "Error"
+        button.style.backgroundColor = "red"
+        button.style.color = "white"
+        button.disabled = true
         return false
     }
 }
 
-async function cancelGame(gameId, li) {
+async function cancelGame(gameId, li, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
@@ -163,11 +177,13 @@ async function cancelGame(gameId, li) {
         body: JSON.stringify({game_id: gameId}),
     });
     if (response.ok) {
-        alert("game cancelled " +  gameId)
         li.remove()
         return true
     } else {
-        alert("error cancelling game")
+        button.innerText = "Error"
+        button.style.backgroundColor = "red"
+        button.style.color = "white"
+        button.disabled = true
         return false
     }
 }
@@ -197,7 +213,10 @@ function createNewGameButton (menu) {
             location.hash = '/pong/onlineplayer/onlinegame'
             return true
         } else {
-            alert("error creating game")
+            newGame.innerText = "Error"
+            newGame.style.backgroundColor = "red"
+            newGame.style.color = "white"
+            newGame.disabled = true
             return false
         }
     })

@@ -42,6 +42,8 @@ async function requestList (list, listContainer) {
             data.forEach((tour) => {
                 const li = document.createElement('li')
                 li.textContent = tour.name
+                li.innerHTML = `${tour.name} 
+                - players ${tour.players.length}/${tour.max_players}`
                 const button = document.createElement('button')
                 button.innerText = "Register"
                 li.appendChild(button)
@@ -81,15 +83,15 @@ async function registerTournament (id, button) {
               }),
           });
           if (registrResponse.ok) {
-                alert('registered correctly')
-                //change button style
                 button.innerText = "✔"
                 button.style.backgroundColor = "#4CAF50"
                 button.style.color = "white"
                 button.disabled = true
           } else {
-              //add error box
-              alert('error registration')
+                button.innerText = "Error"
+                button.style.backgroundColor = "red"
+                button.style.color = "white"
+                button.disabled = true
           }
       }                    
 }

@@ -124,7 +124,10 @@
     margin-top: 5px;
     margin-bottom: 5px;
     border-radius: 5px;
+}
 
+#upcomingBtn {
+    display:flex;
 }
 
 .dropdown-list li button {
@@ -135,7 +138,7 @@
     cursor: pointer;
     padding: 5px 10px;
     font-size: 16px;
-    margin-left: auto;
+    margin-left: 10px;
 }
 
 .dropdown-list li button:hover {
@@ -266,5 +269,3 @@
 #tour-form button:hover {
     background-color: var(--app-yellow);
 }
-
-
