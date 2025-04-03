@@ -115,6 +115,8 @@ async function fetchChatroomData(id) {
     }
 }
 
+var chatSocket = null
+
 //adds chatscript to DOM and opens chattingBox. Or reverse
 async function openChattingBox(frienda)
 {
@@ -131,85 +133,75 @@ async function openChattingBox(frienda)
 
     if (chattingBox.getAttribute("value") && switch_bool) {
         
-        // document.getElementById("chat-user-name").textContent = frienda;
-        switch_bool = false
-        // Check if script is already loaded
+    document.getElementById("chat-user-name").textContent = frienda;
+    switch_bool = false
 
-        fetchChatroomData(chattingBox.getAttribute("value"))
-        // let accessToken;
+    const token = localStorage.getItem('accessToken');
+    if (!token) {
+        window.location.href = "/pong/login";
+    }
+
+    chatSocket = new WebSocket(
+        `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
+    );
+
+    console.log(chatSocket.url);
+    console.log("err :",   JSON.stringify(chatSocket.error));
+    console.log("readyState :", chatSocket.readyState);
+
+    console.log("readyState :", chatSocket.readyState);
+    setTimeout(() => {
+        console.log("button yes; ", document.getElementById('chat-message-submit'))
+    }, 100);
+
+        document.querySelector('#chat-message-submit').onclick = async function() {
+            const messageInput = document.querySelector('#chat-message-input');
+            const message = messageInput.value;
+
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            console.log("data #chat-message-submit; ", message)
+
+            messageInput.value = '';
+        };
+
+
+        chatSocket.onmessage = function(event) {
+            const data = JSON.parse(event.data);
+            console.log("data onmessage; ", data.message)
+            document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+        };
         
-        // const usernameToChatWith = "{{ username_to_chat_with }}";
-        // const currentUser = "{{ current_user }}";
+        chatSocket.onclose = function(event) {
+            if (event.code === 1006) {
+                alert(`Unauthorized: please log in first, reason; ${event.reason}`);
+            } else if (event.code === 4000) {
+                alert(`Chat room ${roomId} does not exist.`);
+            } else if (event.code === 4001) {
+                alert(`You are not allowed to enter chat room ${roomId}`);
+            } else {
+                console.error('Chat socket closed unexpectedly');
+            }
+        };
 
-        // if (!document.getElementById("chat-script")) {
-            const script = document.createElement("chat-script");
-            script.src = "/routes/social/chatbox_v2.js"; // Make sure the path is correct
-            script.id = "chat-script";
-            script.onload = () => {
-                console.log("Script loaded and executed");
-            };
-            document.body.appendChild(script);
-        // }
-    // const token = localStorage.getItem('accessToken');
-    // if (!token) {
-    //     window.location.href = "/pong/login";
-    // }
-    // // const roomId = "{{ room_id }}";
-    // const chatSocket = new WebSocket(
-    //     `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
-    // );
-    // console.log(chatSocket.url);
-    // console.log("err :",   JSON.stringify(chatSocket.error));
-    // console.log("readyState :", chatSocket.readyState);
+        chattingBox.style.display = "block";
+    }
+    else if (chattingBox.getAttribute("value") && !switch_bool) {
 
-    // chatSocket.onmessage = function(event) {
-    //     const data = JSON.parse(event.data);
-    //     console.log("data onmessage; ", data.message)
-    //     document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
-    // };
-    
-    // chatSocket.onclose = function(event) {
-    //     if (event.code === 1006) {
-    //         alert(`Unauthorized: please log in first, reason; ${event.reason}`);
-    //     } else if (event.code === 4000) {
-    //         alert(`Chat room ${roomId} does not exist.`);
-    //     } else if (event.code === 4001) {
-    //         alert(`You are not allowed to enter chat room ${roomId}`);
-    //     } else {
-    //         console.error('Chat socket closed unexpectedly');
-    //     }
-    // };
-    // console.log("readyState :", chatSocket.readyState);
-    // setTimeout(() => {
-    //     console.log("button yes; ", document.getElementById('chat-message-submit'))
-    // }, 100);
-
-    // document.querySelector('#chat-message-submit').onclick = async function() {
-    //     const messageInput = document.querySelector('#chat-message-input');
-    //     const message = messageInput.value;
-
-    //     chatSocket.send(JSON.stringify({
-    //         'message': message
-    //     }));
-    //     console.log("data #chat-message-submit; ", message)
-
-    //     messageInput.value = '';
-    // };
-   
-    //     chattingBox.style.display = "block";
-    // }
-    // else if (chattingBox.getAttribute("value") && !switch_bool) {
-    //     const script = document.getElementById("chat-script");
-    //     if (script) {
-    //         script.remove(); // Remove script to clean up
-    //     }
-    //     chattingBox.style.display = "none";
-    //     switch_bool = true
-    // } else {
-    //     console.error("Error: #chatting-box not found in the DOM.");
-    // }
+        if (chatSocket != null)
+            chatSocket.close()
+        const script = document.getElementById("chat-script");
+        if (script) {
+            script.remove(); // Remove script to clean up
+        }
+        chattingBox.style.display = "none";
+        switch_bool = true
+    } else {
+        console.error("Error: #chatting-box not found in the DOM.");
     }
 }
+
 let switch_bool2 = true
 
 async function getOrcreateChattingBox(frienda)
