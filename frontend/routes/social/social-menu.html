@@ -80,41 +80,7 @@
     <div id="chat-log" type="text" size="100"></div>
     <input id="chat-message-input" type="text" size="100">
     <button id="chat-message-submit">Send</button>
-
-	<script>
-
-
-		document.querySelector('#chat-message-submit').onclick = async function() {
-            const messageInput = document.querySelector('#chat-message-input');
-            const message = messageInput.value;
-
-            chatSocket.send(JSON.stringify({
-                'message': message
-            }));
-            console.log("data #chat-message-submit; ", message)
-
-            messageInput.value = '';
-        };
-
-
-		chatSocket.onmessage = function(event) {
-            const data = JSON.parse(event.data);
-            console.log("data onmessage; ", data.message)
-            document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
-        };
-        
-        chatSocket.onclose = function(event) {
-            if (event.code === 1006) {
-                alert(`Unauthorized: please log in first, reason; ${event.reason}`);
-            } else if (event.code === 4000) {
-                alert(`Chat room ${roomId} does not exist.`);
-            } else if (event.code === 4001) {
-                alert(`You are not allowed to enter chat room ${roomId}`);
-            } else {
-                console.error('Chat socket closed unexpectedly');
-            }
-        };
-	</script>
+	
     <!-- <h2>Room: {{ room_id }}</h2> -->
     <!-- <div id="chat-log" type="text" size="100"></div> -->
     <!-- <input id="chat-message-input" type="text" size="100">

@@ -1,6 +1,7 @@
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
 import { showLoginModal } from "../../utils/modals.js"
+import { getUserToken } from "../../utils/userData.js";
 
 let url;
 let accessToken;
@@ -136,7 +137,8 @@ async function openChattingBox(frienda)
     document.getElementById("chat-user-name").textContent = frienda;
     switch_bool = false
 
-    const token = localStorage.getItem('accessToken');
+    const token = getUserToken().access
+
     if (!token) {
         window.location.href = "/pong/login";
     }
@@ -144,7 +146,7 @@ async function openChattingBox(frienda)
     chatSocket = new WebSocket(
         `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
     );
-
+    document.querySelector('#chat-log').innerHTML = ""
     console.log(chatSocket.url);
     console.log("err :",   JSON.stringify(chatSocket.error));
     console.log("readyState :", chatSocket.readyState);
@@ -166,7 +168,6 @@ async function openChattingBox(frienda)
             messageInput.value = '';
         };
 
-
         chatSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
             console.log("data onmessage; ", data.message)
@@ -183,6 +184,7 @@ async function openChattingBox(frienda)
             } else {
                 console.error('Chat socket closed unexpectedly');
             }
+            console.log(".onclose called")
         };
 
         chattingBox.style.display = "block";
@@ -190,7 +192,10 @@ async function openChattingBox(frienda)
     else if (chattingBox.getAttribute("value") && !switch_bool) {
 
         if (chatSocket != null)
+        {
             chatSocket.close()
+            console.log("close called")
+        }
         const script = document.getElementById("chat-script");
         if (script) {
             script.remove(); // Remove script to clean up
