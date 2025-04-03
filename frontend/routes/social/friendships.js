@@ -172,7 +172,7 @@ async function openChattingBox(frienda)
             console.log("data onmessage; ", data.message)
             document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
         };
-        
+
         chatSocket.onclose = function(event) {
             if (event.code === 1006) {
                 alert(`Unauthorized: please log in first, reason; ${event.reason}`);
