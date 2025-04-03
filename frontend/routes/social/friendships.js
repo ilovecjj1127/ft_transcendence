@@ -52,13 +52,17 @@ function populateFriends(list_name, the_data) {
         const friendDiv = document.createElement("div");
         friendDiv.classList.add("friend");
         friendDiv.innerHTML = `
-            <div class="friend-name">${frienda}</div>
-            <div class="friend-buttons">
-                <button class="chat-friend">Chat</button>
-                <button class="select-friend">Select</button>
+            <div class="friend">
+                <div class="friend-name">${frienda}</div>
+                <div class="friend-buttons">
+                    <button class="create-chatroom-with-friend">Create chat</button>
+                    <button class="chat-friend">Chat</button>
+                    <button class="select-friend">Select</button>
+                </div>
             </div>
         `;
         friendList.appendChild(friendDiv);
+        friendDiv.querySelector(".create-chatroom-with-friend").addEventListener("click", () => getOrcreateChattingBox(frienda));
         friendDiv.querySelector(".select-friend").addEventListener("click", () => openSelectFriend(frienda));
         friendDiv.querySelector(".chat-friend").addEventListener("click", () => openChattingBox(frienda));
     });
@@ -66,36 +70,168 @@ function populateFriends(list_name, the_data) {
 
 let switch_bool = true
 
-function openChattingBox(frienda)
+
+async function fetchChatroomData(id) {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+        window.location.href = "/pong/login";  // Ensure the user is logged in
+        return;
+    }
+
+    try {
+        // Fetch the HTML content from the backend endpoint
+        const response = await fetch(`http://127.0.0.1:8000/chat/room/${id}/`, {
+            method: "GET", // Use GET for fetching data
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${token}`,
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to fetch chatroom data: ${response.statusText}`);
+        }
+
+        // Parse the response as HTML (assuming it returns HTML)
+        const roomHTML = await response.text();
+
+        // Create a temporary container to hold the fetched HTML
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = roomHTML;
+
+        // Now you can access the elements in this HTML structure
+        const roomId = tempDiv.querySelector('#room_id').textContent;
+        const roomName = tempDiv.querySelector('#chat-user-name').textContent;
+
+        console.log("Room ID:", roomId);
+        console.log("Room Name:", roomName);
+
+        // You can now use this data to update your current page or elements
+        // document.getElementById("room_id").textContent = roomId;
+        // document.getElementById("chat-user-name").textContent = roomName;
+        document.getElementById("chatting-box-id").innerHTML = roomHTML;
+    } catch (error) {
+        console.error('Error fetching chat room data:', error);
+    }
+}
+
+//adds chatscript to DOM and opens chattingBox. Or reverse
+async function openChattingBox(frienda)
 {
     console.log("hi openning chat box with:", frienda)
-    const chattingBox = document.getElementById("chatting-box-id");
-    if (chattingBox && switch_bool) {
 
-        // Check if script is already loaded
-        if (!document.getElementById("chat-script")) {
-            const script = document.createElement("script");
-            script.src = "/routes/social/chatbox.js"; // Make sure the path is correct
-            script.id = "chat-script";
-            document.body.appendChild(script);
-        }
+    let chattingBox = document.getElementById("chatting-box-id");
 
-        chattingBox.style.display = "block";
-        document.getElementById("chat-user-name").textContent = frienda;
+    console.log("hi openning chatbox:", chattingBox)
+
+    const chat_box_id = await getOrcreateChattingBox(frienda)
+    chattingBox.setAttribute("value", chat_box_id)
+
+    console.log("hi openning chatbox:", chattingBox)
+
+    if (chattingBox.getAttribute("value") && switch_bool) {
+        
+        // document.getElementById("chat-user-name").textContent = frienda;
         switch_bool = false
-    }
-    else if (chattingBox && !switch_bool) {
-        const script = document.getElementById("chat-script");
-        if (script) {
-            script.remove(); // Remove script to clean up
-        }
-        chattingBox.style.display = "none";
-        switch_bool = true
-    } else {
-        console.error("Error: #chatting-box not found in the DOM.");
-}}
+        // Check if script is already loaded
 
+        fetchChatroomData(chattingBox.getAttribute("value"))
+        // let accessToken;
+        
+        // const usernameToChatWith = "{{ username_to_chat_with }}";
+        // const currentUser = "{{ current_user }}";
+
+        // if (!document.getElementById("chat-script")) {
+            const script = document.createElement("chat-script");
+            script.src = "/routes/social/chatbox_v2.js"; // Make sure the path is correct
+            script.id = "chat-script";
+            script.onload = () => {
+                console.log("Script loaded and executed");
+            };
+            document.body.appendChild(script);
+        // }
+    // const token = localStorage.getItem('accessToken');
+    // if (!token) {
+    //     window.location.href = "/pong/login";
+    // }
+    // // const roomId = "{{ room_id }}";
+    // const chatSocket = new WebSocket(
+    //     `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
+    // );
+    // console.log(chatSocket.url);
+    // console.log("err :",   JSON.stringify(chatSocket.error));
+    // console.log("readyState :", chatSocket.readyState);
+
+    // chatSocket.onmessage = function(event) {
+    //     const data = JSON.parse(event.data);
+    //     console.log("data onmessage; ", data.message)
+    //     document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+    // };
+    
+    // chatSocket.onclose = function(event) {
+    //     if (event.code === 1006) {
+    //         alert(`Unauthorized: please log in first, reason; ${event.reason}`);
+    //     } else if (event.code === 4000) {
+    //         alert(`Chat room ${roomId} does not exist.`);
+    //     } else if (event.code === 4001) {
+    //         alert(`You are not allowed to enter chat room ${roomId}`);
+    //     } else {
+    //         console.error('Chat socket closed unexpectedly');
+    //     }
+    // };
+    // console.log("readyState :", chatSocket.readyState);
+    // setTimeout(() => {
+    //     console.log("button yes; ", document.getElementById('chat-message-submit'))
+    // }, 100);
+
+    // document.querySelector('#chat-message-submit').onclick = async function() {
+    //     const messageInput = document.querySelector('#chat-message-input');
+    //     const message = messageInput.value;
+
+    //     chatSocket.send(JSON.stringify({
+    //         'message': message
+    //     }));
+    //     console.log("data #chat-message-submit; ", message)
+
+    //     messageInput.value = '';
+    // };
+   
+    //     chattingBox.style.display = "block";
+    // }
+    // else if (chattingBox.getAttribute("value") && !switch_bool) {
+    //     const script = document.getElementById("chat-script");
+    //     if (script) {
+    //         script.remove(); // Remove script to clean up
+    //     }
+    //     chattingBox.style.display = "none";
+    //     switch_bool = true
+    // } else {
+    //     console.error("Error: #chatting-box not found in the DOM.");
+    // }
+    }
+}
 let switch_bool2 = true
+
+async function getOrcreateChattingBox(frienda)
+{
+    console.log("hi create chat box with:", frienda)
+
+	accessToken = localStorage.getItem("accessToken")
+	console.log("accessToken: ", accessToken)
+
+	const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${accessToken}`
+		},
+		body: JSON.stringify({ "username": frienda })  // Fixed object syntax
+	});
+
+    const data = await response.json();  // ✅ Parse JSON
+    console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
+    return data["chat_room_id"];
+};
 
 function openSelectFriend(frienda)
 {

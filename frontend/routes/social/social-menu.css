@@ -95,7 +95,7 @@ div#chat-container{
 			justify-content: flex-end;
 			top: 0;
 			right: 0;
-			width: 50%;
+			/* width: 50%; */
 			border: 3px solid #582556;
 		}
 	div#friendship-menu {

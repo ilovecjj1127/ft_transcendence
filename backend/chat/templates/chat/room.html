@@ -4,17 +4,27 @@
     <title>Chat Room</title>
 </head>
 <body>
-    <h2>Room: {{ room_id }}</h2>
+    {% comment %} <div id="room-type" size="100">Room: </div> {% endcomment %}
+	<label id="room-type-label" size="100"><b>Room: </b><span id="room_id"></span></label>
+	<label id="chat-label"><b>Chatting with: </b><span id="chat-user-name"></span></label>
+
     <div id="chat-log" type="text" size="100"></div>
     <input id="chat-message-input" type="text" size="100">
+    
     <button id="chat-message-submit">Send</button>
-    <button id="create-chatroom-with-bob">Create w/ bob</button>
-    <button id="create-chatroom-with-cathy">Create w/cathy</button>
-
+    <button id="create-chatroom">Create</button>
     <button id="block-chatroom">Block</button>
+
+    {% comment %} <button id="create-chatroom-with-bob">Create w/ bob</button>
+    <button id="create-chatroom-with-cathy">Create w/cathy</button> {% endcomment %}
+    {% comment %} <script src="./room.js"></script> {% endcomment %}
+
 
     <script>
         let accessToken;
+    
+        const usernameToChatWith = "{{ username_to_chat_with }}";
+        const currentUser = "{{ current_user }}";
 
         const token = localStorage.getItem('accessToken');
         if (!token) {
@@ -58,6 +68,20 @@
 
             messageInput.value = '';
         };
+
+        document.querySelector('#create-chatroom').onclick = async function() {
+            accessToken = localStorage.getItem("accessToken")
+
+            const response = await fetch(`http://${window.location.host}/get_or_create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify({ "username": "cathy" })  // Fixed object syntax
+            });
+        };
+
         document.querySelector('#create-chatroom-with-cathy').onclick = async function() {
             accessToken = localStorage.getItem("accessToken")
 

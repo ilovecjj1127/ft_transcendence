@@ -13,8 +13,11 @@ from .services import ChatRoomService
 
 
 def room(request, room_id):
+    username_to_chat_with = request.GET.get("username_to_chat_with", "unknown") 
     return render(request, 'chat/room.html', {
-        'room_id': room_id
+        'room_id': room_id,
+        'username_to_chat_with': username_to_chat_with,
+        'current_user': request.user.username
     })
 
 class ChatGetOrCreateView(APIView):
