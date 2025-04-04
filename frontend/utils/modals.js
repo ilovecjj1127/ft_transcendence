@@ -40,7 +40,7 @@ loginForm.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        saveUserInfo(data.access)
+        saveUserInfo()
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {

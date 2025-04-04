@@ -10,17 +10,17 @@ const loadRoute = async (route) => {
 
     //baseRoute used for canvas visibility
     const baseRoute = route.split('/')[0]
-
+    
     //gets the last part of route, to handle sub-route if present
     const routeName = route.split('/').pop()
-
+    
     // Load the HTML file
     const res = await fetch(`./routes/${route}/${routeName}.html`)
     if (res.ok) {
         app.innerHTML = await res.text();
     }
 
-    // fetch HEAD to check only if the file exist then load the CSS file 
+    // fectch HEAD to check only if the file exist then load the CSS file 
     const cssPath = `./routes/${route}/${routeName}.css`
     fetch(cssPath, {method: 'HEAD' }).then((res) => {
         if (res.ok) {

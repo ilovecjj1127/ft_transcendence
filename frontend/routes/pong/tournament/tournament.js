@@ -114,9 +114,9 @@ async function createNewTourModal() {
         const fields = [
             { label: "Your Alias", id: "alias", type: "text", required: true },
             { label: "Tournament Name", id: "tour-name", type: "text", required: true },
-            { label: "Min player (min 4)", id: "min", type: "text", required: true },
-            { label: "Max Player (max 8)", id: "max", type: "text", required: true },
-            { label: "Win Score", id: "score", type: "text", required: true },
+            { label: "Min player (min 3)", id: "min", type: "text", required: true },
+            { label: "Max Player (max 10)", id: "max", type: "text", required: true },
+            { label: "Win Score (1 - 20)", id: "score", type: "text", required: true },
         ];
 
         const inputs = {}
