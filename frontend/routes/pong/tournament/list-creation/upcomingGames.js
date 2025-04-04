@@ -43,18 +43,9 @@ async function requestList (list, listContainer) {
                 li.innerHTML = `${game.id} 
                 ${
                     game.player1_username && game.player1_username !== getUsername()
-                        ? '- vs ' + game.player1_username
-                        : game.player1_username === getUsername() && !game.player2_username
-                        ? '- WAITING FOR OPPONENT'
-                        : ''
+                        ? '- vs ' + game.player1_alias
+                        : '- vs ' + game.player2_alias
                 }
-                ${
-                    game.player2_username && game.player2_username !== getUsername()
-                        ? '- vs ' + game.player2_username
-                        : game.player2_username === getUsername() && !game.player1_username
-                        ? '- WAITING FOR OPPONENT'
-                        : ''
-                } 
                 ${game.tournament ? " - TOURNAMENT: " + game.tournament : ''}`
                 const button = document.createElement('button')
                 button.innerText = "Play"

@@ -3,8 +3,6 @@ import PongOnline from "../../../../games/pong-online.js";
 let Pong
 
 export const init = () => {
-
-    console.log("in tournament game")
     const overlay = document.querySelector('.overlay')
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d');

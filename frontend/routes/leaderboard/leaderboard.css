@@ -1,0 +1,105 @@
+#leader-container {
+    width: 800px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--app-blue);
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+}
+
+#tour-name-container {
+    position: absolute;
+    top: 3rem;
+    flex-direction: column;
+}
+
+#tournament-name {
+    font-size: 3rem;
+    font-family: "rixvideogame-pro", sans-serif;
+    font-weight: bold;
+    color:  var(--app-yellow);
+    letter-spacing: 6px;
+}
+
+/* Close button styling */
+#leader-close-button {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    top: 1rem;
+    right: 1rem;
+    padding: 0;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+#leader-close-button i {
+    font-size: 20px;  /* Icon size */
+    margin: 0;        /* Remove default margin */
+    color: white;
+    line-height: 1;    /* Ensure vertical alignment */
+    text-align: center; /* Horizontal centering */
+}
+
+#leader-close-button:hover {
+    background-color: #c0392b;
+}
+
+#tour-players {
+    position: absolute;
+    width: 50%;
+    height: 70%;
+    top: 8rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 30px;
+    overflow-y: auto;
+}
+
+#tour-players::-webkit-scrollbar {
+    display: none;
+}
+
+#players-list {
+    list-style-type: none;
+    padding: 10px;
+    margin: 0;
+    font-size: 25px;
+    height:100%;
+}
+
+#players-list li {
+    border:solid;
+    border-color: var(--app-yellow);
+    border-radius: 10px;
+    color: var(--app-yellow);
+    margin: 10px 0;
+    padding: 20px;
+}
+
+#players-list li strong {
+    font-weight: bold;
+}
+
+.board-info {
+    color:aliceblue
+}
+
+.board-info span {
+    color: #3498db; /* Customize the value color */
+    padding: 10px;
+}

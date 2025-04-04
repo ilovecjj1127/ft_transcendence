@@ -63,7 +63,7 @@ const routes = {
     '/pong/onlineplayer': 'pong/onlineplayer',
     '/pong/onlineplayer/onlinegame': 'pong/onlineplayer/onlinegame',
     '/pong/tournament': 'pong/tournament',
-    '/pong/tournament/leaderboard': 'pong/tournament/leaderboard',
+    '/leaderboard': 'leaderboard',
     '/pong/tournament/tournamentgame': 'pong/tournament/tournamentgame',
 };
 

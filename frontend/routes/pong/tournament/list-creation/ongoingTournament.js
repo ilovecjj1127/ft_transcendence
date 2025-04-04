@@ -47,9 +47,11 @@ async function requestList (list, listContainer) {
                 li.appendChild(button)
                 list.appendChild(li)
                 button.addEventListener('click', () => {
-                    //pass the game id saving it into localstorage
-                    localStorage.setItem("tour_id", tour.id)
-                    location.hash = '/pong/tournament/leaderboard'
+                    const tourInfo = {}
+                    tourInfo.id = tour.id
+                    tourInfo.name = tour.name
+                    localStorage.setItem("tourInfo", JSON.stringify(tourInfo))
+                    location.hash = '/leaderboard'
                 })
             })
         }
@@ -64,8 +66,4 @@ async function requestList (list, listContainer) {
         } else {
             listContainer.style.marginBottom = ''
         }
-}
-
-function showLeaderboard (id) {
-
 }
