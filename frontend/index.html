@@ -3,15 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- {% load static %} -->
-    <script src="routes/social/friendships.js" type="module"></script>
-    <script src="routes/social/buttons.js"></script>
-    <script src="routes/social/chat-menu.js"></script>
-
+    
+    <!-- Load Styles -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link rel="stylesheet" href="./style.css">
-    <link rel="stylesheet" href="./routes/social/social-menu.css">
+    <link rel="stylesheet" href="./social/social-menu.css">
+    <link rel="stylesheet" href="./social/chat-menu.css">
 
     <script>
         (function(d) {
@@ -119,48 +117,106 @@
     </div>
 
     <!-- Social Menu -->
-    <!-- <iframe src="routes/social/social-menu.html" width="100%" height="500px" style="border:none;"></iframe>Z -->
-    <!-- Load Social Menu -->
-    <!-- <script src="routes/social/loadSocialMenu.js"></script> -->
-    <div id="social-menu"></div>
-    <script>
-        // Load social-menu.html directly into the placeholder
-        fetch('routes/social/social-menu.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('social-menu').innerHTML = html;
-            })
-            .catch(error => console.error('Error loading social menu:', error));
-    </script>
-    <!-- <script>
-        function openSocialMenu() {
-            document.getElementById("chat-container").style.display = "flex"
-        }
-        function closeSocialMenu() {
-            document.getElementById("chat-container").style.display = "none"
-        }
-        function openSendRequestsForm() {
-            document.getElementById("send-request-form").style.display = "block"
-        }
-        function closeSendRequestsForm() {
-            document.getElementById("send-request-form").style.display = "none"
-        }
-        function openShowRequestsForm() {
-            document.getElementById("show-requests-box").style.display = "block"
-        }
-        function closeShowRequestsForm() {
-            document.getElementById("show-requests-box").style.display = "none"
-        }
-    </script> -->
+
+    <button type="button" class="social-menu" id="open-social-menu" onclick="openSocialMenu()">Open Social Menu</button>
+
+    <div id="social-menu-container">
+        <button type="button" class="social-menu" onclick="closeSocialMenu()">Close Menu</button>
+
+        <!-- Friendship requests menu -->
+
+        <div id="friendship-menu">
+            <button id="send-requests" onclick="openSendRequestsForm()">Send requests</button>
+            <button id="show-requests" onclick="openShowRequestsForm()">Show requests</button>
+        </div>
+        <form id="send-request-form">
+            <label for="username"><b>Username</b></label>
+            <!-- <input id="username2"> -->
+            <input type="text" placeholder="Enter Name" name="username" id="username" required>
+            <label for="message"><b>Message</b></label>
+            <input type="text" placeholder="Send initial message if you want" name="message">
+            <button type="submit" id="send-form-button">Send</button>
+            <button type="button" class="cancel-button" onclick="closeSendRequestsForm()">Cancel</button>
+        </form>
+        <div id="show-requests-box">
+            <label for="incoming-requests"><b>Incoming requests</b></label>
+            <ul id="incoming-requests">
+                <div class="friend">
+                    <div class="friend-name">Name</div>
+                    <div class="friend-buttons">
+                        <button id="accept-friend">accept</button>
+                        <button id="decline-friend">decline</button>
+                    </div>
+                </div>
+            </ul>
+            <label for="outgoing-requests"><b>Outgoing requests</b></label>
+            <ul id="outgoing-requests">
+                <div class="friend-name">Name</div>
+            </ul>
+            <button type="button" class="cancel-button" onclick="closeShowRequestsForm()">Cancel</button>
+        </div>
+
+        <!-- Friend list -->
+
+        <div id="friend-list-container">
+            Friend list
+            <button id="show-hide" onclick="showHide('friend-list','flex')">Show/Hide</button>
+            <ul id="friend-list"></ul>
+        </div>
+        <div class="select-friend-box" id="select-friend-box-id" style="display: none;">
+            <label id="selected-label"><b>Selected: </b><span id="friend-user-name"></span></label>
+            <button id="remove-friend">Remove friend, very sad this is</button>
+        </div>
+
+        <!-- Chat menu -->
+
+        <div id="chat-menu-container">
+            Chat menu
+            <button id="show-hide" onclick="showHide('chat-menu','flex')">Show/Hide</button>
+            <div id="chat-menu" style="display: none;">
+                <!-- <label for="type_of_search_drop_down_options"><b>Type of search</b></label> -->
+                <!-- Rooms -->
+                
+                <div id="filter-options">
+                    <label for="chat_room_name"><b>Apply search filter</b></label>
+                    <input type="text" placeholder="Apply filter for chatroom..." name="chat_room_search" id="chat_room_search" required>
+                    <label for="filter-value"><b>Applied filter: </b></label>
+                    <div id="filter-value"><b>None</b></div>
+                </div>
+                <button id="load-rooms" onclick="showHide('chat-room-list','flex'), loadChatRooms()">Load rooms / Hide</button>
+                <div id="chat-room-list-container">
+                    <label for="chat-room-list"><b>Rooms</b></label>
+                    <ul id="chat-room-list"></ul>  <!-- List will be populated dynamically -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- chatbox -->
+
+    <div class="chatting-box" value="~" id="chatting-box-id" style="display: none;">
+
+        <label id="room-type-label" size="100"><b>Room: </b><span id="room_id"></span></label>
+        <label id="chat-label"><b>Chatting with: </b><span id="chat-user-name"></span></label>
+
+        <div id="chat-log" type="text" size="100"></div>
+        <input id="chat-message-input" type="text" size="100">
+        <button id="chat-message-submit">Send</button>
+
+    </div>
 
 
     <main id="app"></main>
     <script src="app.js" type="module"></script>
-    <!-- Load Social Menu -->
-    <!-- <script src="routes/social/loadSocialMenu.js"></script> -->
-    <!-- <script src="routes/social/buttons.js"></script> -->
-    <!-- <script src="routes/social/chatbox.js"></script> -->
-    <!-- <script src="routes/social/friendships.js"></script> -->
+    <script src="utils/modals.js" type="module"></script>
+    <script src="utils/userData.js" type="module"></script>
+
+    <!-- Load Social Menu Scripts -->
+    <script src="social/init_friends_data.js" type="module"></script>
+    <script src="social/buttons.js"></script>
+    <script src="social/chat-menu.js"></script>
+    <script src="social/open_close_chat.js" type="module"></script>
+    <script src="social/requests.js"></script> <!-- Loads this script after DOM fully loaded-->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
