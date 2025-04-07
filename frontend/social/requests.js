@@ -1,3 +1,5 @@
+import { getUserToken } from "../utils/userData.js"
+
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
 
 async function cancelRequest(request_id)
@@ -55,7 +57,6 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
 })
 
 async function post(url, body_data) {
-
     const accessToken = getUserToken().access
 
     const response = await fetch(url, {
