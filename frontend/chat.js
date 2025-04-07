@@ -1,5 +1,7 @@
 const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
+import { DEBUGPRINTS } from "./config.js"
+import { getUserFriendlist } from "./utils/userData.js"
 
 //example to check the overflow-y
 const friends = [
@@ -33,39 +35,70 @@ const friends = [
     {name: "friend30"},
     {name: "friend31"},
     {name: "friend32"},
-
 ]
+
 
 //used to check if same friend is pressed
 let friendChatOpen = null
 
-function populateFriendList() {
-    friends.forEach(friend => {
+export function populateFriendList() {
+
+        let friendList = getUserFriendlist()
+        if (DEBUGPRINTS) console.log("friendlist = ", friendList)
+        if (friendList == null) {
+                if (DEBUGPRINTS) console.log("friendlist = ", friendList)
+                return;
+        } else if (friendList.length == 0) {
+                if (DEBUGPRINTS) console.log("friendlist len = ", friendList.length)
+                return; }
+
+        try {
+                friendList = friendList.split(',');
+        } catch (e) {
+                console.error("Failed to parse friend list", e);
+                friendList = [];
+        }
+        if (DEBUGPRINTS) console.log("typeof = ", typeof friendList)
+
+        friendList.forEach(friend => {
+                addFriendInList(friend)
+        });
+}
+
+function addFriendInList(friend)
+{
         const li = document.createElement('li')
         const img = document.createElement('img')
         img.src = friend.img ? friend.img : "./media/default.jpeg";
+        if (DEBUGPRINTS) console.log("adding friend", friend)
+
         img.addEventListener('click', () => {
-            //here change id with whatever
-            if (friendChatOpen && friendChatOpen.name == friend.name){
+                //here change id with whatever
+                if (DEBUGPRINTS) console.log("click on img friend; ", friend)
+                if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
+                // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
+                // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
+
+                chatBox.querySelector('.chatbox-message-name').innerHTML = friend
+                if (friendChatOpen && friendChatOpen.name == friend.name){
                 chatBox.classList.remove('show')
                 friendChatOpen = null
-            } else {                
+                } else {                
                 if (chatBox.classList.contains('show')) {
-                    chatBox.classList.remove('show')
-                
-                    setTimeout(() => updateChat(friend), 600)
-                    friendChatOpen = friend
+                        chatBox.classList.remove('show')
+                        if (DEBUGPRINTS) console.log("show chatBox ")
+
+                                setTimeout(() => updateChat(friend), 600)
+                                friendChatOpen = friend
                 } else {
-                    updateChat(friend)
-                    friendChatOpen = friend
-                }            
-            }
+                        updateChat(friend)
+                        friendChatOpen = friend
+                }
+                }
         })
         li.appendChild(img)
         list.appendChild(li)
-    });
 }
-
 
 function updateChat (friend) {
     /* 
@@ -96,8 +129,6 @@ document.addEventListener('click', function (e) {
                 dropDownMenu.classList.remove('show')
         }
 })
-
-
 
 //message input
 

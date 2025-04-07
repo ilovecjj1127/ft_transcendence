@@ -1,4 +1,6 @@
-function openSelectFriend(frienda)
+let switch_bool2 = true
+
+export default function openSelectFriend(frienda)
 {
     const SelectFriendgBox = document.getElementById("select-friend-box-id");
     if (SelectFriendgBox && switch_bool2) {

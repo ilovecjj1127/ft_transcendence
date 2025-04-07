@@ -1,6 +1,7 @@
 import { showLoginModal } from "../utils/modals.js"
 import { getUserToken } from "../utils/userData.js";
 import openChattingBox from "./open_close_chat.js";
+import openSelectFriend from "./select_friend_menu.js"
 
 let url;
 let accessToken;
@@ -27,7 +28,7 @@ document.addEventListener("DOMContentLoaded", async () =>  {
         populateFriends("friend-list", data)
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
-    });
+});
 // });
 async function get_data(url_parameter)
 {

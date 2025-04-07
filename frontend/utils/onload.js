@@ -3,11 +3,12 @@ import { createMenuProfile } from "./profile-toggle.js"
 import { checkToken } from "./token.js"
 import { saveUserInfo, getUserToken, getUserAvatar} from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
+import { populateFriendList } from "../chat.js"
 
 export function onloadInit () {
     const accessToken = getUserToken().access
     const refreshToken = getUserToken().refresh
-    
+
     if (!accessToken) {
         console.log("Access token not found")
         //showLoginModal()
@@ -25,6 +26,9 @@ export function onloadInit () {
     
     if (location.hash != '/')
         location.hash = '/'
+
+
+    // populateFriendList()
 
     createMenuProfile()
     moveFaces()

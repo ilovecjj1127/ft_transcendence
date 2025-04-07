@@ -25,7 +25,7 @@ export async function saveUserInfo () {
         return false
     }
 }
- 
+
 export function removeUserData() {
     localStorage.removeItem("username")
     localStorage.removeItem("avatar")
@@ -56,6 +56,10 @@ export function getUsername () {
 
 export function getUserId () {
     return (localStorage.getItem("id"))
+}
+
+export function getUserFriendlist () {
+    return (localStorage.getItem("friends"))
 }
 
 // export async function setUserAvatar () {

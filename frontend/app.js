@@ -1,6 +1,5 @@
 import {onloadInit} from "./utils/onload.js"
 
-
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
     const app = document.getElementById('app');
