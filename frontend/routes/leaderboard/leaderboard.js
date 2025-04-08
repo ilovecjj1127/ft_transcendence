@@ -7,7 +7,7 @@ export const init = () => {
     const tourInfo = JSON.parse(localStorage.getItem("tourInfo"))
     localStorage.removeItem("tourInfo")
     
-    const tourName = document.getElementById('tour-name')
+    const tourName = document.getElementById('tournament-name')
     tourName.innerHTML = tourInfo.name.toUpperCase()
     createLeaderBoard(tourInfo)
 

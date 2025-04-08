@@ -13,10 +13,8 @@ export const init = () => {
     backToMenu.id = 'back-to-menu'
     backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
     overlay.appendChild(backToMenu)
-    
-    const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
 
-    Pong = new PongOnline(gameInfo)
+    Pong = new PongOnline()
 
     function exitCheck() {
         const exitContainer = document.createElement('div')
@@ -58,4 +56,12 @@ export const init = () => {
     }
 
     backToMenu.addEventListener('click', exitCheck)
+
+    function handleBackBrowser () {
+        window.removeEventListener('popstate', handleBackBrowser)
+        Pong.stop()
+        location.hash = '/pong/onlineplayer'
+    }
+
+    window.addEventListener('popstate', handleBackBrowser)
 };

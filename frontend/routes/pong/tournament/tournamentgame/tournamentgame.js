@@ -13,9 +13,7 @@ export const init = () => {
     backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
     overlay.appendChild(backToMenu)
     
-    const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
-
-    Pong = new PongOnline(gameInfo)
+    Pong = new PongOnline()
 
     function exitCheck() {
         const exitContainer = document.createElement('div')
@@ -56,5 +54,12 @@ export const init = () => {
         localStorage.removeItem('gameInfo')
     }
 
+    function handleBackBrowser () {
+        window.removeEventListener('popstate', handleBackBrowser)
+        Pong.stop()
+        location.hash = '/pong/tournament'
+    }
+
+    window.addEventListener('popstate', handleBackBrowser)
     backToMenu.addEventListener('click', exitCheck)
 };

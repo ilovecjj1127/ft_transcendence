@@ -1,4 +1,4 @@
-
+import { createNotLoggedMessage, createBackToMenu} from "../../../utils/canvas-utils.js"
 import { checkToken } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
 import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
@@ -11,23 +11,13 @@ export const init = () => {
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d');
     ctx.clearRect( 0,0, canvas.width, canvas.height)
-    createBackToMenu(overlay)
-    createTourMenu(overlay)
-};
 
-function createBackToMenu (overlay) {
-    const backToMenu = document.createElement('div')
-    backToMenu.id = 'back-to-menu'
-    backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
-
-    overlay.appendChild(backToMenu)
-    
-    function back () {
-        backToMenu.removeEventListener('click', back)
-        location.hash = "/pong"
+    createBackToMenu(overlay, '/pong')
+    if (getUserToken().access){
+        createTourMenu(overlay)
+    } else {
+        createNotLoggedMessage(overlay)
     }
-
-    backToMenu.addEventListener('click', back)
 }
 
 function createTourMenu (overlay) {

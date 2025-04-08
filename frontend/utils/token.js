@@ -21,9 +21,10 @@ export function isTokenExpired(token)
 {
     if (!token)
         return  true
+
     const expirationDate = getExpirationDate(token)
     const currentDate = new Date()
-    if (currentDate > expirationDate){
+    if (currentDate.getTime() > expirationDate.getTime()){
         return true         
     }
     return false

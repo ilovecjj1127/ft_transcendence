@@ -6,7 +6,8 @@ const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
  
 export default class PongOnline {
-    constructor(gameInfo) {
+    constructor() {
+        const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
         this.start(gameInfo)
         this.stop = this.stop.bind(this)
         this.destroy = this.destroy.bind(this);
@@ -32,6 +33,10 @@ export default class PongOnline {
 
         window.addEventListener('keydown' , this.handleKeydown)
         window.addEventListener('keyup', this.handleKeyUp)
+
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.close();
+        }
 
         // WebSocket connection setup
         this.gameId = gameInfo.gameId
@@ -65,8 +70,12 @@ export default class PongOnline {
         ctx.font = "30px Arial"
         ctx.fillStyle = "white"
         ctx.textAlign = "center"
-        ctx.fillText(this.score1, canvas.width / 4, 50)
-        ctx.fillText(this.score2, canvas.width * 3 / 4, 50)
+        ctx.fillText(this.score1, canvas.width / 4, 60)
+        ctx.fillText(this.score2, canvas.width * 3 / 4, 60)
+        
+        ctx.font = "20px Arial"
+        if (this.player1) ctx.fillText(this.player1, canvas.width /4, 30)
+        if (this.player2) ctx.fillText(this.player2, canvas.width * 3 / 4, 30)
     }
 
     handleKeyUp(event) {

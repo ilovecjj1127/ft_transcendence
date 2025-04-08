@@ -8,15 +8,24 @@ const loginButton = document.getElementById("login")
 const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
-
+let loginResolver
 
 export function showLoginModal () {
     loginModal.show()
+
+    return new Promise((resolve) => {
+        loginResolver = resolve
+    })
 }
 
 export function hideLoginModal () {
     loginModal.hide()
     createMenuProfile()
+
+    if (typeof loginResolver == 'function') {
+        loginResolver(true)
+        loginResolver = null
+    }
 }
 
 //forms to fill
@@ -48,6 +57,11 @@ loginForm.onsubmit = async (e) => {
         }, 2000)
     } else {
         message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
+        
+        if (typeof loginResolver == 'function') {
+            loginResolver(false)
+            loginResolver = null
+        }
     }
 };
 

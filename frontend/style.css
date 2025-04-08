@@ -174,3 +174,20 @@ body {
 	font-size: 60pt;
 	color:var(--app-yellow)
 }
+
+/* back to menu */
+
+#back-to-menu {
+    position: absolute;
+    color: #facf45;
+    font-size: 2rem;
+    left: 1rem;
+    top: 1rem;
+}
+
+#back-to-menu:hover {
+    display: block;
+    border-radius: 1rem;
+    background-color: rgb(2, 2, 36);
+}
+
