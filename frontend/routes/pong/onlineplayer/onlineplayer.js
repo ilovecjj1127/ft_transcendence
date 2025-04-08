@@ -1,4 +1,4 @@
-import { createNotLoggedMessage, createBackToMenu} from "../../../utils/canvas-utils.js"
+import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
 import { checkToken } from "../../../utils/token.js"
 import { getUsername, getUserToken } from "../../../utils/userData.js"
 
@@ -10,6 +10,7 @@ export const init = () => {
     createBackToMenu(overlay, '/pong')
     if (getUserToken().access) {
         createMenu(overlay)
+        createRefresh(overlay)
     } else {
         createNotLoggedMessage(overlay)
     }

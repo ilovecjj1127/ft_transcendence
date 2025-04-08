@@ -117,6 +117,10 @@ export default class PongOnline {
             else
                 this.update();
         }
+
+        if (data.type == "disconnect") {
+            alert(data.message)
+        }
     }
 
     drawEndGame () {

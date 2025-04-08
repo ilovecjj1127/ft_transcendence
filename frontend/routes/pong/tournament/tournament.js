@@ -1,4 +1,4 @@
-import { createNotLoggedMessage, createBackToMenu} from "../../../utils/canvas-utils.js"
+import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
 import { checkToken } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
 import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
@@ -15,6 +15,7 @@ export const init = () => {
     createBackToMenu(overlay, '/pong')
     if (getUserToken().access){
         createTourMenu(overlay)
+        createRefresh(overlay)
     } else {
         createNotLoggedMessage(overlay)
     }

@@ -12,7 +12,7 @@ export function createNotLoggedMessage(overlay) {
     loginButton.addEventListener('click', async () => {
         let logged = await showLoginModal()
         if (logged)
-            window.dispatchEvent(new HashChangeEvent('hashchange'));
+            window.dispatchEvent(new HashChangeEvent('hashchange'))
     })
 
     msgContainer.appendChild(span)
@@ -33,4 +33,19 @@ export function createBackToMenu (overlay, hash) {
     }
 
     backToMenu.addEventListener('click', back)
+}
+
+export function createRefresh (overlay) {
+    const refreshMenu = document.createElement('div')
+    refreshMenu.id = 'refresh-menu'
+    refreshMenu.innerHTML = `<i class='bx bx-refresh'></i>`
+    
+    overlay.appendChild(refreshMenu)
+    
+    function refresh () {
+        refreshMenu.removeEventListener('click', refresh)
+        window.dispatchEvent(new HashChangeEvent('hashchange'))
+    }
+
+    refreshMenu.addEventListener('click', refresh)
 }
