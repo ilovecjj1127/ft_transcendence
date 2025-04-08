@@ -66,7 +66,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.game_id,
             {
                 'type': 'send_disconnect_command',
-                'message': 'End of the game'
+                'message': 'End of the game',
+                'winner': self.service.winner
             }
         )
 
@@ -92,10 +93,15 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def send_disconnect_command(self, event: dict):
         try:
             await self.send(text_data=json.dumps({
+                "type": "end_of_the_game",
+                "winner": event.get('winner')
+            }))
+            await asyncio.sleep(0.2)
+            await self.send(text_data=json.dumps({
                 'type': 'disconnect',
                 'message': event.get('message', '')
             }))
         except RuntimeError:
             pass
-        await asyncio.sleep(1)
+        await asyncio.sleep(0.8)
         await self.close(code=4004)
