@@ -21,6 +21,7 @@ class PongServiceBase:
         self.redis = redis
         self.player_num = 0
         self.keep_running = False
+        self.winner = 0
 
     async def connect(self, user) -> dict:
         self.player_num = await self._get_player_num(user)
