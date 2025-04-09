@@ -63,7 +63,7 @@ export const init = () => {
             },
             body: formData,
         });
-        
+        if (response.status == 401) deleteTokenReload()
         if (response.ok) {
             console.log("uploaded correctly")
             return true
@@ -122,7 +122,7 @@ export const init = () => {
                 },
                 body: JSON.stringify({ old_password, new_password }),
             });
-            
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 message.innerHTML = "<p class='text-success'>Password changed.</p>"
                 clearInputs()

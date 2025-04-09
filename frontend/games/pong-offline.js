@@ -104,6 +104,8 @@ export default class PongOffline {
         ctx.textAlign = "center"
         ctx.fillText(this.score1, canvas.width / 4, 50)
         ctx.fillText(this.score2, canvas.width * 3 / 4, 50)
+        ctx.font = "15px Arial"
+        ctx.fillText("Win Score: " + this.winScore, canvas.width / 2, 30)
     }
 
     handleKeyUp(e) {

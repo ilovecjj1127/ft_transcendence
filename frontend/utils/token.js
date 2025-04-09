@@ -45,6 +45,7 @@ async function refreshAccessToken () {
         },
         body: JSON.stringify({refresh: refreshToken}), 
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
@@ -61,7 +62,7 @@ export async function checkToken () {
     const token = getUserToken().access
     if (token) {
         if (isTokenExpired(token)){
-            alert('access token expired')	
+            alert('access token expired')
             if(isTokenExpired(getUserToken().refresh)){
                 alert('refresh token is expired')
                 deleteTokenReload()

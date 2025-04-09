@@ -31,6 +31,7 @@ async function requestList (list, listContainer) {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
+    if (listResponse.status == 401) deleteTokenReload()
     if (listResponse.ok) {
         const data = await listResponse.json()
         if (data.length === 0) {

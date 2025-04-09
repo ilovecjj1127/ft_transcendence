@@ -11,6 +11,7 @@ export async function saveUserInfo () {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         const userData = await response.json()
         localStorage.setItem("id", userData.id)
@@ -57,25 +58,3 @@ export function getUsername () {
 export function getUserId () {
     return (localStorage.getItem("id"))
 }
-
-// export async function setUserAvatar () {
-
-//     const isTokenValid = await checkToken()
-//     if (!isTokenValid) return
-    
-//     const response = await fetch(`http://${window.location.host}/api/users/avatar`, {
-//         method: "POST",
-//         headers: {
-//             "Content-Type": "application/json",
-//             "Authorization": `Bearer ${getUserToken().access}`
-//         },
-//     });
-//     if (response.ok) {
-//         const userData = await response.json()
-//         localStorage.setItem("avatar", userData.avatar)
-//         return true
-//     } else {
-//         alert("error uploading avatar")
-//         return false
-//     }
-// }

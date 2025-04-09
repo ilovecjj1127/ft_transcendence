@@ -71,6 +71,7 @@ function createNewTourButton (container) {
                     alias: formData["alias"],
                 }),
             });
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 const data = await response.json()
                 return true

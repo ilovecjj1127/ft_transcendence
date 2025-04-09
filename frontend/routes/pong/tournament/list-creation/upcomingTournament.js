@@ -33,6 +33,7 @@ async function requestList (list, listContainer) {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (listResponse.status == 401) deleteTokenReload()
         if (listResponse.ok) {
             const data = await listResponse.json()
             if (data.length === 0) {
@@ -92,6 +93,7 @@ async function cancelTournament (id, li, button) {
             tournament_id: id,
         }),
     });
+    if (cancelResponse.status == 401) deleteTokenReload()
     if (cancelResponse.ok) {
         li.remove()
     } else {
@@ -107,7 +109,7 @@ async function startTournament (id, li, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const cancelResponse = await fetch(`http://${window.location.host}/api/tournament/start/`, {
+    const startResponse = await fetch(`http://${window.location.host}/api/tournament/start/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -117,7 +119,8 @@ async function startTournament (id, li, button) {
             tournament_id: id,
         }),
     });
-    if (cancelResponse.ok) {
+    if (startResponse.status == 401) deleteTokenReload()
+    if (startResponse.ok) {
         li.remove()
     } else {
         button.innerText = "Error"

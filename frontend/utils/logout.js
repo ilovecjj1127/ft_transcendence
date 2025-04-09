@@ -18,7 +18,6 @@ export async function handleLogout (e) {
         },
         body: JSON.stringify({refresh: refreshToken}),
     });
-    
     if (response.ok) {
         localStorage.clear()
         alert("Succesfully logged out")

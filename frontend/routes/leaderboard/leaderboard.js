@@ -1,5 +1,5 @@
 
-import { checkToken } from "../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../utils/token.js"
 import { getUserId, getUserToken } from "../../../utils/userData.js"
 
 export const init = () => {
@@ -28,7 +28,7 @@ async function createLeaderBoard (tourInfo) {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
-    
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         const data = await response.json()
         for (const player in data) {

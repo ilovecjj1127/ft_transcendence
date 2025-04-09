@@ -42,6 +42,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (statsRequest.status == 401) deleteTokenReload()
         if (statsRequest.ok)
         {
             const stats = await statsRequest.json()
@@ -64,6 +65,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (checkUserExist.status == 401) deleteTokenReload()
         if (checkUserExist.ok)
         {
             deleteStatsEvents()

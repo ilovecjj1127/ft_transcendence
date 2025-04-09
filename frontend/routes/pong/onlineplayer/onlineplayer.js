@@ -1,5 +1,5 @@
 import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
-import { checkToken } from "../../../utils/token.js"
+import { checkToken, deleteTokenReload} from "../../../utils/token.js"
 import { getUsername, getUserToken } from "../../../utils/userData.js"
 
 export const init = () => {
@@ -51,7 +51,7 @@ async function createGamesList (list) {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
-
+    if (listGamesResponse.status == 401) deleteTokenReload()
     if (listGamesResponse.ok) {
         const data = await listGamesResponse.json();
         
@@ -144,6 +144,7 @@ async function joinGame (game, button) {
         },
         body: JSON.stringify({game_id: game.id}),
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         alert("game joined " +  game.id )
         startGame(game)
@@ -169,6 +170,7 @@ async function cancelGame(gameId, li, button) {
         },
         body: JSON.stringify({game_id: gameId}),
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         li.remove()
         return true
@@ -205,6 +207,7 @@ function createNewGameButton (menu) {
                     winning_score: score,
                 }),
             });
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 const data = await response.json()
                 //alert("game created " + data.game.id)
@@ -230,15 +233,20 @@ async function createScoreModal() {
         
         const scoreInput = document.createElement('input')
         scoreInput.id = 'score-input'
+        scoreInput.type = 'number'
+        scoreInput.min = 1
+        scoreInput.max = 20
         const scoreMessage = document.createElement('p')
-        scoreMessage.innerText = 'Choose the winning score for this game'
+        scoreMessage.innerText = 'Choose the winning score for this game (1 - 20)'
         
         
         const confirmButton = document.createElement('button')
         confirmButton.id = 'confirm-button'
         confirmButton.innerText = 'Confirm'
         confirmButton.addEventListener('click', () => {
-            const score = scoreInput.value
+            let score = scoreInput.value
+            if (score <= 0) score = 1
+            if (score > 20) score = 20
             scoreModal.remove()
             resolve(score)
         })

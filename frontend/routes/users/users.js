@@ -30,6 +30,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (searchUser.status == 401) deleteTokenReload()
         if (searchUser.ok)
         {
             const userSearched = await searchUser.json()
