@@ -1,4 +1,4 @@
-import { checkToken } from "../../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
 import { getUserToken, getUsername } from "../../../../utils/userData.js"
 
 //list of upcoming tournament where user is registered but not yet started (show/upcoming)

@@ -1,4 +1,4 @@
-import { checkToken } from "./token.js";
+import { checkToken, deleteTokenReload } from "./token.js";
 
 export async function saveUserInfo () {
     const isTokenValid = await checkToken()

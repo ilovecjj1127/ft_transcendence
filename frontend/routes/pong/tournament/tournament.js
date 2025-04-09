@@ -1,5 +1,5 @@
 import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
-import { checkToken } from "../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
 import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
 import { createOpenRegistration } from "./list-creation/openRegistration.js"

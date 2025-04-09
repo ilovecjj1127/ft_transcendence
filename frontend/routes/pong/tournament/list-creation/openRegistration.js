@@ -1,4 +1,4 @@
-import { checkToken } from "../../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
 import { getUserId, getUserToken } from "../../../../utils/userData.js"
 
 //list of joinable tournaments (show/registration)

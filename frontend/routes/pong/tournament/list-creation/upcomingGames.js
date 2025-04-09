@@ -1,4 +1,4 @@
-import { checkToken } from "../../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
 import { getUserId, getUserToken, getUsername} from "../../../../utils/userData.js"
 
 //list of next games to play (show/ready/games)

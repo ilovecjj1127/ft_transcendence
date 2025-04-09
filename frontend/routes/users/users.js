@@ -1,5 +1,5 @@
 import { getUserToken } from "../../utils/userData.js"
-import { checkToken } from "../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
 
 export const init = () => {
     const username = document.getElementById('users-username')
