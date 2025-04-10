@@ -31,6 +31,7 @@ export function isTokenExpired(token)
 }
 
 export function deleteTokenReload () {
+    alert("User unauthorized. Logging out.")
     localStorage.clear()
     window.location.href ='/'
 }

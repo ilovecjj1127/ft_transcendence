@@ -191,3 +191,20 @@ body {
     background-color: rgb(2, 2, 36);
 }
 
+#otp-container {
+	width: 100%;
+	display:flex;
+	/* flex-direction: row; */
+	justify-content: center;
+	gap:10px;
+}
+
+#otp-container input {
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	font-size: 24px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	outline: none;
+}

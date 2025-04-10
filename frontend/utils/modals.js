@@ -1,13 +1,16 @@
+import { showOtpModal, showQrModal } from "./2fa.js"
 import { createMenuProfile } from "./profile-toggle.js"
 import { saveUserInfo, setUserToken } from "./userData.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
+const otpCodeModal = new bootstrap.Modal(document.getElementById('otp-Modal'))
 const loginForm = document.getElementById("login-form")
 const loginButton = document.getElementById("login")
 const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
+
 let loginResolver
 
 export function showLoginModal () {
@@ -46,7 +49,15 @@ loginForm.onsubmit = async (e) => {
         body: JSON.stringify({ username, password }),
     });
 
-    if (response.ok) {
+    if (response.status == 202) {
+        console.log("202")
+        //set up for 2fa verify
+        const data = await response.json()
+        localStorage.setItem("partial_token", data.partial_token)
+        loginModal.hide()
+        showOtpModal()
+    } else if (response.status == 200) {
+        console.log("200")
         const data = await response.json()
         setUserToken(data.access, data.refresh)
         saveUserInfo()
@@ -104,8 +115,6 @@ registerForm.onsubmit = async (e) => {
     }
 }
 
-//button events listener
-
 loginButton.addEventListener('click', () => {
     loginForm.requestSubmit()
 })
@@ -114,7 +123,7 @@ registerButton.addEventListener('click', function () {
     // Close the Login modal
     hideLoginModal()
     // Show the Register modal
-    registerModal.show();
+    registerModal.show()
 });
 
 registerSubmit.addEventListener("click", function () {

@@ -110,6 +110,68 @@
     </div>
 
 
+    <!-- otp Modal -->
+    <div class="modal fade" id="otp-Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">OTP Code</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="otp-form">
+                        <div class="mb-3">
+                            <div id="otp-container">
+                                <input type="password" class="code-control" id="code1" maxlength="1">
+                                <input type="password" class="code-control" id="code2" maxlength="1">
+                                <input type="password" class="code-control" id="code3" maxlength="1">
+                                <input type="password" class="code-control" id="code4" maxlength="1">
+                                <input type="password" class="code-control" id="code5" maxlength="1">
+                                <input type="password" class="code-control" id="code6" maxlength="1">
+                            </div>
+                        </div>
+                    </form>
+                    <div id="otp-message"></div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="otp-submit">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+    <!-- qr Modal -->
+    <div class="modal fade" id="qr-Modal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel">QR Code</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="qr-image-container"></div>
+                    <div id="qr-message"></div>
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="qr-next">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>    
+
+
+
+
+
+
+
+
+
+
+
+
     <main id="app"></main>
     
     <script src="app.js" type="module"></script>
