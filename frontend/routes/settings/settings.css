@@ -143,8 +143,17 @@
 
 #twofa-button {
     position: absolute;
-    bottom: 1rem;
-    right: 1rem;
-    background-color: white;
-    border:solid black;
+    bottom: 4rem;
+    right: 4rem;
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#twofa-button:hover {
+    background-color: #2980b9;
 }

@@ -1,80 +1,38 @@
-import { showOtpModal, showQrModal } from "./2fa.js"
-import { createMenuProfile } from "./profile-toggle.js"
-import { saveUserInfo, setUserToken } from "./userData.js"
+import { handleLogin, loginFunction } from "./login.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
-const otpCodeModal = new bootstrap.Modal(document.getElementById('otp-Modal'))
 const loginForm = document.getElementById("login-form")
 const loginButton = document.getElementById("login")
 const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
 
-let loginResolver
+//LOGIN
 
 export function showLoginModal () {
     loginModal.show()
-
-    return new Promise((resolve) => {
-        loginResolver = resolve
-    })
 }
 
 export function hideLoginModal () {
+    document.getElementById('login-message').innerHTML = ''
+    document.getElementById("login-form").reset()
     loginModal.hide()
-    createMenuProfile()
-
-    if (typeof loginResolver == 'function') {
-        loginResolver(true)
-        loginResolver = null
-    }
 }
-
-//forms to fill
 
 loginForm.onsubmit = async (e) => {
     e.preventDefault()
     const username = document.getElementById("username").value
     const password = document.getElementById("password").value
-    const message = document.getElementById("login-message")
-            
-    message.innerHTML = ""
-            
-    const response = await fetch(`http://${window.location.host}/api/users/login/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-    });
-
-    if (response.status == 202) {
-        console.log("202")
-        //set up for 2fa verify
-        const data = await response.json()
-        localStorage.setItem("partial_token", data.partial_token)
-        loginModal.hide()
-        showOtpModal()
-    } else if (response.status == 200) {
-        console.log("200")
-        const data = await response.json()
-        setUserToken(data.access, data.refresh)
-        saveUserInfo()
-        message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
-                
-        setTimeout( () => {
-            hideLoginModal()
-        }, 2000)
-    } else {
-        message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
-        
-        if (typeof loginResolver == 'function') {
-            loginResolver(false)
-            loginResolver = null
-        }
-    }
+    
+    loginFunction(password, username)
 };
+
+loginButton.addEventListener('click', () => {
+    loginForm.requestSubmit()
+})
+
+//REGISTRATION
 
 registerForm.onsubmit = async (e) => {
     e.preventDefault()
@@ -107,17 +65,13 @@ registerForm.onsubmit = async (e) => {
                 
         setTimeout( () => {
             registerModal.hide()
-            showLoginModal()
+            handleLogin()
         }, 2000)
     } else {
         const errorData = await response.json();
         message.innerHTML = `<p class='text-danger'>Error: ${errorData.message || "An error occurred. Please try again."}</p>`;
     }
 }
-
-loginButton.addEventListener('click', () => {
-    loginForm.requestSubmit()
-})
 
 registerButton.addEventListener('click', function () {
     // Close the Login modal

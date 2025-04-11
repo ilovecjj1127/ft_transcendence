@@ -1,5 +1,5 @@
 import {deleteTokenReload, checkToken } from "./token.js"
-import { getUserToken, removeUserData } from "./userData.js"
+import { getUserToken } from "./userData.js"
 
 export async function handleLogout (e) {
     e.preventDefault()

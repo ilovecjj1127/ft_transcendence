@@ -1,5 +1,4 @@
-import {showLoginModal} from "./modals.js"
-
+import { handleLogin } from "./login.js"
 
 export function createNotLoggedMessage(overlay) {
     const msgContainer = document.createElement('div')
@@ -10,7 +9,7 @@ export function createNotLoggedMessage(overlay) {
     loginButton.innerText = "Login"
 
     loginButton.addEventListener('click', async () => {
-        let logged = await showLoginModal()
+        let logged = await handleLogin() //login function
         if (logged)
             window.dispatchEvent(new HashChangeEvent('hashchange'))
     })

@@ -211,8 +211,8 @@ function createNewGameButton (menu) {
             if (response.ok) {
                 const data = await response.json()
                 //alert("game created " + data.game.id)
-                //startGame(data.game)
-                window.dispatchEvent(new HashChangeEvent('hashchange'));
+                startGame(data.game)
+                //window.dispatchEvent(new HashChangeEvent('hashchange'));
                 return true
             } else {
                 newGame.innerText = "Error"

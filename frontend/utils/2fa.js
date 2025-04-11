@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "./token.js"
-import { getUserToken, setUserToken, saveUserInfo } from "./userData.js"
+import { getUserToken } from "./userData.js"
+import { verify_twofa } from "./login.js"
 
 let otpCodeModal = null
 let qrModal = null
@@ -8,34 +9,7 @@ const qrNext = document.getElementById('qr-next')
 const otpform = document.getElementById('otp-form')
 const otpSumbit = document.getElementById('otp-submit')
 
-export function showOtpModal () {
-    const modalElement = document.getElementById('otp-Modal')
-
-    if (otpCodeModal) {
-        otpCodeModal.dispose();
-    }
-
-    otpCodeModal = new bootstrap.Modal(modalElement)
-    otpCodeModal.show()
-
-    const inputs = modalElement.querySelectorAll('.code-control')
-    
-    inputs.forEach((input, index) => {
-        input.addEventListener('input', () => {
-            input.value = input.value.replace(/\D/, '')
-            if (input.value && index < inputs.length - 1) {
-                inputs[index + 1].focus()
-            }
-        })
-
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Backspace' && input.value === '' && index > 0) {
-                inputs[index - 1].focus()
-            }
-        })
-    })
-}
-
+//QR
 
 export async function showQrModal () {
     const modalElement = document.getElementById('qr-Modal')
@@ -62,16 +36,16 @@ export async function showQrModal () {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
-    console.log(response.status)
     if (response.status == 401) deleteTokenReload()
-        if (response.ok) {
-            const data = await response.json()
-            qrImageUrl = data.qr_code
-        } else {
+    if (response.ok) {
+        const data = await response.json()
+        qrImageUrl = data.qr_code
+    } else {
         const message = document.getElementById("qr-message")
         message.innerHTML = "<p class='text-danger'>QR code failed to load. Close and try again.</p>"
     }
     
+    //show QR img
     const qrContainer = modalElement.querySelector('#qr-image-container')
     if (qrContainer) {
        qrContainer.innerHTML = `<img src="data:image/png;base64,${qrImageUrl}" alt="QR Code" class="img-fluid" />`
@@ -87,6 +61,45 @@ qrNext.addEventListener('click', () => {
     showOtpModal()
 })
 
+//OTP
+
+export function showOtpModal () {
+    const modalElement = document.getElementById('otp-Modal')
+
+    if (otpCodeModal) {
+        otpCodeModal.dispose();
+    }
+
+    otpCodeModal = new bootstrap.Modal(modalElement)
+    otpCodeModal.show()
+
+    const inputs = modalElement.querySelectorAll('.code-control')
+    
+    //go to next input after insert, allows only number, cancel enabled
+    inputs.forEach((input, index) => { 
+        input.addEventListener('input', () => {
+            input.value = input.value.replace(/\D/, '')
+            if (input.value && index < inputs.length - 1) {
+                inputs[index + 1].focus()
+            }
+        })
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Backspace' && input.value === '' && index > 0) {
+                inputs[index - 1].focus()
+            }
+        })
+    })
+}
+
+export function hideOtpModal () {
+    if (otpCodeModal) {
+        document.getElementById('otp-message').innerHTML = ''
+        document.getElementById("otp-form").reset()
+        otpCodeModal.hide()
+    }
+}
+
 otpSumbit.addEventListener('click', () => {
     otpform.requestSubmit()
 })
@@ -101,49 +114,14 @@ otpform.onsubmit = async (e) => {
     })
 
     let partial_token = localStorage.getItem("partial_token")
-    if (partial_token) 
-    {
-        //verify
+    if (partial_token) {
         verify_twofa(otpcode)
     } else  {
-        //setup
         setup_twofa(otpcode)
     }
-    //check if user 2fa enabled
-    //if yes do setup if not do verify
-
-
 }
 
-async function verify_twofa (otpcode) {
-    const message = document.getElementById("qr-message")
-    let partialToken = localStorage.getItem("partial_token")
-    const response = await fetch(`http://${window.location.host}/api/users/verify_2fa/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",  
-        },
-        body: JSON.stringify({
-            partial_token: partialToken,
-            otp_code: otpcode,
-        }),
-    });
-    if (response.status == 401) deleteTokenReload()
-    if (response.ok) {
-        const data = await response.json()
-        setUserToken(data.access, data.refresh)
-        saveUserInfo()
-        message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
-                
-        setTimeout( () => {
-            otpCodeModal.hide()
-        }, 2000)
 
-    } else {
-
-        message.innerHTML = "<p class='text-danger'>QR code failed to load. Close and try again.</p>"
-    }
-}
 
 async function setup_twofa (otpcode) {
     const isTokenValid = await checkToken()
