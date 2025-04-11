@@ -12,7 +12,7 @@ function loadChatRooms() {
     chatRooms.forEach(room => {
         const li = document.createElement("li");
         li.textContent = room;
-        li.onclick = () => selectChatRoom(room);
+        li.onclick = () => selectChatRoom(room);// not defined yet
         list.appendChild(li);
     });
 }
