@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", async () =>  {
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
 });
-// });
+
 async function get_data(url_parameter)
 {
     const response = await fetch(url_parameter, {
