@@ -182,6 +182,9 @@ div#social-menu-container{
 }
 
 #friends-list li {
+	height: 46px;
+	max-height: 46px;
+
     display: flex;
     width: 100%;
     height: 100%;
@@ -192,6 +195,9 @@ div#social-menu-container{
 }
 
 #friends-list li img {
+	max-height: 42px;
+	max-width: 42px;
+
 	right: 0;
     width: 70%;
     height: 70%;

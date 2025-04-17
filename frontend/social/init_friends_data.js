@@ -81,21 +81,9 @@ function populateOutRequest(list_name, data) {
 
     if (data == null)
         return
-    // if (DEBUGPRINTS) console.log("adding friend", friend)
 
     data.sent_requests.forEach(friend => {
-        // const friendDiv = document.createElement("div");
-        // friendDiv.classList.add("friend");
-        // friendDiv.innerHTML = `
-        //     <div class="friend-name">${friend.to_user}, id: ${friend.id}</div>
-        //     <div class="friend-buttons">
-        //         <button class="cancel-request">Cancel</button>
-        //     </div>
-        // `;
-        // friendList.appendChild(friendDiv);
-        
-        // friendList.getElementById("cancel-request").addEventListener("click", () => cancelRequest(friend.id));
-    // });
+
         const li = document.createElement('li');
         li.classList.add('friend-item');
 
