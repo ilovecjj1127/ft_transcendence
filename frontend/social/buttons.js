@@ -1,20 +1,13 @@
+
+
 function openSocialMenu() {
-	document.getElementById("social-menu-container").style.display = "flex"
+	if (document.getElementById("social-menu-container").style.display == "flex")
+		document.getElementById("social-menu-container").style.display = "none"
+	else
+		document.getElementById("social-menu-container").style.display = "flex"
 }
+
 function closeSocialMenu() {
-	document.getElementById("social-menu-container").style.display = "none"
-}
-function openSendRequestsForm() {
-	document.getElementById("send-request-form").style.display = "block"
-}
-function closeSendRequestsForm() {
-	document.getElementById("send-request-form").style.display = "none"
-}
-function openShowRequestsForm() {
-	document.getElementById("show-requests-box").style.display = "block"
-}
-function closeShowRequestsForm() {
-	document.getElementById("show-requests-box").style.display = "none"
 }
 
 function showHide(elementId, typeOfDisplay) {

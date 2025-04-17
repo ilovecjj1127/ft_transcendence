@@ -1,3 +1,8 @@
+#chat-menu-container {
+    display: none;
+}
+
+
 #chat-room-list-container {
     display: flex;
     flex-direction: column;

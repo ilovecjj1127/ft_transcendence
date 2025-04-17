@@ -27,8 +27,10 @@ export function onloadInit () {
     if (location.hash != '/')
         location.hash = '/'
 
-
     populateFriendList()
+    // populateFriends("friend-list", data)
+    // populateInRequest("incoming-requests", data)
+    // populateOutRequest("outgoing-requests", data)
 
     createMenuProfile()
 

@@ -1,0 +1,64 @@
+<!-- <button type="button" class="social-menu" id="open-social-menu" onclick="showHide('social-menu-container', 'flex')">Open Social Menu</button> -->
+
+
+
+<div id="friend-list-container" style="display: none;">
+	Friend list
+	<button id="show-hide" onclick="showHide('friend-list','flex')">Show/Hide</button>
+	<ul id="friend-list"></ul>
+</div>
+<div class="select-friend-box" id="select-friend-box-id" style="display: none;">
+	<label id="selected-label"><b>Selected: </b><span id="friend-user-name"></span></label>
+	<button id="remove-friend">Remove friend, very sad this is</button>
+</div>
+
+
+<!-- Chat menu -->
+
+<div id="chat-menu-container" style="display: none;">
+	Chat menu
+	<button id="show-hide" onclick="showHide('chat-menu','flex')">Show/Hide</button>
+	<div id="chat-menu" style="display: none;">
+		<!-- <label for="type_of_search_drop_down_options"><b>Type of search</b></label> -->
+		<!-- Rooms -->
+		
+		<div id="filter-options">
+			<label for="chat_room_name"><b>Apply search filter</b></label>
+			<input type="text" placeholder="Apply filter for chatroom..." name="chat_room_search" id="chat_room_search" required>
+			<label for="filter-value"><b>Applied filter: </b></label>
+			<div id="filter-value"><b>None</b></div>
+		</div>
+		<button id="load-rooms" onclick="showHide('chat-room-list','flex'), loadChatRooms()">Load rooms / Hide</button>
+		<div id="chat-room-list-container">
+			<label for="chat-room-list"><b>Rooms</b></label>
+			<ul id="chat-room-list"></ul>  <!-- List will be populated dynamically -->
+		</div>
+	</div>
+</div>
+
+
+<!-- chatbox -->
+
+<div class="chatting-box" value="~" id="chatting-box-id" style="display: none;">
+
+	<label id="room-type-label" size="100"><b>Room: </b><span id="room_id"></span></label>
+	<label id="chat-label"><b>Chatting with: </b><span id="chat-user-name"></span></label>
+
+	<div id="chat-log" type="text" size="100"></div>
+	<input id="chat-message-input" type="text" size="100">
+	<button id="chat-message-submit">Send</button>
+
+</div>
+
+
+<!-- <div id="friends-container"> -->
+	<!-- <button id="add-friend-btn">
+		<i class='bx bxs-user-plus'></i>
+	</button>
+	<button id="request-friend-btn">
+		<i class='bx bxs-user-detail'></i>
+	</button> -->
+	<!-- <div id="friends-list-container">
+		<ul id="friends-list"></ul>
+	</div> -->
+<!-- </div> -->

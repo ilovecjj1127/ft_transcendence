@@ -68,9 +68,15 @@ export function populateFriendList() {
 function addFriendInList(friend)
 {
         const li = document.createElement('li')
+
         const img = document.createElement('img')
         img.src = friend.img ? friend.img : "./media/default.jpeg";
         if (DEBUGPRINTS) console.log("adding friend", friend)
+        
+        const nameTag = document.createElement('span');
+        nameTag.textContent = friend.name || friend;
+        nameTag.style.marginTop = '5px';
+        nameTag.style.fontSize = '0.9em';
 
         img.addEventListener('click', () => {
                 //here change id with whatever
@@ -97,6 +103,8 @@ function addFriendInList(friend)
                 }
         })
         li.appendChild(img)
+        li.appendChild(nameTag);
+
         list.appendChild(li)
 }
 
@@ -113,7 +121,6 @@ closeChat.addEventListener('click', function (){
     chatBox.classList.remove('show')
 })
 
-// populateFriendList()
 
 // 3 dots dropdown toggle (add eventlisteners for invite and remove) 
 
