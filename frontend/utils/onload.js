@@ -28,9 +28,9 @@ export function onloadInit () {
         location.hash = '/'
 
 
-    // populateFriendList()
+    populateFriendList()
 
     createMenuProfile()
+
     moveFaces()
 }
-

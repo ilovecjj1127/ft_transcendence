@@ -113,7 +113,7 @@ closeChat.addEventListener('click', function (){
     chatBox.classList.remove('show')
 })
 
-populateFriendList()
+// populateFriendList()
 
 // 3 dots dropdown toggle (add eventlisteners for invite and remove) 
 
@@ -148,7 +148,6 @@ textarea.addEventListener('input', function () {
                 chatboxForm.style.alignItems = 'center'
         }
 })
-
 
 
 //chatbox message
@@ -207,9 +206,7 @@ function autoReply () {
 
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
         scrollBottom()
-
 }
-
 
 // scroll bottom on new message
 
