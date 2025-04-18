@@ -78,7 +78,7 @@ function setChatSocketEventFunctions()
     };
 }
 
-
+// returns id of chatbox
 async function getOrcreateChattingBox(frienda)
 {
     console.log("hi create chat box with:", frienda)

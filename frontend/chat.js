@@ -2,7 +2,7 @@ const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 import { DEBUGPRINTS } from "./config.js"
 import { getUserFriendlist } from "./utils/userData.js"
-
+import openChattingBox from "./social/open_close_chat.js"
 //example to check the overflow-y
 const friends = [
     {name: "friend1"},
@@ -79,6 +79,8 @@ function addFriendInList(friend)
         nameTag.style.fontSize = '0.9em';
 
         img.addEventListener('click', () => {
+                openChattingBox(friend)
+                return
                 //here change id with whatever
                 if (DEBUGPRINTS) console.log("click on img friend; ", friend)
                 if (DEBUGPRINTS) console.log("chatBox; ", chatBox)

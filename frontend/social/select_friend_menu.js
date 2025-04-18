@@ -29,4 +29,3 @@ async function removeFriend(username)
     const response_data = await response.json()
     console.log("response_data: ", response_data)
 }
-

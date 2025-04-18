@@ -2,13 +2,13 @@ import { getUserToken } from "../utils/userData.js"
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
 
-async function cancelRequest(request_id)
+export async function cancelRequest(request_id)
 {
     const response = await fetch(`http://${window.location.host}/api/users/friendship_request/cancel/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
         body: JSON.stringify({request_id})
     });
@@ -18,13 +18,13 @@ async function cancelRequest(request_id)
     location.reload();
 }
 
-async function declineRequest(request_id)
+export async function declineRequest(request_id)
 {
     const response = await fetch(`http://${window.location.host}/api/users/friendship_request/decline/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
         body: JSON.stringify({request_id})
     });
@@ -33,13 +33,13 @@ async function declineRequest(request_id)
     location.reload();
 }
 
-async function acceptRequest(request_id)
+export async function acceptRequest(request_id)
 {
     const response = await fetch(`http://${window.location.host}/api/users/friendship_request/accept/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
         body: JSON.stringify({request_id})
     });
@@ -57,13 +57,11 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
 })
 
 async function post(url, body_data) {
-    const accessToken = getUserToken().access
-
     const response = await fetch(url, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
         body: body_data
     });

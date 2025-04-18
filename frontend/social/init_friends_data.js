@@ -4,32 +4,35 @@ import openChattingBox from "./open_close_chat.js";
 import openSelectFriend from "./select_friend_menu.js"
 import { DEBUGPRINTS } from "../config.js"
 
+import { cancelRequest, declineRequest, acceptRequest } from "./requests.js"
+
+
 let url;
 let accessToken;
 let friends;
 let data;
 
-document.addEventListener("DOMContentLoaded", async () =>  {
+// document.addEventListener("DOMContentLoaded", async () =>  {
 
-    // window.addEventListener("load",  async function () {
-        accessToken = getUserToken().access
-        console.log("hi windows addEventListener")
+//     // window.addEventListener("load",  async function () {
+//         accessToken = getUserToken().access
+//         console.log("hi windows addEventListener")
 
-        if (!accessToken ) {
-            console.log("Access token not found")
-            showLoginModal()
-            return;
-        }
-        url = `http://${window.location.host}/api/users/me/`
-        data = await get_data(url);
-        if (data)
-            document.getElementById("username-text-home-page").innerHTML = data.username
-        console.log("data", data)
+//         if (!accessToken ) {
+//             console.log("Access token not found")
+//             showLoginModal()
+//             return;
+//         }
+//         url = `http://${window.location.host}/api/users/me/`
+//         data = await get_data(url);
+//         if (data)
+//             document.getElementById("username-text-home-page").innerHTML = data.username
+//         console.log("data", data)
 
-        // populateFriends("friend-list", data)
-        populateOutRequest("outgoing-requests", data)
-        populateInRequest("incoming-requests", data)
-});
+//         // populateFriends("friend-list", data)
+//         populateOutRequest("outgoing-requests", data)
+//         populateInRequest("incoming-requests", data)
+// });
 
 async function get_data(url_parameter)
 {
@@ -47,52 +50,88 @@ async function get_data(url_parameter)
     return response_data;
 }
 
-function populateFriends(list_name, data) {
-    const friendList = document.getElementById(list_name);
-    // friendList.innerHTML = ""; // Clear existing content
+// function populateFriends(list_name, data) {
+//     const friendList = document.getElementById(list_name);
+//     // friendList.innerHTML = ""; // Clear existing content
     
-    if (data == null)
-        return
-    const friends = data.friends
+//     if (data == null)
+//         return
+//     const friends = data.friends
 
-    friends.forEach(frienda => {
+//     friends.forEach(frienda => {
 
-        const friendDiv = document.createElement("div");
-        friendDiv.classList.add("friend");
-        friendDiv.innerHTML = `
-            <div class="friend">
-                <div id="friend-name">${frienda}</div>
-                <div class="friend-buttons">
-                    <button id="chat-friend">Chat</button>
-                    <button id="select-friend">Select</button>
-                </div>
-            </div>
-        `;
-        friendList.appendChild(friendDiv);
-        friendDiv.querySelector("#select-friend").addEventListener("click", () => openSelectFriend(frienda));
-        friendDiv.querySelector("#chat-friend").addEventListener("click", () => openChattingBox(frienda));
-    });
-}
+//         const friendDiv = document.createElement("div");
+//         friendDiv.classList.add("friend");
+//         friendDiv.innerHTML = `
+//             <div class="friend">
+//                 <div id="friend-name">${frienda}</div>
+//                 <div class="friend-buttons">
+//                     <button id="chat-friend">Chat</button>
+//                     <button id="select-friend">Select</button>
+//                 </div>
+//             </div>
+//         `;
+//         friendList.appendChild(friendDiv);
+//         friendDiv.querySelector("#select-friend").addEventListener("click", () => openSelectFriend(frienda));
+//         friendDiv.querySelector("#chat-friend").addEventListener("click", () => openChattingBox(frienda));
+//     });
+// }
 
 function populateOutRequest(list_name, data) {
-    const friendList = document.getElementById(list_name);
-    friendList.innerHTML = ""; // Clear existing content
+    const playerList = document.getElementById(list_name);
+    playerList.innerHTML = ""; // Clear existing content
     if (DEBUGPRINTS) console.log("data populateOutRequest", data)
 
     if (data == null)
         return
 
-    data.sent_requests.forEach(friend => {
+    data.sent_requests.forEach(player => {
 
         const li = document.createElement('li');
         li.classList.add('friend-item');
 
         const img = document.createElement('img');
-        img.src = friend.img ? friend.img : "./media/default.jpeg";
-        img.alt = friend.from_user;
+        img.src = player.img ? player.img : "./media/default.jpeg";
+        img.alt = player.from_user;
 
         const nameTag = document.createElement('span');
-        nameTag.textContent = `${friend.from_user}`;
+        nameTag.textContent = `${player.to_user}`;
+        nameTag.classList.add('player-name-tag');
+
+        const buttonContainer = document.createElement('div');
+        buttonContainer.classList.add('friend-buttons');
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.addEventListener('click', () => cancelRequest(player.id));
+
+        buttonContainer.appendChild(cancelBtn);
+        li.appendChild(img);
+        li.appendChild(nameTag);
+        li.appendChild(buttonContainer);
+        playerList.appendChild(li);
+    });
+}
+
+function populateInRequest(list_name, data) {
+    const playerList = document.getElementById(list_name);
+    if (DEBUGPRINTS) console.log("data populateInRequest", data)
+
+    playerList.innerHTML = ""; // Clear existing content
+    if (data == null)
+        return
+
+    data.received_requests.forEach(player => {
+    
+        const li = document.createElement('li');
+        li.classList.add('friend-item');
+
+        const img = document.createElement('img');
+        img.src = player.img ? player.img : "./media/default.jpeg";
+        img.alt = player.from_user;
+
+        const nameTag = document.createElement('span');
+        nameTag.textContent = `${player.from_user}`;
         nameTag.classList.add('friend-name-tag');
 
         const buttonContainer = document.createElement('div');
@@ -100,11 +139,11 @@ function populateOutRequest(list_name, data) {
 
         const acceptBtn = document.createElement('button');
         acceptBtn.textContent = 'Accept';
-        acceptBtn.addEventListener('click', () => acceptRequest(friend.id));
+        acceptBtn.addEventListener('click', () => acceptRequest(player.id));
 
         const declineBtn = document.createElement('button');
         declineBtn.textContent = 'Decline';
-        declineBtn.addEventListener('click', () => declineRequest(friend.id));
+        declineBtn.addEventListener('click', () => declineRequest(player.id));
     
         buttonContainer.appendChild(acceptBtn);
         buttonContainer.appendChild(declineBtn);
@@ -112,30 +151,10 @@ function populateOutRequest(list_name, data) {
         li.appendChild(img);
         li.appendChild(nameTag);
         li.appendChild(buttonContainer);
-        friendList.appendChild(li);
-    });
-}
-
-function populateInRequest(list_name, data) {
-    const friendList = document.getElementById(list_name);
-    if (DEBUGPRINTS) console.log("data populateInRequest", data)
-
-    friendList.innerHTML = ""; // Clear existing content
-    if (data == null)
-        return
-
-    data.received_requests.forEach(friend => {
-        const friendDiv = document.createElement("div");
-        friendDiv.classList.add("friend");
-        friendDiv.innerHTML = `
-            <div class="friend-name">${friend.from_user}, id: ${friend.id}</div>
-            <div class="friend-buttons">
-                <button class="accept-request">Accept</button>
-                <button class="decline-request">Decline</button>
-            </div>
-        `;
-        friendList.appendChild(friendDiv);
-        friendList.getElementById("accept-request").addEventListener("click", () => acceptRequest(friend.id));
-        friendList.getElementById("decline-request").addEventListener("click", () => declineRequest(friend.id));
+        playerList.appendChild(li);
+    
+        // friendList.appendChild(friendDiv);
+        // friendList.getElementById("accept-request").addEventListener("click", () => acceptRequest(friend.id));
+        // friendList.getElementById("decline-request").addEventListener("click", () => declineRequest(friend.id));
     });
 }
