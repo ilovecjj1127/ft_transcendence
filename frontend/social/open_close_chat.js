@@ -5,8 +5,6 @@ const chatBox = document.querySelector('.chatbox-message-wrapper')
 let switch_bool = true
 var chatSocket = null
 
-// console.log(chatSocket.url);
-
 export default async function openChattingBox(frienda)
 {
     const chat_box_id = await getOrcreateChattingBox(frienda)

@@ -3,36 +3,12 @@ import { getUserToken } from "../utils/userData.js";
 import openChattingBox from "./open_close_chat.js";
 import openSelectFriend from "./select_friend_menu.js"
 import { DEBUGPRINTS } from "../config.js"
-
 import { cancelRequest, declineRequest, acceptRequest } from "./requests.js"
-
 
 let url;
 let accessToken;
 let friends;
 let data;
-
-// document.addEventListener("DOMContentLoaded", async () =>  {
-
-//     // window.addEventListener("load",  async function () {
-//         accessToken = getUserToken().access
-//         console.log("hi windows addEventListener")
-
-//         if (!accessToken ) {
-//             console.log("Access token not found")
-//             showLoginModal()
-//             return;
-//         }
-//         url = `http://${window.location.host}/api/users/me/`
-//         data = await get_data(url);
-//         if (data)
-//             document.getElementById("username-text-home-page").innerHTML = data.username
-//         console.log("data", data)
-
-//         // populateFriends("friend-list", data)
-//         populateOutRequest("outgoing-requests", data)
-//         populateInRequest("incoming-requests", data)
-// });
 
 export async function get_data(url_parameter)
 {
@@ -49,33 +25,6 @@ export async function get_data(url_parameter)
 
     return response_data;
 }
-
-// function populateFriends(list_name, data) {
-//     const friendList = document.getElementById(list_name);
-//     // friendList.innerHTML = ""; // Clear existing content
-    
-//     if (data == null)
-//         return
-//     const friends = data.friends
-
-//     friends.forEach(frienda => {
-
-//         const friendDiv = document.createElement("div");
-//         friendDiv.classList.add("friend");
-//         friendDiv.innerHTML = `
-//             <div class="friend">
-//                 <div id="friend-name">${frienda}</div>
-//                 <div class="friend-buttons">
-//                     <button id="chat-friend">Chat</button>
-//                     <button id="select-friend">Select</button>
-//                 </div>
-//             </div>
-//         `;
-//         friendList.appendChild(friendDiv);
-//         friendDiv.querySelector("#select-friend").addEventListener("click", () => openSelectFriend(frienda));
-//         friendDiv.querySelector("#chat-friend").addEventListener("click", () => openChattingBox(frienda));
-//     });
-// }
 
 export function populateOutRequest(list_name, data) {
     const playerList = document.getElementById(list_name);
@@ -152,9 +101,5 @@ export function populateInRequest(list_name, data) {
         li.appendChild(nameTag);
         li.appendChild(buttonContainer);
         playerList.appendChild(li);
-    
-        // friendList.appendChild(friendDiv);
-        // friendList.getElementById("accept-request").addEventListener("click", () => acceptRequest(friend.id));
-        // friendList.getElementById("decline-request").addEventListener("click", () => declineRequest(friend.id));
     });
 }

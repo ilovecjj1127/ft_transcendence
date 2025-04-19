@@ -151,7 +151,7 @@ function setChatSocketEventFunctions()
     };
     chatSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        console.log("data onmessage; ", data.message)
+        console.log("data onmessage; ", event.data)
         const split_data = data.message.split(":");
         const currentUser = document.querySelector('.chatbox-message-name').textContent.trim();
         
@@ -161,7 +161,7 @@ function setChatSocketEventFunctions()
         else
                 format = "received"
 
-        format_and_put_Reply(data.message, format)
+        format_and_put_Reply(data, format)
 
         // document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
     };
@@ -204,7 +204,7 @@ dropDownToggle.addEventListener('click', function () {
 })
 
 document.addEventListener('click', function (e) {
-        if (!e.target.matches('.chatbix-message-dropdown, .chatbox-message-dropdown *')) {
+        if (!e.target.matches('.chatbox-message-dropdown, .chatbox-message-dropdown *')) {
                 dropDownMenu.classList.remove('show')
         }
 })
@@ -213,6 +213,22 @@ document.addEventListener('click', function (e) {
 
 const textarea = document.querySelector('.chatbox-message-input')
 const chatboxForm = document.querySelector('.chatbox-message-form')
+const invitePlayerForGame = document.querySelector('.invite-player-for-game-button')
+const removeFriendElem = document.querySelector('.remove-as-friend-button')
+
+invitePlayerForGame.addEventListener('click', function () {
+console.log("inviting player; ", document.querySelector(".chatbox-message-name"))
+
+})
+
+import removeFriend from "./social/select_friend_menu.js"
+
+removeFriendElem.addEventListener('click', function () {
+
+playername = document.querySelector(".chatbox-message-name")
+        console.log("removing player as friend;  ", playername)
+removeFriend(playername)
+})
 
 textarea.addEventListener('input', function () {
         let line = textarea.value.split('\n').length
@@ -239,11 +255,13 @@ chatboxForm.addEventListener('submit', function (e) {
                 //remove autoreply, used for debugging
                 // setTimeout(autoReply, 1000)
 
-        
+                const date = new Date()
+
                 chatSocket.send(JSON.stringify({
-                    'message': message
+                    'message': message,
+                    'date': date
                 }));
-                console.log("data #chatboxForm; ", message)
+                console.log("data #chatboxForm; ", message, "\nnow; ", date)
                 scrollBottom()
         }
 })
@@ -274,31 +292,16 @@ function writeMessage () {
         scrollBottom()
 }
 
-//auto reply function for debugging, change this function and use it for reply by friend
-
-function autoReply () {
+export default function format_and_put_Reply (data, format) {
         const today = new Date()
-        let message = `
-                <div class="chatbox-message-item received">
-                        <span class="chatbox-message-item-text">
-                                YO YO You got an answer!
-                        </span>
-                        <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
-                </div>
-        `
+        const sent_date = new Date(data.date)
 
-        chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
-        scrollBottom()
-}
-
-export default function format_and_put_Reply (reply_text, format) {
-        const today = new Date()
         let message = `
                 <div class="chatbox-message-item ${format}">
                         <span class="chatbox-message-item-text">
-                                ${reply_text}
+                                ${data.message}
                         </span>
-                        <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
+                        <span class="chatbox-message-item-time">sent at: ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())}\narrived:${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
                 </div>
         `
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)

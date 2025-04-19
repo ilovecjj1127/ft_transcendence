@@ -78,7 +78,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         from .models import ChatRoom
         
         data = json.loads(text_data)
-
+        print("ws data receive; ", data)
         self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
         if blocked_by:
@@ -94,7 +94,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat_message = {
             'username': self.username,
-            'message': data['message']
+            'message': data['message'],
+            'date': data['date']
         }
         redis_key = f'chat:{self.room_group_name}:messages'
         await self.redis.rpush(redis_key, json.dumps(chat_message))
@@ -103,7 +104,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'send_message',
                 'username': self.username,
-                'message': data['message']
+                'message': data['message'],
+                'date': data['date']
             }
         )
 
