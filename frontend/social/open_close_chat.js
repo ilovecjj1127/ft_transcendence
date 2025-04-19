@@ -1,5 +1,6 @@
 import { showLoginModal } from "../utils/modals.js";
 import { getUserToken } from "../utils/userData.js";
+const chatBox = document.querySelector('.chatbox-message-wrapper')
 
 let switch_bool = true
 var chatSocket = null
@@ -10,7 +11,7 @@ export default async function openChattingBox(frienda)
 {
     const chat_box_id = await getOrcreateChattingBox(frienda)
 
-    let chattingBox = document.getElementById("chatting-box-id");
+    let chattingBox = document.getElementById("chatting-box-id-v2");
     chattingBox.setAttribute("value", chat_box_id)
 
     if (chattingBox.getAttribute("value") && switch_bool) {
@@ -25,7 +26,9 @@ export default async function openChattingBox(frienda)
         chatSocket = new WebSocket(
             `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
         );
-        document.getElementById("chat-user-name").textContent = frienda;
+        chatBox.querySelector('.chatbox-message-name').innerHTML = friend
+
+        // document.getElementById("chat-user-name").textContent = frienda;
         document.getElementById('chat-log').innerHTML = ""
 
         setChatSocketEventFunctions()
@@ -46,6 +49,10 @@ export default async function openChattingBox(frienda)
     }
 }
 
+const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
+
+import format_and_put_Reply from "../chat.js"
+
 function setChatSocketEventFunctions()
 {
     document.getElementById('chat-message-submit').onclick = async function() {
@@ -62,6 +69,9 @@ function setChatSocketEventFunctions()
     chatSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
         console.log("data onmessage; ", data.message)
+
+        format_and_put_Reply(data.message)
+
         document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
     };
     chatSocket.onclose = function(event) {
@@ -79,18 +89,15 @@ function setChatSocketEventFunctions()
 }
 
 // returns id of chatbox
-async function getOrcreateChattingBox(frienda)
+export async function getOrcreateChattingBox(frienda)
 {
     console.log("hi create chat box with:", frienda)
-
-	const accessToken = getUserToken().access
-	console.log("accessToken: ", accessToken)
 
 	const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
-			"Authorization": `Bearer ${accessToken}`
+			"Authorization": `Bearer ${getUserToken().access}`
 		},
 		body: JSON.stringify({ "username": frienda })  // Fixed object syntax
 	});

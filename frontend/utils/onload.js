@@ -4,8 +4,10 @@ import { checkToken } from "./token.js"
 import { saveUserInfo, getUserToken, getUserAvatar} from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
 import { populateFriendList } from "../chat.js"
+import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
 
-export function onloadInit () {
+
+export async function onloadInit () {
     const accessToken = getUserToken().access
     const refreshToken = getUserToken().refresh
 
@@ -27,10 +29,15 @@ export function onloadInit () {
     if (location.hash != '/')
         location.hash = '/'
 
+    const url = `http://${window.location.host}/api/users/me/`
+    let data = null
+    data = await get_data(url);
+    if (data)
+        document.getElementById("username-text-home-page").innerHTML = data.username
+        populateInRequest("incoming-requests", data)
+        populateOutRequest("outgoing-requests", data)
+
     populateFriendList()
-    // populateFriends("friend-list", data)
-    // populateInRequest("incoming-requests", data)
-    // populateOutRequest("outgoing-requests", data)
 
     createMenuProfile()
 

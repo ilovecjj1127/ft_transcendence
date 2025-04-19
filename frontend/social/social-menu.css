@@ -102,6 +102,7 @@ div#social-menu-container{
 	form#send-request-form {
 		border: 2px solid #582556;
 		display: none;
+		flex-direction: column;
 	}
 	div#show-requests-box {
 		display: none;

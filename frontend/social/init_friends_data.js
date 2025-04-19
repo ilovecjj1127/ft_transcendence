@@ -34,13 +34,13 @@ let data;
 //         populateInRequest("incoming-requests", data)
 // });
 
-async function get_data(url_parameter)
+export async function get_data(url_parameter)
 {
     const response = await fetch(url_parameter, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
     });
     const response_data = await response.json()
@@ -77,7 +77,7 @@ async function get_data(url_parameter)
 //     });
 // }
 
-function populateOutRequest(list_name, data) {
+export function populateOutRequest(list_name, data) {
     const playerList = document.getElementById(list_name);
     playerList.innerHTML = ""; // Clear existing content
     if (DEBUGPRINTS) console.log("data populateOutRequest", data)
@@ -113,7 +113,7 @@ function populateOutRequest(list_name, data) {
     });
 }
 
-function populateInRequest(list_name, data) {
+export function populateInRequest(list_name, data) {
     const playerList = document.getElementById(list_name);
     if (DEBUGPRINTS) console.log("data populateInRequest", data)
 
