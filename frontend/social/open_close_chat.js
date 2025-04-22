@@ -91,16 +91,27 @@ export async function getOrcreateChattingBox(frienda)
 {
     console.log("hi create chat box with:", frienda)
 
-	const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-			"Authorization": `Bearer ${getUserToken().access}`
-		},
-		body: JSON.stringify({ "username": frienda })  // Fixed object syntax
-	});
+    try {
 
-    const data = await response.json();  // ✅ Parse JSON
-    console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
-    return data["chat_room_id"];
+        const response = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+            body: JSON.stringify({ "username": frienda })  // Fixed object syntax
+        });
+        
+        const data = await response.json();  // ✅ Parse JSON
+        console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
+        return data["chat_room_id"];
+    }
+    catch(err) {
+        // Network error or the above thrown Error
+        console.error("Failed to get or create chat box:", err);
+        // Optional: give user feedback in the UI
+        alert("Sorry, we couldn’t open the chat. Please try again later.");
+        throw err;  // re-throw so callers can also handle it if needed
+        return null
+    }
 };

@@ -1,3 +1,6 @@
+import { getUserToken } from "../utils/userData.js";
+import { DEBUGPRINTS } from "../config.js"
+
 let switch_bool2 = true
 
 export default function openSelectFriend(frienda)
@@ -16,16 +19,18 @@ export default function openSelectFriend(frienda)
         console.error("Error: #chatting-box not found in the DOM.");
 }}
 
-async function removeFriend(username)
+export async function removeFriend(username)
 {
     const response = await fetch(`http://${window.location.host}/api/users/remove_friend/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`
+            "Authorization": `Bearer ${getUserToken().access}`
         },
         body: JSON.stringify({username})
     });
     const response_data = await response.json()
-    console.log("response_data: ", response_data)
+    if (DEBUGPRINTS) console.log("response_data: ", response_data)
+
+
 }

@@ -40,7 +40,7 @@
 
         chatSocket.onmessage = function(event) {
             const data = JSON.parse(event.data);
-            console.log("data onmessage; ", data.message)
+            console.log("data onmessage; ", data)
             document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
         };
 

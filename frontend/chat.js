@@ -5,6 +5,9 @@ import { getUserFriendlist } from "./utils/userData.js"
 import openChattingBox from "./social/open_close_chat.js"
 import { getUserToken } from "./utils/userData.js";
 import { getOrcreateChattingBox } from "./social/open_close_chat.js"
+import { removeFriend } from "./social/select_friend_menu.js"
+
+
 //example to check the overflow-y
 const friends = [
     {name: "friend1"},
@@ -109,7 +112,8 @@ function addFriendInList(friend)
                         `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
                 );
                 chatboxMessageWrapper.innerHTML = '';
-
+                document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
+                console.log("chatboxid = ", chat_box_id)
                 setChatSocketEventFunctions()
                 chatBox.querySelector('.chatbox-message-name').innerHTML = friend
                 if (friendChatOpen && friendChatOpen.name == friend.name && friendChatOpen.name != undefined){
@@ -151,7 +155,9 @@ function setChatSocketEventFunctions()
     };
     chatSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        console.log("data onmessage; ", event.data)
+        console.log("data onmessage; ", data)
+        console.log("date onmessage; ", data.date)
+
         const split_data = data.message.split(":");
         const currentUser = document.querySelector('.chatbox-message-name').textContent.trim();
         
@@ -213,21 +219,50 @@ document.addEventListener('click', function (e) {
 
 const textarea = document.querySelector('.chatbox-message-input')
 const chatboxForm = document.querySelector('.chatbox-message-form')
-const invitePlayerForGame = document.querySelector('.invite-player-for-game-button')
-const removeFriendElem = document.querySelector('.remove-as-friend-button')
+const invitePlayerForGame = document.querySelector('#invite-player-for-game-button')
+const removeFriendElem = document.querySelector('#remove-as-friend-button')
+const blockOrUnblockButton = document.querySelector('#block-chatroom-button')
+
+blockOrUnblockButton.addEventListener('click', async function () {
+        
+        const isBlocking = this.innerHTML.trim() === "Block";
+        const elemChatbox = document.getElementById('chatting-box-id-v2')
+        console.log(elemChatbox); // should not be null
+        const chatboxIdValue = elemChatbox.dataset.chatboxIdValue
+        console.log(chatboxIdValue); // should not be null
+        const nameinchatbox = document.querySelector('.chatbox-message-name').textContent.trim();
+        console.log(nameinchatbox); // should not be null
+
+        const response = await fetch(`http://${window.location.host}/api/chat/block_or_unblock/?chatroom_id=${chatboxIdValue}`, {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getUserToken().access}`
+                },
+                body: JSON.stringify({"username": nameinchatbox})
+        });
+        const response_data = await response.json()
+        if (DEBUGPRINTS) console.log("response_data: ok", response.ok, "data: ", response_data)
+
+        if (response.ok) {
+                this.innerHTML = isBlocking ? 'Unblock' : 'Block';
+        } else {
+                if (DEBUGPRINTS) console.error("Failed to toggle block state.");
+        }
+})
 
 invitePlayerForGame.addEventListener('click', function () {
 console.log("inviting player; ", document.querySelector(".chatbox-message-name"))
 
 })
 
-import removeFriend from "./social/select_friend_menu.js"
-
 removeFriendElem.addEventListener('click', function () {
 
-playername = document.querySelector(".chatbox-message-name")
+let playername = document.querySelector('.chatbox-message-name').textContent.trim();
         console.log("removing player as friend;  ", playername)
 removeFriend(playername)
+chatBox.classList.remove('show')
+
 })
 
 textarea.addEventListener('input', function () {

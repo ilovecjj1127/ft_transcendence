@@ -224,6 +224,8 @@ div#social-menu-container{
 	--grey-d-3: #888;
 	--white: #FFF;
 	--dark: #222;
+	z-index: 20 !important; /* <- Add this line */
+
 }
 
 .chatbox-message-wrapper {
@@ -237,10 +239,13 @@ div#social-menu-container{
 	transform: scale(0);
 	transform-origin: bottom right;
 	transition: .2s;
+	z-index: 20 !important; /* <- Add this line */
 }
 
 .chatbox-message-wrapper.show {
 	transform: scale(1);
+	z-index: 20 !important; /* <- Add this line */
+
 }
 
 .chatbox-message-header {
