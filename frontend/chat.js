@@ -147,7 +147,9 @@ function setChatSocketEventFunctions()
         const message = messageInput.value;
 
         chatSocket.send(JSON.stringify({
-            'message': message
+            'message': message,
+            'option-game-invite' : 0,
+            'date': new Date()
         }));
         console.log("data #chat-message-submit; ", message)
 
@@ -157,12 +159,13 @@ function setChatSocketEventFunctions()
         const data = JSON.parse(event.data);
         console.log("data onmessage; ", data)
         console.log("date onmessage; ", data.date)
+        console.log("username onmessage; ", data.username)
 
         const split_data = data.message.split(":");
         const currentUser = document.querySelector('.chatbox-message-name').textContent.trim();
         
         let format
-        if (split_data[0] == currentUser)
+        if (data.username == currentUser)
                 format = "sent"
         else
                 format = "received"
@@ -251,9 +254,22 @@ blockOrUnblockButton.addEventListener('click', async function () {
         }
 })
 
-invitePlayerForGame.addEventListener('click', function () {
-console.log("inviting player; ", document.querySelector(".chatbox-message-name"))
+import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
 
+invitePlayerForGame.addEventListener('click', async function () {
+
+        const friendname = document.querySelector(".chatbox-message-name")
+        const game_id = await createGameReturnId()
+
+        console.log("inviting player; ", friendname, "to game; ", game_id)
+        const date = new Date()
+        const message = `hi do you want to play game?, game-id = ${game_id}`;
+        chatSocket.send(JSON.stringify({
+        'message' : message,
+        // 'option-game-invite': game_id,
+        'date': date
+        }));
+        scrollBottom()
 })
 
 removeFriendElem.addEventListener('click', function () {
@@ -279,8 +295,6 @@ textarea.addEventListener('input', function () {
         }
 })
 
-
-
 chatboxForm.addEventListener('submit', function (e) {
         e.preventDefault()
 
@@ -294,6 +308,7 @@ chatboxForm.addEventListener('submit', function (e) {
 
                 chatSocket.send(JSON.stringify({
                     'message': message,
+                //     'option-game-invite': 0,
                     'date': date
                 }));
                 console.log("data #chatboxForm; ", message, "\nnow; ", date)
@@ -336,7 +351,9 @@ export default function format_and_put_Reply (data, format) {
                         <span class="chatbox-message-item-text">
                                 ${data.message}
                         </span>
-                        <span class="chatbox-message-item-time">sent at: ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())}\narrived:${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
+                        <span class="chatbox-message-item-time">sent at: 
+                        ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}
+                        \tarrived:${addZero(today.getHours())}:${addZero(today.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
                 </div>
         `
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)

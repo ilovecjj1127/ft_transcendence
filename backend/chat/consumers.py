@@ -96,6 +96,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat_message = {
             'username': self.username,
             'message': data['message'],
+            # 'option-game-invite':  data['option-game-invite'],
             'date': data['date']
         }
         redis_key = f'chat:{self.room_group_name}:messages'
@@ -106,6 +107,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'send_message',
                 'username': self.username,
                 'message': data['message'],
+                # 'option-game-invite':  data['option-game-invite'],
                 'date': data['date']
             }
         )
@@ -125,6 +127,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'username': event['username'],
             'message': event['message'],
+            # 'option-game-invite':  event['option-game-invite'],
             'date': event.get('date', str(timezone.dst))
         }))
 
