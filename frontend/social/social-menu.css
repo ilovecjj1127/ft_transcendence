@@ -110,10 +110,13 @@ div#social-menu-container{
 
 	}
 	#outgoing-requests {
-		border: 1px solid salmon;
+		border: 1px solid rgb(125, 250, 114);
+		padding: 2;
 	}
 	#incoming-requests {
-		border: 1px solid salmon;
+		border: 1px solid rgb(114, 250, 118);
+		padding: 3;
+		/* border: 2px solid rgb(51, 202, 20) */
 	}
 
 
@@ -125,7 +128,6 @@ div#social-menu-container{
 	background-color: #1f3091;
 	font-size: small;
 }
-
 
 /* chat */
 

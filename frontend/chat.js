@@ -7,7 +7,6 @@ import { getUserToken } from "./utils/userData.js";
 import { getOrcreateChattingBox } from "./social/open_close_chat.js"
 import { removeFriend } from "./social/select_friend_menu.js"
 
-
 //example to check the overflow-y
 const friends = [
     {name: "friend1"},
