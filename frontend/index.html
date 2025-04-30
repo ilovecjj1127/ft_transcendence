@@ -122,7 +122,7 @@
     <div id="social-menu-container" style="display: flex;"  style="flex-direction: column;">
         <!-- Social Menu -->
         <!-- <button type="button" class="social-menu" onclick="closeSocialMenu()">Close Menu</button> -->
-        
+
         <!-- Friendship requests menu -->
         <div id="friendship-menu" style="flex-direction: row;">
             <button class="social-menu-button" id="send-requests" onclick="showHide('send-request-form','flex')">
@@ -133,6 +133,10 @@
             <button class="social-menu-button" id="show-requests" onclick="showHide('show-requests-box','flex')">
                 <i class='bx bxs-user-detail'></i>
                 Show requests
+            </button>
+            <button class="social-menu-button" id="chat" onclick="showHide('show-chat','flex')">
+                <i class='bx bxs-user-chat'></i>
+                Chat(in progres)
             </button>
         </div>
 
@@ -151,7 +155,11 @@
             <label for="outgoing-requests"><b>Outgoing</b></label>
             <ul id="outgoing-requests"></ul>
         </div>
-        
+        <div id="chat-button">
+            <label for="chat-button"><b>Search</b></label>
+            <ul id="chat-search-results"></ul>
+        </div>
+
         <!-- chat box-->
         <div id="chat-container">
             <div class="chatbox-message-wrapper" id="chatting-box-id-v2" chatboxIdValue="~">
@@ -217,7 +225,7 @@
     
     <script src="utils/modals.js" type="module"></script>
     <script src="utils/userData.js" type="module"></script>
-    
+
     <!-- Load Social Menu Scripts -->
     <script src="social/init_friends_data.js" type="module"></script>
     <script src="social/buttons.js"></script>
