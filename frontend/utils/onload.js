@@ -51,9 +51,7 @@ function populateChatSearch () {
 
     chat_button.addEventListener('click', () => showSearchBarChat());
 
-
 }
-
 
 showSearchBarChat()
 {
