@@ -16,17 +16,60 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
         self.redis = self.scope['redis_pool']
+        await self.channel_layer.group_add(
+            f"user_{self.user.username}",
+            self.channel_name
+        )
         await self.accept()
-        self.redis.set(f"user:{self.user.id}:online", 1)
-        # check unread messages
+        user_connections = await self.redis.incr(f"user:{self.user.username}:online")
+        unread_chats = await self._get_unread_chats()
+        if unread_chats:
+            self.channel_layer.group_send(
+                f"user_{self.user.username}",
+                {
+                    "type": "send_unread_chats_notification",
+                    "unread_chats": unread_chats
+                }
+            )
+        if user_connections == 1:
+            asyncio.create_task(self.check_users_statuses())
 
     async def disconnect(self, close_code):
         if self.user.is_anonymous:
             return
-        self.redis.delete(f"user:{self.user.id}:online")
+        user_connections = self.redis.decr(f"user:{self.user.username}:online")
+        if user_connections == 0:
+            await self.redis.delete(f"user:{self.user.username}:online")
+        await self.channel_layer.group_discard(
+            f"user_{self.user.username}",
+            self.channel_name
+        )
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+        msg_type = data.get("type")
+        if msg_type == "user_status_update":
+            usernames = data.get("usernames", [])
+            statuses = await self._get_users_statuses(usernames)
+            self.channel_layer.group_send(
+                f"user_{self.user.username}",
+                {
+                    "type": "send_user_status_updates",
+                    "update": statuses
+                }
+            )
+        elif msg_type == "unread_chats":
+            unread_chats = await self._get_unread_chats()
+            self.channel_layer.group_send(
+                f"user_{self.user.username}",
+                {
+                    "type": "send_unread_chats_notification",
+                    "unread_chats": unread_chats
+                }
+            )
 
     async def send_user_status_updates(self, event: dict):
-        status_updates = event # {username: status, ...}
+        status_updates = event["update"] # {username: status, ...}
         await self.send(text_data=json.dumps({
             'type': 'user_status_update',
             'update': status_updates
@@ -38,6 +81,34 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'type': 'unread_chats',
             'unread_chats': unread_chats
         }))
+
+    async def _get_users_statuses(self, usernames: list[str]) -> dict[str, bool]:
+        users_statuses = {}
+        for username in usernames:
+            users_statuses[username] = await self.redis.exists(f"user:{username}:online")
+        self.users_statuses = users_statuses
+        return users_statuses
+
+    async def check_users_statuses(self):
+        while await self.redis.exists(f"user:{self.user.username}:online"):
+            status_update = {}
+            for username, old_status in self.users_statuses.items():
+                new_status = await self.redis.exists(f"user:{username}:online")
+                if old_status != new_status:
+                    self.users_statuses[username] = new_status
+                    status_update[username] = new_status
+            if status_update:
+                self.channel_layer.group_send(
+                    f"user_{self.user.username}",
+                    {
+                        "type": "send_user_status_updates",
+                        "update": status_update
+                    }
+                )
+            await asyncio.sleep(30)
+
+    async def _get_unread_chats(self) -> list[str]:
+        pass
 
 # send notifications about user statuses from the list and when they change
 # check new messages in chats and receive notifications
