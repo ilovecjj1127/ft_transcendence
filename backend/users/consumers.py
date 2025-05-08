@@ -24,7 +24,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         user_connections = await self.redis.incr(f"user:{self.user.username}:online")
         unread_chats = await self._get_unread_chats()
         if unread_chats:
-            self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 f"user_{self.user.username}",
                 {
                     "type": "send_unread_chats_notification",
@@ -37,7 +37,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if self.user.is_anonymous:
             return
-        user_connections = self.redis.decr(f"user:{self.user.username}:online")
+        user_connections = await self.redis.decr(f"user:{self.user.username}:online")
         if user_connections == 0:
             await self.redis.delete(f"user:{self.user.username}:online")
         await self.channel_layer.group_discard(
@@ -51,7 +51,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         if msg_type == "user_status_update":
             usernames = data.get("usernames", [])
             statuses = await self._get_users_statuses(usernames)
-            self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 f"user_{self.user.username}",
                 {
                     "type": "send_user_status_updates",
@@ -60,7 +60,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             )
         elif msg_type == "unread_chats":
             unread_chats = await self._get_unread_chats()
-            self.channel_layer.group_send(
+            await self.channel_layer.group_send(
                 f"user_{self.user.username}",
                 {
                     "type": "send_unread_chats_notification",
@@ -85,6 +85,8 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def _get_users_statuses(self, usernames: list[str]) -> dict[str, bool]:
         users_statuses = {}
         for username in usernames:
+            if username == self.user.username:
+                continue
             users_statuses[username] = await self.redis.exists(f"user:{username}:online")
         self.users_statuses = users_statuses
         return users_statuses
@@ -98,7 +100,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                     self.users_statuses[username] = new_status
                     status_update[username] = new_status
             if status_update:
-                self.channel_layer.group_send(
+                await self.channel_layer.group_send(
                     f"user_{self.user.username}",
                     {
                         "type": "send_user_status_updates",
