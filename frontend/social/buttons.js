@@ -9,4 +9,4 @@ export default function showHide(elementId, typeOfDisplay) {
     }
 }
 
-window.showHide = showHide;                     
+window.showHide = showHide;

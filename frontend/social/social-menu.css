@@ -104,6 +104,11 @@ div#social-menu-container{
 		display: none;
 		flex-direction: column;
 	}
+	form#chat-request-form {
+		border: 2px solid #582556;
+		display: none;
+		flex-direction: column;
+	}
 	div#show-requests-box {
 		display: none;
 		flex-direction: column;
