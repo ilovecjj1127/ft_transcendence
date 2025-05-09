@@ -1,6 +1,7 @@
 import asyncio
 import json
 
+from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncWebsocketConsumer
 
 
@@ -22,15 +23,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         user_connections = await self.redis.incr(f"user:{self.user.username}:online")
-        unread_chats = await self._get_unread_chats()
-        if unread_chats:
-            await self.channel_layer.group_send(
-                f"user_{self.user.username}",
-                {
-                    "type": "send_unread_chats_notification",
-                    "unread_chats": unread_chats
-                }
-            )
+        await self._check_unread_chats()
         if user_connections == 1:
             asyncio.create_task(self.check_users_statuses())
 
@@ -59,14 +52,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 }
             )
         elif msg_type == "unread_chats":
-            unread_chats = await self._get_unread_chats()
-            await self.channel_layer.group_send(
-                f"user_{self.user.username}",
-                {
-                    "type": "send_unread_chats_notification",
-                    "unread_chats": unread_chats
-                }
-            )
+            await self._check_unread_chats()
 
     async def send_user_status_updates(self, event: dict):
         status_updates = event["update"] # {username: status, ...}
@@ -109,8 +95,17 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 )
             await asyncio.sleep(30)
 
-    async def _get_unread_chats(self) -> list[str]:
-        pass
+    async def _check_unread_chats(self):
+        from chat.services import ChatRoomService
+
+        unread_chats = await database_sync_to_async(ChatRoomService.get_unread_chats(self.user))
+        await self.channel_layer.group_send(
+            f"user_{self.user.username}",
+            {
+                "type": "send_unread_chats_notification",
+                "unread_chats": unread_chats
+            }
+        )
 
 # send notifications about user statuses from the list and when they change
 # check new messages in chats and receive notifications
