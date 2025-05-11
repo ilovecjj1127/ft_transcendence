@@ -14,7 +14,21 @@ console.log("readyState :", chatSocket.readyState);
 
 chatSocket.onmessage = function(event) {
 	const data = JSON.parse(event.data);
-	console.log("data onmessage; ", data.message)
+	console.log("data.message onmessage; ", data.message)
+	console.log("data; ", data)
+
+	// if (data.message == "")
+	const match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
+	console.log("Hi printing match; ", match);
+
+	if (match) {
+		const gameId = match[1];  // this is the number as a string
+		console.log("Matched! Game ID is:", gameId);
+	} else {
+		console.log("No match");
+	}
+
+
 	document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
 };
 

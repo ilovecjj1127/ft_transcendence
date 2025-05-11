@@ -171,6 +171,25 @@ function setChatSocketEventFunctions()
 
         format_and_put_Reply(data, format)
 
+        // if (data.message == "")
+        const match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
+        console.log("Hi printing match; ", match);
+
+        
+        if (match) {
+                const gameId = match[1];  // this is the number as a string
+                console.log("Matched! Game ID is:", gameId);
+                const button2 = document.createElement("button");
+                button2.textContent = "Join";
+
+                console.log("print hmtl;", document.querySelector('.chatbox-message-item'));
+
+                document.querySelector('.chatbox-message-item').appendChild(button2)
+        } else {
+            console.log("No match");
+        }
+
+
         // document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
     };
     chatSocket.onclose = function(event) {
@@ -329,7 +348,7 @@ function writeMessage () {
                         <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
                 </div>
         `
-        
+
         //insert the message into the chatbox    
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
         //reset the input 
@@ -351,10 +370,10 @@ export default function format_and_put_Reply (data, format) {
                                 ${data.message}
                         </span>
                         <span class="chatbox-message-item-time">sent at: 
-                        ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}
-                        \tarrived:${addZero(today.getHours())}:${addZero(today.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
-                </div>
-        `
+                        ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
+                        </div>
+                        `
+                        // \tarrived:${addZero(today.getHours())}:${addZero(today.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
         scrollBottom()
 }

@@ -14,7 +14,12 @@
 
 /* elements */
 
+html {
+	overflow-x: hidden; /* Prevent horizontal overflow */	
+}
+
 body {
+	overflow-x: hidden; /* Prevent horizontal overflow */
 	display: flex;
 	justify-content: center;
 	align-items: center;
