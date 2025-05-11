@@ -1,6 +1,8 @@
 import { getUserToken } from "../utils/userData.js"
+import openChattingBox from "./open_close_chat.js";
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
+const sendRequestToChatButton = document.getElementById("chat-search-form-button")
 
 export async function cancelRequest(request_id)
 {
@@ -47,6 +49,36 @@ export async function acceptRequest(request_id)
     const response_data = await response.json()
     location.reload();
 }
+const DEBUGPRINTS = true
+const chatBox = document.querySelector('.chatbox-message-wrapper')
+var chatSocket = null
+import getOrcreateChattingBox from "./open_close_chat.js"
+var friend = null
+const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
+import setChatSocketEventFunctions from "./open_close_chat.js"
+import OpenRoom from "./open_close_chat.js"
+
+sendRequestToChatButton.addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevents the page from reloading
+
+
+    // make new or existing chatroom with user....
+    const username = document.querySelector("input[name='username02']").value
+
+    console.log(username)
+
+	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username02']").value, message: document.querySelector("input[name='username']").value})
+
+    OpenRoom(friend = username)
+    
+    console.log("after OpenRoom log")
+    
+
+	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
+    // console.log("hi send")
+	// post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
+})
+
 
 sendFriendshipRequestButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading

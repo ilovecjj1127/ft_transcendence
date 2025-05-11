@@ -71,7 +71,7 @@ export function populateInRequest(list_name, data) {
         return
 
     data.received_requests.forEach(player => {
-    
+
         const li = document.createElement('li');
         li.classList.add('friend-item');
 
@@ -93,7 +93,7 @@ export function populateInRequest(list_name, data) {
         const declineBtn = document.createElement('button');
         declineBtn.textContent = 'Decline';
         declineBtn.addEventListener('click', () => declineRequest(player.id));
-    
+
         buttonContainer.appendChild(acceptBtn);
         buttonContainer.appendChild(declineBtn);
 

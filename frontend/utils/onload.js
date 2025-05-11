@@ -36,6 +36,7 @@ export async function onloadInit () {
         document.getElementById("username-text-home-page").innerHTML = data.username
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
+        // populateChatSearch("chat-search", data)
 
     populateFriendList()
 
@@ -43,3 +44,16 @@ export async function onloadInit () {
 
     moveFaces()
 }
+
+// import chat_button from "../?"
+
+// function populateChatSearch () {
+
+//     chat_button.addEventListener('click', () => showSearchBarChat());
+
+// }
+
+// showSearchBarChat()
+// {
+    
+// }

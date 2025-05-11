@@ -1,5 +1,5 @@
 
-function showHide(elementId, typeOfDisplay) {
+export default function showHide(elementId, typeOfDisplay) {
     const element = document.getElementById(elementId);
 	console.log("loading; ", elementId, "with ", typeOfDisplay)
     if (element.style.display === "none") {
@@ -8,3 +8,5 @@ function showHide(elementId, typeOfDisplay) {
         element.style.display = "none";
     }
 }
+
+window.showHide = showHide;

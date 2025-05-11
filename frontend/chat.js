@@ -7,7 +7,6 @@ import { getUserToken } from "./utils/userData.js";
 import { getOrcreateChattingBox } from "./social/open_close_chat.js"
 import { removeFriend } from "./social/select_friend_menu.js"
 
-
 //example to check the overflow-y
 const friends = [
     {name: "friend1"},
@@ -75,6 +74,53 @@ export function populateFriendList() {
 }
 var chatSocket = null
 
+// Opene.addEventListener('click', async function () {
+
+// })
+
+// async function OpenRoom(friend)
+// {
+//         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
+//         // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
+//         // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
+//         const token = getUserToken().access
+
+//         if (!token) {
+//                 showLoginModal()
+//                 return
+//         }
+//         if (chatSocket != null)
+//         {
+//                 chatSocket.close()
+//                 console.log("close called")
+//         }
+//         const chat_box_id = await getOrcreateChattingBox(friend)
+//         chatSocket = new WebSocket(
+//                 `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
+//         );
+//         chatboxMessageWrapper.innerHTML = '';
+//         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
+//         console.log("chatboxid = ", chat_box_id)
+//         setChatSocketEventFunctions()
+//         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
+//         if (friendChatOpen && friendChatOpen.name == friend.name && friendChatOpen.name != undefined){
+//                 if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friendChatOpen.name, friend.name)
+//                 chatBox.classList.remove('show')
+//                 friendChatOpen = null
+//         } else {                
+//         if (chatBox.classList.contains('show')) { // removes previous open one
+
+//                 chatBox.classList.remove('show')
+//                 if (DEBUGPRINTS) console.log("show chatBox ")
+//                 setTimeout(() => updateChat(friend), 600)
+//                 friendChatOpen = friend
+//         } else {
+//                 updateChat(friend)
+//                 friendChatOpen = friend
+//         }
+//         }
+// }
+
 function addFriendInList(friend)
 {
         const li = document.createElement('li')
@@ -140,7 +186,7 @@ function addFriendInList(friend)
 }
 
 
-function setChatSocketEventFunctions()
+export function setChatSocketEventFunctions()
 {
     document.getElementById('chat-message-submit').onclick = async function() {
         const messageInput = document.getElementById('chat-message-input');
