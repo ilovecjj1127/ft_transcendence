@@ -2,7 +2,7 @@ import { getUserToken } from "../utils/userData.js"
 import openChattingBox from "./open_close_chat.js";
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
-const sendRequestToChatButton = document.getElementById("chat-search-form-button")
+const sendRequestToChatButton = document.getElementById("chat-search-form")
 
 export async function cancelRequest(request_id)
 {
@@ -56,7 +56,7 @@ import getOrcreateChattingBox from "./open_close_chat.js"
 var friend = null
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 import setChatSocketEventFunctions from "./open_close_chat.js"
-import OpenRoom from "./open_close_chat.js"
+import { OpenRoom } from "../chat.js"
 
 sendRequestToChatButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
@@ -67,7 +67,7 @@ sendRequestToChatButton.addEventListener('click', async (event) => {
 
     console.log(username)
 
-	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username02']").value, message: document.querySelector("input[name='username']").value})
+	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username02']").value, message: document.querySelector("input[name='username']").value})
 
     OpenRoom(friend = username)
     

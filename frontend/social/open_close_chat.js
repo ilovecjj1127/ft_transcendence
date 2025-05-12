@@ -1,22 +1,23 @@
 import { showLoginModal } from "../utils/modals.js";
 import { getUserToken } from "../utils/userData.js";
 const chatBox = document.querySelector('.chatbox-message-wrapper')
-
+import { DEBUGPRINTS } from "../config.js";
 let switch_bool = true
 var chatSocket = null
 
-export default async function openChattingBox(frienda)
+export async function openChattingBox(frienda)
 {
     const chat_box_id = await getOrcreateChattingBox(frienda)
 
     let chattingBox = document.getElementById("chatting-box-id-v2");
     chattingBox.setAttribute("value", chat_box_id)
 
+    
     if (chattingBox.getAttribute("value") && switch_bool) {
         
         switch_bool = false
         const token = getUserToken().access
-
+        
         if (!token) {
             showLoginModal()
             return
@@ -25,54 +26,54 @@ export default async function openChattingBox(frienda)
             `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
         );
         chatBox.querySelector('.chatbox-message-name').innerHTML = frienda
-
+        
         // document.getElementById("chat-user-name").textContent = frienda;
         document.getElementById('chat-log').innerHTML = ""
-
+        
         setChatSocketEventFunctions()
-
+        
         chattingBox.style.display = "block";
     }
     else if (chattingBox.getAttribute("value") && !switch_bool)
-    {
-        if (chatSocket != null)
         {
-            chatSocket.close()
-            console.log("close called")
+            if (chatSocket != null)
+                {
+                    chatSocket.close()
+                    console.log("close called")
+                }
+                chattingBox.style.display = "none";
+                switch_bool = true
+            } else {
+                console.error("Error: #chatting-box not found in the DOM.");
+            }
         }
-        chattingBox.style.display = "none";
-        switch_bool = true
-    } else {
-        console.error("Error: #chatting-box not found in the DOM.");
-    }
-}
-
-const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
-
-import format_and_put_Reply from "../chat.js"
-
-export function setChatSocketEventFunctions()
-{
-    document.getElementById('chat-message-submit').onclick = async function() {
-        const messageInput = document.getElementById('chat-message-input');
-        const message = messageInput.value;
-
-        chatSocket.send(JSON.stringify({
-            'message': message
-        }));
-        console.log("data #chat-message-submit; ", message)
-
-        messageInput.value = '';
-    };
-    chatSocket.onmessage = function(event) {
-        const data = JSON.parse(event.data);
-        console.log("data onmessage; ", data.message)
-
-        format_and_put_Reply(data.message)
-
-        document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
-
-        console.log("data; ", data)
+        
+        const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
+        
+        import format_and_put_Reply from "../chat.js"
+        
+        export function setChatSocketEventFunctions()
+        {
+            document.getElementById('chat-message-submit').onclick = async function() {
+                const messageInput = document.getElementById('chat-message-input');
+                const message = messageInput.value;
+                
+                chatSocket.send(JSON.stringify({
+                    'message': message
+                }));
+                console.log("data #chat-message-submit; ", message)
+                
+                messageInput.value = '';
+            };
+            chatSocket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                console.log("data onmessage; ", data.message)
+                
+                format_and_put_Reply(data.message)
+                
+                document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+                
+                console.log("data; ", data)
 
         // if (data.message == "")
         const match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
@@ -81,11 +82,21 @@ export function setChatSocketEventFunctions()
         if (match) {
             const gameId = match[1];  // this is the number as a string
             console.log("Matched! Game ID is:", gameId);
-
+            
             // Create the join button
             const button = document.createElement("button");
             button.textContent = "Join";
+            console.log("location: ", location);
 
+            button.addEventListener('click', () => {
+                // window.location.href = `/#/pong/onlineplayer/onlinegame`;
+                
+                localStorage.setItem("gameId", data.game.id)
+                location.hash = '/pong/onlineplayer/onlinegame'
+                console.log("location: ", location);
+            });
+
+            // http://127.0.0.1:8080/#/pong/onlineplayer/onlinegame
             console.log("print hmtl;", document.querySelector('.chatbox-message-item'));
             console.log("print hmtl;", document.querySelector('#chat-log'));
 
@@ -108,23 +119,30 @@ export function setChatSocketEventFunctions()
     };
 }
 
-export async function OpenRoom(friend)
-{
-        if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
-        // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
-        // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
-        const token = getUserToken().access
+let friendChatOpen = null
 
-        if (!token) {
-                showLoginModal()
-                return
-        }
-        if (chatSocket != null)
+
+export default async function OpenRoom2(friend)
+{
+    if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
+        // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
+    // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
+    const token = getUserToken().access
+
+    let chattingBox = document.getElementById("chatting-box-id-v2");
+    
+    console.log("hi chattingBox = ", chattingBox)
+    if (!token) {
+        showLoginModal()
+        return
+    }
+    if (chatSocket != null)
         {
-                chatSocket.close()
-                console.log("close called")
+            chatSocket.close()
+            console.log("close called")
         }
         const chat_box_id = await getOrcreateChattingBox(friend)
+        chattingBox.setAttribute("value", chat_box_id)
         chatSocket = new WebSocket(
                 `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
         );
