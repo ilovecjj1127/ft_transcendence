@@ -9,7 +9,6 @@ const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
 
-
 export function showLoginModal () {
     loginModal.show()
 }
@@ -46,6 +45,9 @@ loginForm.onsubmit = async (e) => {
         setTimeout( () => {
             hideLoginModal()
         }, 2000)
+        document.getElementById("social-menu-container").style.display = "flex"
+        window.location.reload();
+            
     } else {
         message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
     }

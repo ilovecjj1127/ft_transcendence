@@ -71,6 +71,28 @@ export function setChatSocketEventFunctions()
         format_and_put_Reply(data.message)
 
         document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+
+        console.log("data; ", data)
+
+        // if (data.message == "")
+        const match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
+        console.log("Hi printing match; ", match);
+
+        if (match) {
+            const gameId = match[1];  // this is the number as a string
+            console.log("Matched! Game ID is:", gameId);
+
+            // Create the join button
+            const button = document.createElement("button");
+            button.textContent = "Join";
+
+            console.log("print hmtl;", document.querySelector('.chatbox-message-item'));
+            console.log("print hmtl;", document.querySelector('#chat-log'));
+
+            document.querySelector('#chat-log').innerHTML.appendChild(button)
+        } else {
+            console.log("No match");
+        }
     };
     chatSocket.onclose = function(event) {
         if (event.code === 1006) {
