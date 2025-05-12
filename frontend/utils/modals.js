@@ -1,5 +1,5 @@
 import { createMenuProfile } from "./profile-toggle.js"
-import { setUserToken } from "./userData.js"
+import { saveUserInfo, setUserToken } from "./userData.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -8,7 +8,6 @@ const loginButton = document.getElementById("login")
 const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
-
 
 export function showLoginModal () {
     loginModal.show()
@@ -40,11 +39,15 @@ loginForm.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
+        saveUserInfo()
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {
             hideLoginModal()
         }, 2000)
+        document.getElementById("social-menu-container").style.display = "flex"
+        window.location.reload();
+            
     } else {
         message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
     }

@@ -9,6 +9,7 @@ export const init = () => {
     const profileImg = document.getElementById('settings-img')
     const confirm = document.getElementById('confirm')
     const imgUpload = document.getElementById('image-upload')
+    const uploadError = document.getElementById('upload-error')
     const closeBtn = document.getElementById('close-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
@@ -32,17 +33,20 @@ export const init = () => {
         if (file) {
 
             //change avatar API
-            if (changeAvatar(file)) {
-                //change profile img
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    localStorage.setItem("avatar", imageUrl)
-                    profileImg.src = imageUrl;
-                    document.getElementById('profile-img').src = imageUrl
-                };
-                reader.readAsDataURL(file);
-            }
+            changeAvatar(file).then((ok) => {
+                if (ok) {
+
+                    //change profile img
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageUrl = e.target.result;
+                        localStorage.setItem("avatar", imageUrl)
+                        profileImg.src = imageUrl;
+                        document.getElementById('profile-img').src = imageUrl
+                    };
+                    reader.readAsDataURL(file);
+                }
+            })
         }
     }
 
@@ -65,6 +69,10 @@ export const init = () => {
             return true
         } else {
             console.log("failed to upload avatar")
+            uploadError.style.display = 'block'
+            setTimeout( () => {
+                uploadError.style.display = 'none'
+            }, 3000)
             return false
         }
     }

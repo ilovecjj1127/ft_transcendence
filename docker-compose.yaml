@@ -3,7 +3,7 @@ version: "3"
 services:
 
   db:
-    container_name: transcendence_db
+    container_name: transcendence_dbC
     image: postgres:17-alpine
     # ports:
     #   - "5432:5432"
@@ -13,24 +13,31 @@ services:
     #   - ./db/postgres:/var/lib/postgresql/data
 
   redis:
-    container_name: transcendence_redis
+    container_name: transcendence_redisC
     image: redis:alpine
+    # ports:
+    #   - "6379:6379"
 
   backend:
-    container_name: django_app
+    container_name: django_appC
+    environment:
+      - REDIS_HOST=transcendence_redisC
+      - REDIS_PORT=6379
     image: transcendence_backend
     command: ./wait_db.sh uvicorn TranscendenceBackend.asgi:application --host 0.0.0.0 --port 8000
     build:
       context: backend
-    # ports:
-    #   - "8000:8000"
+    ports:
+      - "8000:8000"
     env_file:
       - backend/.env
-    volumes:
-      - ./avatars:/app/media/avatars
     depends_on:
       - db
       - redis
+    volumes:
+      - ./avatars:/app/media/avatars
+      - ./backend/chat/templates/chat/:/app/chat/templates/chat/
+      - ./backend/frontend/:/app/frontend/
 
   nginx:
     image: nginx:latest

@@ -1,6 +1,5 @@
 import {onloadInit} from "./utils/onload.js"
 
-
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
     const app = document.getElementById('app');
@@ -63,6 +62,7 @@ const routes = {
     '/pong/onlineplayer': 'pong/onlineplayer',
     '/pong/onlineplayer/onlinegame': 'pong/onlineplayer/onlinegame',
     '/pong/tournament': 'pong/tournament',
+    '/pong/tournament/leaderboard': 'pong/tournament/leaderboard',
 };
 
 export const router = () => {
@@ -76,8 +76,23 @@ export const router = () => {
 };
 
 window.addEventListener('hashchange', router);
+import { getUserToken } from "./utils/userData.js";
+import { showLoginModal } from "./utils/modals.js";
 
 window.addEventListener('load', () => {
+    const token = getUserToken().access
+    console.log("pre !token. token=", token)
+
+    if (!token) {
+            document.getElementById("social-menu-container").style.display = "none"
+            showLoginModal()
+
+            console.log("post showLoginModal. token=", token)
+            // window.location.reload();
+            return
+    }
+    document.getElementById("social-menu-container").style.display = "flex"
+    
     //all tasks to do at first load of the page
     onloadInit()
 

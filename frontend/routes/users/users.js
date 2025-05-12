@@ -1,4 +1,4 @@
-import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
+import { getUserToken } from "../../utils/userData.js"
 import { checkToken } from "../../utils/token.js"
 
 export const init = () => {

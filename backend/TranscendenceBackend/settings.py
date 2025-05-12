@@ -17,7 +17,6 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
@@ -29,7 +28,6 @@ DEBUG = True
 
 # ALLOWED_HOSTS = ['127.0.0.1', '10.11.1.18']
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -66,6 +64,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'TranscendenceBackend.urls'
 
+
+# print("os.path.join(BASE_DIR, 'frontend'): ")
+
+# print(os.path.join(BASE_DIR, 'frontend'))
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -91,8 +94,8 @@ ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
+        # 'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
@@ -174,11 +177,15 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+REDIS_HOST = os.getenv("REDIS_HOST", "transcendence_redis")  # Defaults to service name
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")  # Defaults to service name
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
+            "hosts": [(REDIS_HOST, int(REDIS_PORT))],  # Ensure this matches your Redis host and port
+            # 'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
         },
     }
 }
