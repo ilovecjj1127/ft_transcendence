@@ -1,4 +1,5 @@
 import {onloadInit} from "./utils/onload.js"
+import { DEBUGPRINTS } from "./config.js"
 
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
@@ -68,6 +69,7 @@ const routes = {
 export const router = () => {
     const hash = location.hash.slice(1) || '/';
     const route = routes[hash] || routes[hash.split('/')[0]]
+    if (DEBUGPRINTS) console.log("route: ", route)
     if (route) {
         loadRoute(route);
     } else {

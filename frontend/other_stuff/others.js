@@ -6,7 +6,7 @@ export default function startRandomTimerForMessage()
 
     setTimeout(() => {
       console.log("Timer finished!");
-      alert("hi, oof you lose one point because random timer.. you can also play cards in real life :) or just go outside or something ;) ok have a nice day");
+      alert("hi, oof you lose one point because random timer.. time for a break, or just go outside its nice weather. ok have a nice day");
 
     }, randomTime * 1000); // Convert seconds to milliseconds
 }

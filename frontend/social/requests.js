@@ -4,6 +4,16 @@ import openChattingBox from "./open_close_chat.js";
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
 const sendRequestToChatButton = document.getElementById("chat-search-form")
 
+const DEBUGPRINTS = true
+const chatBox = document.querySelector('.chatbox-message-wrapper')
+var chatSocket = null
+import getOrcreateChattingBox from "./open_close_chat.js"
+var friend = null
+const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
+import setChatSocketEventFunctions from "./open_close_chat.js"
+import { OpenRoom } from "../chat.js"
+
+
 export async function cancelRequest(request_id)
 {
     const response = await fetch(`http://${window.location.host}/api/users/friendship_request/cancel/`, {
@@ -49,14 +59,6 @@ export async function acceptRequest(request_id)
     const response_data = await response.json()
     location.reload();
 }
-const DEBUGPRINTS = true
-const chatBox = document.querySelector('.chatbox-message-wrapper')
-var chatSocket = null
-import getOrcreateChattingBox from "./open_close_chat.js"
-var friend = null
-const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
-import setChatSocketEventFunctions from "./open_close_chat.js"
-import { OpenRoom } from "../chat.js"
 
 sendRequestToChatButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading

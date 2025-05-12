@@ -270,28 +270,29 @@ export function setChatSocketEventFunctions()
         else
                 format = "received"
 
-        format_and_put_Reply(data, format)
+        var match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
+        console.log("Hi printing match; ", match);
+        
+        const gameId = match[1];  // this is the number as a string
+        
+        format_and_put_Reply(data, format, gameId)
 
         // if (data.message == "")
-        const match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
         console.log("Hi printing match; ", match);
 
-        
-        if (match) {
-                const gameId = match[1];  // this is the number as a string
-                console.log("Matched! Game ID is:", gameId);
-                const button2 = document.createElement("button");
-                button2.textContent = "Join";
-
-                console.log("print hmtl;", document.querySelector('.chatbox-message-item'));
-
-                document.querySelector('.chatbox-message-item').appendChild(button2)
-        } else {
-            console.log("No match");
-        }
-
-
-        // document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+        if (gameId) {
+                const button = chatboxMessageWrapper.querySelector('.join-button[data-gameid="' + gameId + '"]');
+                if (button) {
+                    button.addEventListener('click', () => {
+                        localStorage.setItem("gameId", gameId);
+                        location.hash = '/pong/onlineplayer/onlinegame';
+                        console.log("location: ", location);
+                    });
+                    
+                    document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
+                    
+                }
+            }
     };
     chatSocket.onclose = function(event) {
         if (event.code === 1006) {
@@ -462,15 +463,22 @@ function writeMessage () {
         scrollBottom()
 }
 
-export default function format_and_put_Reply (data, format) {
+export default function format_and_put_Reply (data, format, gameId) {
         const today = new Date()
         const sent_date = new Date(data.date)
+
+
+        let buttonHTML = '';
+        if (gameId) {
+            buttonHTML = `<button class="join-button" data-gameid="${gameId}">Join</button>`;
+        }
 
         let message = `
                 <div class="chatbox-message-item ${format}">
                         <span class="chatbox-message-item-text">
                                 ${data.message}
                         </span>
+                        ${buttonHTML}
                         <span class="chatbox-message-item-time">sent at: 
                         ${addZero(sent_date.getHours())}:${addZero(sent_date.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
                         </div>
