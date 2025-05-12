@@ -98,7 +98,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
     async def _check_unread_chats(self):
         from chat.services import ChatRoomService
 
-        unread_chats = await database_sync_to_async(ChatRoomService.get_unread_chats(self.user))
+        unread_chats = await database_sync_to_async(ChatRoomService.get_unread_chats)(self.user)
         await self.channel_layer.group_send(
             f"user_{self.user.username}",
             {
@@ -107,6 +107,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             }
         )
 
-# send notifications about user statuses from the list and when they change
-# check new messages in chats and receive notifications
-# update chats with sending notification about unread messages
+# Check if users's status was changed twice during sleep() method. Need to kill a task
