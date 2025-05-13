@@ -8,7 +8,9 @@ export const init = () => {
     const searchError = document.getElementById('search-error')
     const closeBtn = document.getElementById('stats-close-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
-    
+    console.log("init of stats.js called!")
+
+
     getUserStats()
     if (getUserAvatar())
         profileImg.src = getUserAvatar()
@@ -16,6 +18,13 @@ export const init = () => {
     if (getUsername())
         username.innerText = getUsername()
     
+    // // If we came from another route with user to search
+	// const pendingUserSearch = localStorage.getItem('userToSearchInStats');
+	// if (pendingUserSearch) {
+	// 	searchUser(pendingUserSearch);
+	// 	localStorage.removeItem('userToSearchInStats'); // clean up
+	// }
+
     function handleSearch (e) {
         if (e.key == 'Enter' && searchInput.value) {
             e.preventDefault()
@@ -56,7 +65,8 @@ export const init = () => {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return
-        
+        console.log("searchUser() of stats.js called!")
+
         const checkUserExist = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
             method: "HEAD",
             headers: {

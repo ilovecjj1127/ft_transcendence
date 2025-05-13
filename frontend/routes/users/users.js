@@ -10,7 +10,15 @@ export const init = () => {
     const user = localStorage.getItem("userSearched")
     localStorage.removeItem("userSearched")
 
-    getUserSearched()
+    // If we came from another route with user to search
+	const pendingUserSearch = localStorage.getItem('userToSearchInStats');
+	if (pendingUserSearch) {
+        console.log("pending userSearch; ", pendingUserSearch)
+		getUserSearched(pendingUserSearch);
+		localStorage.removeItem('userToSearchInStats'); // clean up
+	}
+    else
+        getUserSearched(user)
     
     function closeStats () {
         deleteStatsEvents()
@@ -18,12 +26,12 @@ export const init = () => {
     }
     
     // get user stats and save it in stats variable
-    async function getUserSearched () {
+    async function getUserSearched (user_to_search) {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return
         
-        const searchUser = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
+        const searchUser = await fetch(`http://${window.location.host}/api/users/?username=${user_to_search}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

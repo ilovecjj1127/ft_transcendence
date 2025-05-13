@@ -1,5 +1,6 @@
 
 export default function showHide(elementId, typeOfDisplay) {
+    // location.reload();
     const element = document.getElementById(elementId);
 	console.log("loading; ", elementId, "with ", typeOfDisplay)
     if (element.style.display === "none") {

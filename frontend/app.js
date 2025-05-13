@@ -67,6 +67,8 @@ const routes = {
 };
 
 export const router = () => {
+    if (DEBUGPRINTS) console.log("location.hash: ", location.hash)
+
     const hash = location.hash.slice(1) || '/';
     const route = routes[hash] || routes[hash.split('/')[0]]
     if (DEBUGPRINTS) console.log("route: ", route)

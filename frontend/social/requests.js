@@ -87,23 +87,35 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
 
 	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
     console.log("hi send")
-	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
+    const statusDiv = document.getElementById('status_send_request');
+	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody, statusDiv)
 })
 
-async function post(url, body_data) {
-    const response = await fetch(url, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${getUserToken().access}`
-        },
-        body: body_data
-    });
-	if (response.ok) {
-        const data = await response.json()
-        alert("Succesfully send friend request", data)
-    } else {
-        alert("failed, please try again")
+async function post(url, body_data, statusDiv) {
+    try {
+        const response = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+            body: body_data
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            statusDiv.innerHTML = `<span style="color:green;">✅ Friend request sent successfully!</span>`;
+        } else {
+            const errorText = await response.text();
+            statusDiv.innerHTML = `<span style="color:red;">❌ Failed: ${errorText}</span>`;
+        }
+    } catch (err) {
+        statusDiv.innerHTML = `<span style="color:red;">❌ Error: ${err.message}</span>`;
     }
-    location.reload();
+
+    // Optionally remove message after a few seconds
+    setTimeout(() => {
+        statusDiv.innerHTML = "<b>Status:</b>";
+    }, 5000);
+    // location.reload();
 }

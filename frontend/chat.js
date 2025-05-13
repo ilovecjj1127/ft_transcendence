@@ -1,4 +1,5 @@
 const list = document.getElementById("friends-list")
+
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 import { DEBUGPRINTS } from "./config.js"
 import { getUserFriendlist } from "./utils/userData.js"
@@ -74,62 +75,8 @@ export function populateFriendList() {
 }
 var chatSocket = null
 
-// Opene.addEventListener('click', async function () {
-
-// })
-
-// async function OpenRoom(friend)
-// {
-//         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
-//         // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
-//         // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
-//         const token = getUserToken().access
-
-//         if (!token) {
-//                 showLoginModal()
-//                 return
-//         }
-//         if (chatSocket != null)
-//         {
-//                 chatSocket.close()
-//                 console.log("close called")
-//         }
-//         const chat_box_id = await getOrcreateChattingBox(friend)
-//         chatSocket = new WebSocket(
-//                 `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
-//         );
-//         chatboxMessageWrapper.innerHTML = '';
-//         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
-//         console.log("chatboxid = ", chat_box_id)
-//         setChatSocketEventFunctions()
-//         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
-//         if (friendChatOpen && friendChatOpen.name == friend.name && friendChatOpen.name != undefined){
-//                 if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friendChatOpen.name, friend.name)
-//                 chatBox.classList.remove('show')
-//                 friendChatOpen = null
-//         } else {                
-//         if (chatBox.classList.contains('show')) { // removes previous open one
-
-//                 chatBox.classList.remove('show')
-//                 if (DEBUGPRINTS) console.log("show chatBox ")
-//                 setTimeout(() => updateChat(friend), 600)
-//                 friendChatOpen = friend
-//         } else {
-//                 updateChat(friend)
-//                 friendChatOpen = friend
-//         }
-//         }
-// }
-
-
-
-async function addFriendInList(friend)
-{
-        const li = document.createElement('li')
-
-        const img = document.createElement('img')
-
-        const response = await fetch(`http://${window.location.host}/api/users/?username=${friend}`, {
+export async function getUserInfo(username) {
+        const response = await fetch(`http://${window.location.host}/api/users/?username=${username}`, {
                 method: 'GET',
                 headers: {
                   'accept': 'application/json',
@@ -139,9 +86,19 @@ async function addFriendInList(friend)
         const response_data = await response.json()
 
         console.log("avatar: ", response_data.avatar)
+        return response_data;
+}
 
-        const avatar = response_data.avatar || "./media/default.jpeg";
-        img.src = avatar
+async function addFriendInList(friend)
+{
+        const li = document.createElement('li')
+
+        const img = document.createElement('img')
+
+        const data = await getUserInfo(friend)
+        if (DEBUGPRINTS) console.log("adding avatar", data)
+
+        img.src = data.avatar || "./media/default.jpeg";
 
         if (DEBUGPRINTS) console.log("adding friend", friend)
         
@@ -189,24 +146,11 @@ export async function OpenRoom(friend)
                 chatSocket.close()
                 return
         }
-        
+        const data = await getUserInfo(friend)
+        if (DEBUGPRINTS) console.log("adding avatar", data)
 
-        const response = await fetch(`http://${window.location.host}/api/users/?username=${friend}`, {
-                method: 'GET',
-                headers: {
-                  'accept': 'application/json',
-                  'Authorization': `Bearer ${getUserToken().access}`
-                },
-        });
-        const response_data = await response.json()
-
-        console.log("avatar: ", response_data.avatar)
-
-        const avatar = response_data.avatar || "./media/default.jpeg";
         const img = document.querySelector('.chatbox-message-image');
-        img.src = avatar
-        
-
+        img.src = data.avatar || "./media/default.jpeg";
 
         console.log("chatboxid = ", chat_box_id)
         chatSocket = new WebSocket(
@@ -272,12 +216,13 @@ export function setChatSocketEventFunctions()
 
         var match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
         console.log("Hi printing match; ", match);
-        
-        const gameId = match[1];  // this is the number as a string
-        
+
+        var gameId = null
+        if (match)
+                gameId = match[1];  // this is the number as a string
+
         format_and_put_Reply(data, format, gameId)
 
-        // if (data.message == "")
         console.log("Hi printing match; ", match);
 
         if (gameId) {
@@ -320,6 +265,8 @@ const closeChat = document.querySelector('.chatbox-message-close')
 
 closeChat.addEventListener('click', function (){
     chatBox.classList.remove('show')
+    chatSocket.close()
+    console.log("closing socket")
 })
 
 
@@ -345,6 +292,26 @@ const chatboxForm = document.querySelector('.chatbox-message-form')
 const invitePlayerForGame = document.querySelector('#invite-player-for-game-button')
 const removeFriendElem = document.querySelector('#remove-as-friend-button')
 const blockOrUnblockButton = document.querySelector('#block-chatroom-button')
+const gotoProfileButton = document.querySelector('#go-to-profile-button')
+// import { closeStats } from "./routes/users/users.js"
+
+gotoProfileButton.addEventListener('click', (e) => {
+
+        e.preventDefault()
+        console.log("hi goto profile")
+        location.hash = '/users'
+        const closeBtn = document.getElementById('stats-close-button')
+        console.log("closeBtn; ", closeBtn)
+
+        if (closeBtn != null)
+                closeBtn.click()
+        // closeBtn.addEventListener('click', closeStats)
+
+        const chatboxname = document.querySelector('.chatbox-message-name').innerHTML
+        console.log("chatboxname; ", chatboxname)
+
+        localStorage.setItem('userToSearchInStats', chatboxname);
+});
 
 blockOrUnblockButton.addEventListener('click', async function () {
         
@@ -401,6 +368,8 @@ removeFriend(playername)
 chatBox.classList.remove('show')
 
 })
+
+
 
 textarea.addEventListener('input', function () {
         let line = textarea.value.split('\n').length

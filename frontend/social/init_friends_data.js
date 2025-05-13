@@ -4,6 +4,7 @@ import openChattingBox from "./open_close_chat.js";
 import openSelectFriend from "./select_friend_menu.js"
 import { DEBUGPRINTS } from "../config.js"
 import { cancelRequest, declineRequest, acceptRequest } from "./requests.js"
+import { getUserInfo } from "../chat.js";
 
 let url;
 let accessToken;
@@ -34,32 +35,39 @@ export function populateOutRequest(list_name, data) {
     if (data == null)
         return
 
-    data.sent_requests.forEach(player => {
-
+    data.sent_requests.forEach(async player => {
         const li = document.createElement('li');
         li.classList.add('friend-item');
-
+    
         const img = document.createElement('img');
-        img.src = player.img ? player.img : "./media/default.jpeg";
+    
+        const userInfo = await getUserInfo(player.to_user)
+        console.log("player: ", player.to_user)
+    
+        console.log("data player: ", userInfo)
+        img.src = userInfo.avatar || "./media/default.jpeg";
+        // const avatar = getUserInfo(player).avatar || "./media/default.jpeg";
+        
+        // img.src = avatar || "./media/default.jpeg";
         img.alt = player.from_user;
-
+    
         const nameTag = document.createElement('span');
         nameTag.textContent = `${player.to_user}`;
         nameTag.classList.add('player-name-tag');
-
+    
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('friend-buttons');
-
+    
         const cancelBtn = document.createElement('button');
         cancelBtn.textContent = 'Cancel';
         cancelBtn.addEventListener('click', () => cancelRequest(player.id));
-
+    
         buttonContainer.appendChild(cancelBtn);
         li.appendChild(img);
         li.appendChild(nameTag);
         li.appendChild(buttonContainer);
         playerList.appendChild(li);
-    });
+    })
 }
 
 export function populateInRequest(list_name, data) {
@@ -70,13 +78,18 @@ export function populateInRequest(list_name, data) {
     if (data == null)
         return
 
-    data.received_requests.forEach(player => {
+    data.received_requests.forEach(async player => {
 
         const li = document.createElement('li');
         li.classList.add('friend-item');
 
         const img = document.createElement('img');
-        img.src = player.img ? player.img : "./media/default.jpeg";
+
+        const userInfo = await getUserInfo(player.from_user)
+        console.log("player: ", player.from_user)
+
+        console.log("data player: ", userInfo)
+        img.src = userInfo.avatar || "./media/default.jpeg";
         img.alt = player.from_user;
 
         const nameTag = document.createElement('span');
