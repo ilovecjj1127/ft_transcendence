@@ -299,18 +299,11 @@ gotoProfileButton.addEventListener('click', (e) => {
 
         e.preventDefault()
         console.log("hi goto profile")
-        location.hash = '/users'
-        const closeBtn = document.getElementById('stats-close-button')
-        console.log("closeBtn; ", closeBtn)
-
-        if (closeBtn != null)
-                closeBtn.click()
-        // closeBtn.addEventListener('click', closeStats)
 
         const chatboxname = document.querySelector('.chatbox-message-name').innerHTML
         console.log("chatboxname; ", chatboxname)
-
-        localStorage.setItem('userToSearchInStats', chatboxname);
+        localStorage.setItem('userSearched', chatboxname);
+        location.hash = '/users'
 });
 
 blockOrUnblockButton.addEventListener('click', async function () {
