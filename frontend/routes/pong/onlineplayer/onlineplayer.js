@@ -171,7 +171,6 @@ async function createGamesList (list) {
     }
 }
 
-
 function createNewGameButton (menu) {
     const newGame = document.createElement('button')
     newGame.id = 'new-game'
@@ -194,6 +193,31 @@ export default async function createGame() {
             "Authorization": `Bearer ${getUserToken().access}`
         },
         body: JSON.stringify({player2: null}),
+    });
+    if (response.ok) {
+        const data = await response.json()
+        alert("game created " + data.game.id)
+        localStorage.setItem("gameId", data.game.id)
+        location.hash = '/pong/onlineplayer/onlinegame'
+        return true
+    } else {
+        alert("error creating game")
+        return false
+    }
+}
+
+
+export async function createGameWithSpecificPlayer(PlayerId) {
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+
+    const response = await fetch(`http://${window.location.host}/api/games/create/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getUserToken().access}`
+        },
+        body: JSON.stringify({player2: PlayerId}),
     });
     if (response.ok) {
         const data = await response.json()

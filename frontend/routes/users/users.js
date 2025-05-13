@@ -19,7 +19,7 @@ export const init = () => {
 	}
     else
         getUserSearched(user)
-    
+
     function closeStats () {
         deleteStatsEvents()
         location.hash = '/stats'

@@ -314,7 +314,7 @@ gotoProfileButton.addEventListener('click', (e) => {
 });
 
 blockOrUnblockButton.addEventListener('click', async function () {
-        
+
         const isBlocking = this.innerHTML.trim() === "Block";
         const elemChatbox = document.getElementById('chatting-box-id-v2')
         console.log(elemChatbox); // should not be null
@@ -344,10 +344,12 @@ blockOrUnblockButton.addEventListener('click', async function () {
 import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
 import { get_data } from "./social/init_friends_data.js"
 
+// import  createGameWithSpecificPlayer from "./routes/pong/onlineplayer/onlineplayer.js"
+
 invitePlayerForGame.addEventListener('click', async function () {
 
         const friendname = document.querySelector(".chatbox-message-name")
-        const game_id = await createGameReturnId()
+        const game_id = await createGamewithSpecificPlayer(friendname)
 
         console.log("inviting player; ", friendname, "to game; ", game_id)
         const date = new Date()
