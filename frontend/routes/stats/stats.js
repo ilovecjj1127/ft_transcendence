@@ -10,20 +10,12 @@ export const init = () => {
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     console.log("init of stats.js called!")
 
-
     getUserStats()
     if (getUserAvatar())
         profileImg.src = getUserAvatar()
 
     if (getUsername())
         username.innerText = getUsername()
-    
-    // // If we came from another route with user to search
-	// const pendingUserSearch = localStorage.getItem('userToSearchInStats');
-	// if (pendingUserSearch) {
-	// 	searchUser(pendingUserSearch);
-	// 	localStorage.removeItem('userToSearchInStats'); // clean up
-	// }
 
     function handleSearch (e) {
         if (e.key == 'Enter' && searchInput.value) {
@@ -37,13 +29,13 @@ export const init = () => {
         deleteStatsEvents()
         location.hash = '/'
     }
-    
+
     //get user stats and save it in stats variable
     async function getUserStats () {
         const isTokenValid = await checkToken()
-        
+
         if (!isTokenValid) return
-        
+
         const statsRequest = await fetch(`http://${window.location.host}/api/games/statistics`, {
             method: "GET",
             headers: {
@@ -59,7 +51,7 @@ export const init = () => {
             setStatsValues(null)
         }
     }
-    
+ 
     //check if user exist with HEAD request
     async function searchUser (user) {
         const isTokenValid = await checkToken()
