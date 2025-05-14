@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 
 from users.models import UserProfile
 from games.models import Game, Tournament, TournamentPlayer
+from chat.models import ChatRoom
 
 
 class Command(BaseCommand):
@@ -74,6 +75,13 @@ class Command(BaseCommand):
                 tournament=tournament,
                 player=user3,
                 alias=user3.username+'_alias'
+            )
+
+        # Create test chat room
+        if user1 and user2:
+            ChatRoom.objects.create(
+                user1=user1,
+                user2=user2
             )
 
         self.stdout.write('Creating DB objects...')
