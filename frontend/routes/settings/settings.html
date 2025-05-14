@@ -1,0 +1,28 @@
+<div id="setting-container">
+    <button id="close-button"></button>
+    <div id="name-container">
+        <span id="settings-username">Username</span>
+    </div>
+    <div id="img-container">
+        <img id="settings-img" src="./media/default.jpeg" alt="Profile">
+        <input type="file" id="image-upload" accept="image/*" style="display: none;">
+    </div>
+    <div id="password-change-container">
+        <form id="password-change">
+            <div class="entry">
+                <label for="old-password">Old Password</label>
+                <input type="password" class="pwd-change-input" id="old-password">
+            </div>
+            <div class="entry">
+                <label for="new-password">New Password</label>
+                <input type="password" class="pwd-change-input" id="new-password">
+            </div>
+            <div class="entry">
+                <label for="re-password">Confirm Password</label>
+                <input type="password" class="pwd-change-input" id="confirm-password-change">
+            </div>
+            <div id="change-message"></div>
+            <button type="button" class="confirm-button" id="confirm">Change Password</button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,131 @@
+#setting-container {
+    width: 800px;
+    height: 600px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    background-color: var(--app-blue);
+    color: black;
+    border-radius: 10px;
+    padding: 20px;
+    position: relative;
+}
+
+#img-container {
+    position: absolute;
+    top: 4rem;
+    right: 4rem;
+    width: 20rem;
+    height: 20rem;
+}
+
+#settings-img {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+    transition: filter 0.3s ease;
+}
+
+#img-container:hover #settings-img {
+    filter: brightness(0.8) sepia(1) hue-rotate(190deg);
+}
+
+#name-container {
+    position: absolute;
+    top: 4rem;
+    left: 4rem;
+    flex-direction: column;
+}
+
+#settings-username {
+    font-size: 3rem;
+    font-weight: bold;
+    color: white;
+}
+
+#password-change-container {
+    position: absolute;
+    top: 10rem;
+    left: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    width: 250px; /* Reduced the width of the form */
+    padding: 15px; /* Reduced padding for a smaller form */
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+#password-change .entry {
+    margin-bottom: 10px; /* Reduced margin */
+    width: 100%;
+}
+
+#password-change label {
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+#password-change .pwd-change-input {
+    width: 100%;
+    padding: 8px; /* Reduced padding for smaller input fields */
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+/* Styling for the confirm button inside the form */
+.confirm-button {
+    padding: 8px 12px; /* Reduced padding for a smaller button */
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%; /* Makes the button span the full width of the form */
+}
+
+.confirm-button:hover {
+    background-color: #2980b9;
+}
+
+/* Close button styling */
+#close-button {
+    position: absolute;
+    height: 30px;
+    width: 30px;
+    top: 1rem;
+    right: 1rem;
+    padding: 0;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display:flex;
+    align-items:center;
+    justify-content: center;
+    font-size: 25px;
+}
+
+#close-button i {
+    font-size: 20px;  /* Icon size */
+    margin: 0;        /* Remove default margin */
+    color: white;
+    line-height: 1;    /* Ensure vertical alignment */
+    text-align: center; /* Horizontal centering */
+}
+
+#close-button:hover {
+    background-color: #c0392b;
+}
