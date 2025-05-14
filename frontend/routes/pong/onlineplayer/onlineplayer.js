@@ -207,7 +207,7 @@ export default async function createGame() {
 }
 
 
-export async function createGameWithSpecificPlayer(PlayerId) {
+export async function createGameWithPlayer(PlayerId) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
 
@@ -224,10 +224,11 @@ export async function createGameWithSpecificPlayer(PlayerId) {
         alert("game created " + data.game.id)
         localStorage.setItem("gameId", data.game.id)
         location.hash = '/pong/onlineplayer/onlinegame'
-        return true
+        console.log("gameid ;", data.game.id)
+        return data.game.id
     } else {
         alert("error creating game")
-        return false
+        return 0
     }
 }
 

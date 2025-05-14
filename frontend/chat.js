@@ -337,16 +337,16 @@ blockOrUnblockButton.addEventListener('click', async function () {
 import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
 import { get_data } from "./social/init_friends_data.js"
 
-// import  createGameWithSpecificPlayer from "./routes/pong/onlineplayer/onlineplayer.js"
+import  createGameWithPlayer from "./routes/pong/onlineplayer/onlineplayer.js"
 
 invitePlayerForGame.addEventListener('click', async function () {
 
         const friendname = document.querySelector(".chatbox-message-name")
-        const game_id = await createGamewithSpecificPlayer(friendname)
+        const game_id = await createGameWithPlayer(friendname.innerHTML)
 
-        console.log("inviting player; ", friendname, "to game; ", game_id)
+        console.log("inviting player; ", friendname.innerHTML, "to game; ", localStorage.getItem("gameId"))
         const date = new Date()
-        const message = `hi do you want to play game?, game-id = ${game_id}`;
+        const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
         chatSocket.send(JSON.stringify({
         'message' : message,
         // 'option-game-invite': game_id,
