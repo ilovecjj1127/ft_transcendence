@@ -26,7 +26,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         if not is_valid_user:
             await self.accept()
             await self.close(code=error_code)
-            await self.close(code=error_code)
             return
         self.room_group_name = f'chat_{self.room_id}'
         self.username = self.scope['user'].username
@@ -102,7 +101,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat_message = {
             'username': self.username,
             'message': data['message'],
-            # 'option-game-invite':  data['option-game-invite'],
             'date': data['date']
         }
         redis_key = f'chat:{self.room_group_name}:messages'
@@ -113,7 +111,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 'type': 'send_message',
                 'username': self.username,
                 'message': data['message'],
-                # 'option-game-invite':  data['option-game-invite'],
                 'date': data['date']
             }
         )
@@ -130,11 +127,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await notify_about_unread_chats(notified_user)
 
     async def send_message(self, event):
-        message = f"{event['username']}: {event['message']}"
         await self.send(text_data=json.dumps({
             'username': event['username'],
             'message': event['message'],
-            # 'option-game-invite':  event['option-game-invite'],
             'date': event.get('date', str(timezone.dst))
         }))
 
