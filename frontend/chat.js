@@ -365,7 +365,6 @@ chatBox.classList.remove('show')
 })
 
 
-
 textarea.addEventListener('input', function () {
         let line = textarea.value.split('\n').length
 

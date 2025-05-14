@@ -79,5 +79,3 @@ export default async function openChattingBox(frienda)
                 console.error("Error: #chatting-box not found in the DOM.");
             }
 }
-
-
