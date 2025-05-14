@@ -308,7 +308,8 @@ gotoProfileButton.addEventListener('click', (e) => {
         const chatboxname = document.querySelector('.chatbox-message-name').innerHTML
         console.log("chatboxname; ", chatboxname)
         localStorage.setItem('userSearched', chatboxname);
-        location.hash = '/users'
+        location.hash = '#/users'
+        // init()
 });
 
 blockOrUnblockButton.addEventListener('click', async function () {

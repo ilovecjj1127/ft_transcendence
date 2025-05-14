@@ -31,6 +31,4 @@ export async function removeFriend(username)
     });
     const response_data = await response.json()
     if (DEBUGPRINTS) console.log("response_data: ", response_data)
-
-
 }
