@@ -127,7 +127,7 @@ export async function OpenRoom(friend)
         // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
         // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
         const token = getUserToken().access
-
+        
         if (!token) {
                 showLoginModal()
                 return
@@ -156,6 +156,12 @@ export async function OpenRoom(friend)
         chatSocket = new WebSocket(
                 `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
         );
+
+        // getUserInfo(friend)
+        localStorage.setItem("chatbox-playerId", data.id)
+
+
+
         chatboxMessageWrapper.innerHTML = '';
         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
         setChatSocketEventFunctions()
@@ -253,7 +259,6 @@ export function setChatSocketEventFunctions()
     };
 }
 
-
 function updateChat (friend) {
     /* 
     here update all content of chat box
@@ -337,14 +342,15 @@ blockOrUnblockButton.addEventListener('click', async function () {
 import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
 import { get_data } from "./social/init_friends_data.js"
 
-import  createGameWithPlayer from "./routes/pong/onlineplayer/onlineplayer.js"
+import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer.js"
 
 invitePlayerForGame.addEventListener('click', async function () {
 
+        const playerId = localStorage.getItem("chatbox-playerId")
         const friendname = document.querySelector(".chatbox-message-name")
-        const game_id = await createGameWithPlayer(friendname.innerHTML)
+        const game_id = await createGameWithPlayer(playerId)
 
-        console.log("inviting player; ", friendname.innerHTML, "to game; ", localStorage.getItem("gameId"))
+        console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
         const date = new Date()
         const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
         chatSocket.send(JSON.stringify({
@@ -352,6 +358,7 @@ invitePlayerForGame.addEventListener('click', async function () {
         // 'option-game-invite': game_id,
         'date': date
         }));
+        localStorage.setItem("chatbox-playerId", "")
         scrollBottom()
 })
 

@@ -21,8 +21,9 @@ export async function getOrcreateChattingBox(frienda)
             },
             body: JSON.stringify({ "username": frienda })  // Fixed object syntax
         });
-        
+
         const data = await response.json();  // ✅ Parse JSON
+
         console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
         return data["chat_room_id"];
     }
