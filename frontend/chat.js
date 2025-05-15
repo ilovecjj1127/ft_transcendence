@@ -8,6 +8,23 @@ import { getUserToken } from "./utils/userData.js";
 import { getOrcreateChattingBox } from "./social/open_close_chat.js"
 import { removeFriend } from "./social/select_friend_menu.js"
 
+const closeChat = document.querySelector('.chatbox-message-close')
+// 3 dots dropdown toggle (add eventlisteners for invite and remove) 
+const textarea = document.querySelector('.chatbox-message-input')
+const chatboxForm = document.querySelector('.chatbox-message-form')
+const invitePlayerForGame = document.querySelector('#invite-player-for-game-button')
+const removeFriendElem = document.querySelector('#remove-as-friend-button')
+const blockOrUnblockButton = document.querySelector('#block-chatroom-button')
+const gotoProfileButton = document.querySelector('#go-to-profile-button')
+import { loadRoute } from "./app.js"
+
+const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
+const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
+import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
+import { get_data } from "./social/init_friends_data.js"
+import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer.js"
+
+
 //example to check the overflow-y
 const friends = [
     {name: "friend1"},
@@ -187,9 +204,6 @@ export async function OpenRoom(friend)
         }
 }
 
-
-
-
 export function setChatSocketEventFunctions()
 {
     document.getElementById('chat-message-submit').onclick = async function() {
@@ -266,19 +280,11 @@ function updateChat (friend) {
    chatBox.classList.add('show')
 }
 
-const closeChat = document.querySelector('.chatbox-message-close')
-
 closeChat.addEventListener('click', function (){
     chatBox.classList.remove('show')
     chatSocket.close()
     console.log("closing socket")
 })
-
-
-// 3 dots dropdown toggle (add eventlisteners for invite and remove) 
-
-const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
-const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')
@@ -290,17 +296,7 @@ document.addEventListener('click', function (e) {
         }
 })
 
-//message input
-
-const textarea = document.querySelector('.chatbox-message-input')
-const chatboxForm = document.querySelector('.chatbox-message-form')
-const invitePlayerForGame = document.querySelector('#invite-player-for-game-button')
-const removeFriendElem = document.querySelector('#remove-as-friend-button')
-const blockOrUnblockButton = document.querySelector('#block-chatroom-button')
-const gotoProfileButton = document.querySelector('#go-to-profile-button')
-// import { closeStats } from "./routes/users/users.js"
-
-gotoProfileButton.addEventListener('click', (e) => {
+gotoProfileButton.addEventListener('click', async (e) =>  {
 
         e.preventDefault()
         console.log("hi goto profile")
@@ -310,6 +306,7 @@ gotoProfileButton.addEventListener('click', (e) => {
         localStorage.setItem('userSearched', chatboxname);
         location.hash = '#/users'
         // init()
+        await loadRoute('users');
 });
 
 blockOrUnblockButton.addEventListener('click', async function () {
@@ -339,11 +336,6 @@ blockOrUnblockButton.addEventListener('click', async function () {
                 if (DEBUGPRINTS) console.error("Failed to toggle block state.");
         }
 })
-
-import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
-import { get_data } from "./social/init_friends_data.js"
-
-import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer.js"
 
 invitePlayerForGame.addEventListener('click', async function () {
 
@@ -459,9 +451,7 @@ export default function format_and_put_Reply (data, format, gameId) {
         scrollBottom()
 }
 
-
 // scroll bottom on new message
-
 function scrollBottom () {
         chatboxMessageWrapper.scrollTo(0, chatboxMessageWrapper.scrollHeight)
 }

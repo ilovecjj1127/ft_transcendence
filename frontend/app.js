@@ -2,7 +2,7 @@ import {onloadInit} from "./utils/onload.js"
 import { DEBUGPRINTS } from "./config.js"
 
 //Dynamically load HTML, JS, and CSS for each route
-const loadRoute = async (route) => {
+export const loadRoute = async (route) => {
     const app = document.getElementById('app');
     const gameContainer = document.getElementById('game-container')
     const canvas = document.getElementById("gameCanvas")
@@ -99,7 +99,7 @@ window.addEventListener('load', () => {
             return
     }
     document.getElementById("social-menu-container").style.display = "flex"
-    
+
     //all tasks to do at first load of the page
     onloadInit()
 
