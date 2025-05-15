@@ -66,7 +66,8 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.game_id,
             {
                 'type': 'send_disconnect_command',
-                'message': 'End of the game'
+                'message': 'End of the game',
+                'winner': self.service.winner
             }
         )
 
@@ -76,20 +77,31 @@ class PongConsumer(AsyncWebsocketConsumer):
         paddle2_y = game_state.get('paddle2_y', (Y_MAX - PADDLE_HEIGHT) / 2)
         ball_x = game_state.get('ball_x', X_MAX / 2.0)
         ball_y = game_state.get('ball_y', Y_MAX / 2.0)
-        await self.send(text_data=json.dumps({
-            'type': 'possitions_update',
-            'paddle1_y': paddle1_y,
-            'paddle2_y': paddle2_y,
-            'ball_x': int(ball_x),
-            'ball_y': int(ball_y),
-            'score1': game_state.get('score1', 0),
-            'score2': game_state.get('score2', 0)
-        }))
+        try:
+            await self.send(text_data=json.dumps({
+                'type': 'possitions_update',
+                'paddle1_y': paddle1_y,
+                'paddle2_y': paddle2_y,
+                'ball_x': int(ball_x),
+                'ball_y': int(ball_y),
+                'score1': game_state.get('score1', 0),
+                'score2': game_state.get('score2', 0)
+            }))
+        except RuntimeError:
+            pass
 
     async def send_disconnect_command(self, event: dict):
-        await self.send(text_data=json.dumps({
-            'type': 'disconnect',
-            'message': event.get('message', '')
-        }))
-        await asyncio.sleep(0.1)
+        try:
+            await self.send(text_data=json.dumps({
+                "type": "end_of_the_game",
+                "winner": event.get('winner')
+            }))
+            await asyncio.sleep(0.2)
+            await self.send(text_data=json.dumps({
+                'type': 'disconnect',
+                'message': event.get('message', '')
+            }))
+        except RuntimeError:
+            pass
+        await asyncio.sleep(0.8)
         await self.close(code=4004)

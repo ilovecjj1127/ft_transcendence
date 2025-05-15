@@ -1,5 +1,5 @@
-
-import { checkToken } from "../../../utils/token.js"
+import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
+import { checkToken, deleteTokenReload } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
 import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
 import { createOpenRegistration } from "./list-creation/openRegistration.js"
@@ -11,23 +11,14 @@ export const init = () => {
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d');
     ctx.clearRect( 0,0, canvas.width, canvas.height)
-    createBackToMenu(overlay)
-    createTourMenu(overlay)
-};
 
-function createBackToMenu (overlay) {
-    const backToMenu = document.createElement('div')
-    backToMenu.id = 'back-to-menu'
-    backToMenu.innerHTML = `<i class='bx bx-arrow-back'></i>`
-
-    overlay.appendChild(backToMenu)
-    
-    function back () {
-        backToMenu.removeEventListener('click', back)
-        location.hash = "/pong"
+    createBackToMenu(overlay, '/pong')
+    if (getUserToken().access){
+        createTourMenu(overlay)
+        createRefresh(overlay)
+    } else {
+        createNotLoggedMessage(overlay)
     }
-
-    backToMenu.addEventListener('click', back)
 }
 
 function createTourMenu (overlay) {
@@ -41,7 +32,6 @@ function createTourMenu (overlay) {
     
     //top buttons
     createNewTourButton(topBtnContainer)
-    //createLeaderButton(topBtnContainer)
     
     //lists
     createOpenRegistration(dropDownContainer)
@@ -53,17 +43,6 @@ function createTourMenu (overlay) {
     menu.appendChild(dropDownContainer)
     overlay.appendChild(menu)
 }
-
-// function createLeaderButton (container) {
-//     const leader = document.createElement('button')
-//     leader.id = 'leader'
-//     leader.innerText = 'Leaderboard'
-
-//     leader.addEventListener('click', () => {
-//         location.hash = '/pong/tournament/leaderboard'
-//     })
-//     container.appendChild(leader)
-// }
 
 function createNewTourButton (container) {
     const newTour = document.createElement('button')
@@ -92,11 +71,13 @@ function createNewTourButton (container) {
                     alias: formData["alias"],
                 }),
             });
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 const data = await response.json()
+                responseCheck("Tournament created.\n" + formData["tour-name"] + " starting soon.")
                 return true
             } else {
-                alert("error creating tournament")
+                responseCheck("Error creating the tournament.\n Try again")
                 return false
             }
         }
@@ -151,6 +132,11 @@ async function createNewTourModal() {
             event.preventDefault()
             const formData = {};
             Object.keys(inputs).forEach(key => {
+                if (!validateInput(key, inputs[key].value))
+                {
+                    responseCheck("Input values not allowed. \n Tournament not created")
+                    resolve(null)
+                }
                 formData[key] = inputs[key].value
             })
 
@@ -168,3 +154,33 @@ async function createNewTourModal() {
         overlay.appendChild(newTourModal)
     });
 }
+
+function validateInput(key, value) {
+    if (key == "min") {
+        if (!value || value > 9 || value < 3) return false
+    } else if (key == "max") {
+        if (!value || value < 4 || value > 10) return false
+    } else if (key == 'score') {
+        if (!value || value < 1 || value > 20) return false
+    }
+    return true
+}
+
+    function responseCheck(message) {
+        const overlay = document.querySelector('.overlay')
+        const responseContainer = document.createElement('div')
+        responseContainer.id = 'response-container'
+
+        const responseMessage = document.createElement('p')
+        responseMessage.innerText = message
+
+        const okButton = document.createElement('button')
+        okButton.id = 'response-ok'
+        okButton.innerText = 'Ok'
+        okButton.addEventListener('click', () => {
+            responseContainer.remove()
+        })
+        responseContainer.appendChild(responseMessage)
+        responseContainer.appendChild(okButton)
+        overlay.appendChild(responseContainer)
+    }

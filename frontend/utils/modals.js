@@ -1,5 +1,4 @@
-import { createMenuProfile } from "./profile-toggle.js"
-import { saveUserInfo, setUserToken } from "./userData.js"
+import { handleLogin, loginFunction } from "./login.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -9,49 +8,31 @@ const registerButton = document.getElementById("register-button")
 const registerForm = document.getElementById("register-form")
 const registerSubmit = document.getElementById("register-submit")
 
+//LOGIN
+
 export function showLoginModal () {
     loginModal.show()
 }
 
 export function hideLoginModal () {
+    document.getElementById('login-message').innerHTML = ''
+    document.getElementById("login-form").reset()
     loginModal.hide()
-    createMenuProfile()
 }
-
-//forms to fill
 
 loginForm.onsubmit = async (e) => {
     e.preventDefault()
     const username = document.getElementById("username").value
     const password = document.getElementById("password").value
-    const message = document.getElementById("login-message")
-            
-    message.innerHTML = ""
-            
-    const response = await fetch(`http://${window.location.host}/api/users/login/`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ username, password }),
-    });
-
-    if (response.ok) {
-        const data = await response.json()
-        setUserToken(data.access, data.refresh)
-        saveUserInfo()
-        message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
-                
-        setTimeout( () => {
-            hideLoginModal()
-        }, 2000)
-        document.getElementById("social-menu-container").style.display = "flex"
-        window.location.reload();
-            
-    } else {
-        message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
-    }
+    
+    loginFunction(password, username)
 };
+
+loginButton.addEventListener('click', () => {
+    loginForm.requestSubmit()
+})
+
+//REGISTRATION
 
 registerForm.onsubmit = async (e) => {
     e.preventDefault()
@@ -84,7 +65,7 @@ registerForm.onsubmit = async (e) => {
                 
         setTimeout( () => {
             registerModal.hide()
-            showLoginModal()
+            handleLogin()
         }, 2000)
     } else {
         const errorData = await response.json();
@@ -92,17 +73,11 @@ registerForm.onsubmit = async (e) => {
     }
 }
 
-//button events listener
-
-loginButton.addEventListener('click', () => {
-    loginForm.requestSubmit()
-})
-
 registerButton.addEventListener('click', function () {
     // Close the Login modal
     hideLoginModal()
     // Show the Register modal
-    registerModal.show();
+    registerModal.show()
 });
 
 registerSubmit.addEventListener("click", function () {

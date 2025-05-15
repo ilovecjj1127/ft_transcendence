@@ -1,4 +1,4 @@
-import { checkToken } from "../../../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
 import { getUserId, getUserToken } from "../../../../utils/userData.js"
 
 //list of joinable tournaments (show/registration)
@@ -32,6 +32,7 @@ async function requestList (list, listContainer) {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
+    if (listResponse.status == 401) deleteTokenReload()
     if (listResponse.ok) {
         const data = await listResponse.json()
         if (data.length === 0) {
@@ -42,6 +43,8 @@ async function requestList (list, listContainer) {
             data.forEach((tour) => {
                 const li = document.createElement('li')
                 li.textContent = tour.name
+                li.innerHTML = `${tour.name} 
+                - players ${tour.players.length}/${tour.max_players}`
                 const button = document.createElement('button')
                 button.innerText = "Register"
                 li.appendChild(button)
@@ -64,34 +67,35 @@ async function requestList (list, listContainer) {
 } 
 
 async function registerTournament (id, button) {
-      const alias = await createJoinModal()
-      if (alias) {
-          const isTokenValid = await checkToken()
-          if (!isTokenValid) return
-          
-          const registrResponse = await fetch(`http://${window.location.host}/api/tournament/join/`, {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  "Authorization": `Bearer ${getUserToken().access}`
-              },
-              body: JSON.stringify({
-                  tournament_id: id,
-                  alias: alias, 
-              }),
-          });
-          if (registrResponse.ok) {
-                alert('registered correctly')
-                //change button style
-                button.innerText = "✔"
-                button.style.backgroundColor = "#4CAF50"
-                button.style.color = "white"
-                button.disabled = true
-          } else {
-              //add error box
-              alert('error registration')
-          }
-      }                    
+    const alias = await createJoinModal()
+    if (alias) {
+        const isTokenValid = await checkToken()
+        if (!isTokenValid) return
+        
+        const registrResponse = await fetch(`http://${window.location.host}/api/tournament/join/`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+            body: JSON.stringify({
+                tournament_id: id,
+                alias: alias, 
+            }),
+        });
+        if (registrResponse.status == 401) deleteTokenReload()
+        if (registrResponse.ok) {
+            button.innerText = "✔"
+            button.style.backgroundColor = "#4CAF50"
+            button.style.color = "white"
+            button.disabled = true
+        } else {
+            button.innerText = "Error"
+            button.style.backgroundColor = "red"
+            button.style.color = "white"
+            button.disabled = true
+        }
+    }                    
 }
 
 async function createJoinModal() {

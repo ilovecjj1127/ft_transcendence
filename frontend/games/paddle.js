@@ -1,4 +1,4 @@
-const SPEED_PADDLE_INCREASE = .01
+//const SPEED_PADDLE_INCREASE = .01
 const COMPUTER_PADDLE_SPEED = .06
 const INITIAL_PADDLE_SPEED = 5
 
@@ -32,7 +32,7 @@ export default class Paddle {
         let nextY = this.y + inputDir * this.speed 
         if (nextY + this.height <= canvas.height && nextY > 0)
             this.y = nextY
-        this.speed += SPEED_PADDLE_INCREASE
+        //this.speed += SPEED_PADDLE_INCREASE
         this.draw()
     }
 
