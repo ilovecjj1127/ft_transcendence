@@ -37,8 +37,10 @@
           output.textContent += `${username}: ${status}\n`;
         }
       } else if (data.type === "unread_chats") {
-		// data.unread_chats = ["alice", "bob"]
+        // data.unread_chats = ["alice", "bob"]
         output.textContent += `Unread chats: ${data.unread_chats.join(", ")}\n`;
+      } else if (data.type === "player_is_waiting") {
+        output.textContent += `Player ${data.opponent} is waiting for you in the game ${data.game_id}\n`;
       }
     };
 

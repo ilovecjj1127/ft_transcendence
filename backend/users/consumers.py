@@ -68,6 +68,13 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'unread_chats': unread_chats
         }))
 
+    async def send_player_waiting_notification(self, event: dict):
+        await self.send(text_data=json.dumps({
+            'type': 'player_is_waiting',
+            'game_id': event['game_id'],
+            'opponent': event['opponent']
+        }))
+
     async def _get_users_statuses(self, usernames: list[str]) -> dict[str, bool]:
         users_statuses = {}
         for username in usernames:
@@ -108,3 +115,4 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         )
 
 # Check if users's status was changed twice during sleep() method. Need to kill a task
+# Change hardcoded redis path
