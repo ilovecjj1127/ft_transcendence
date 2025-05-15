@@ -74,9 +74,10 @@ function createNewTourButton (container) {
             if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 const data = await response.json()
+                responseCheck("Tournament created.\n" + formData["tour-name"] + " starting soon.")
                 return true
             } else {
-                alert("error creating tournament")
+                responseCheck("Error creating the tournament.\n Try again")
                 return false
             }
         }
@@ -131,6 +132,11 @@ async function createNewTourModal() {
             event.preventDefault()
             const formData = {};
             Object.keys(inputs).forEach(key => {
+                if (!validateInput(key, inputs[key].value))
+                {
+                    responseCheck("Input values not allowed. \n Tournament not created")
+                    resolve(null)
+                }
                 formData[key] = inputs[key].value
             })
 
@@ -148,3 +154,33 @@ async function createNewTourModal() {
         overlay.appendChild(newTourModal)
     });
 }
+
+function validateInput(key, value) {
+    if (key == "min") {
+        if (!value || value > 9 || value < 3) return false
+    } else if (key == "max") {
+        if (!value || value < 4 || value > 10) return false
+    } else if (key == 'score') {
+        if (!value || value < 1 || value > 20) return false
+    }
+    return true
+}
+
+    function responseCheck(message) {
+        const overlay = document.querySelector('.overlay')
+        const responseContainer = document.createElement('div')
+        responseContainer.id = 'response-container'
+
+        const responseMessage = document.createElement('p')
+        responseMessage.innerText = message
+
+        const okButton = document.createElement('button')
+        okButton.id = 'response-ok'
+        okButton.innerText = 'Ok'
+        okButton.addEventListener('click', () => {
+            responseContainer.remove()
+        })
+        responseContainer.appendChild(responseMessage)
+        responseContainer.appendChild(okButton)
+        overlay.appendChild(responseContainer)
+    }

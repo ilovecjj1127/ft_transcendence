@@ -19,7 +19,7 @@ export default class PongOnline {
         this.hash = gameInfo.hash
     }
 
-    start(gameInfo) {
+    async start(gameInfo) {
         this.ball = new Ball()
         this.paddle1 = new Paddle(1)
         this.paddle2 = new Paddle(2)
@@ -42,7 +42,8 @@ export default class PongOnline {
 
         // WebSocket connection setup
         this.gameId = gameInfo.gameId
-        if (checkToken()) {
+        const isTokenValid = await checkToken()
+        if (isTokenValid) {
             this.token = getUserToken().access
             this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
         }
@@ -140,9 +141,11 @@ export default class PongOnline {
 
     drawEndGame (winner) {
         const winnerContainer = document.createElement('div')
-        winnerContainer.id = 'winner-container'
+        winnerContainer.id = 'end-msg-container'
 
         const winnerMessage = document.createElement('p')
+        if (!this.player1) this.player1 = "Player 1"
+        if (!this.player2) this.player2 = "Player 2"
         if (winner == '1')
             winnerMessage.innerText = "The winner is \n" + this.player1
         else
@@ -153,6 +156,15 @@ export default class PongOnline {
 
     handleOnerror (error) {
         console.error("WebSocket error:", error);
+        window.removeEventListener('keydown', this.handleKeydown);
+        window.removeEventListener('keyup', this.handleKeyUp);
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        const errorContainer = document.createElement('div')
+        errorContainer.id = 'end-msg-container'
+        const errorMessage = document.createElement('p')
+        errorMessage.innerText = "An error occured in the game. Please exit"
+        errorContainer.appendChild(errorMessage)
+        overlay.appendChild(errorContainer)
     };
 
     handleOnclose () {

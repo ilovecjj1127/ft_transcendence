@@ -244,9 +244,13 @@ async function createScoreModal() {
         confirmButton.id = 'confirm-button'
         confirmButton.innerText = 'Confirm'
         confirmButton.addEventListener('click', () => {
-            let score = scoreInput.value
-            if (score <= 0) score = 1
-            if (score > 20) score = 20
+            let score = parseInt(scoreInput.value, 10);
+            if (!score || score < 1 || score > 20) {
+                scoreInput.value = ""
+                scoreInput.placeholder = "Insert a valid value"
+                scoreInput.style.border = '2px solid red';
+                return;
+            }
             scoreModal.remove()
             resolve(score)
         })

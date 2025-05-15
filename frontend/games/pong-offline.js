@@ -32,7 +32,7 @@ export default class PongOffline {
         this.msPrev = window.performance.now()
         this.player1Direction = 0
         this.player2Direction = 0
-        this.winScore = 1
+        this.winScore = 10
         this.reset()
         this.draw()
 
@@ -144,7 +144,7 @@ export default class PongOffline {
 
     drawEndGame () {
         const winnerContainer = document.createElement('div')
-        winnerContainer.id = 'winner-container'
+        winnerContainer.id = 'end-msg-container'
 
         const winnerMessage = document.createElement('p')
         if (this.score1 == this.winScore)
