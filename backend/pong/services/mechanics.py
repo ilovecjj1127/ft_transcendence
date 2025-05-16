@@ -33,6 +33,7 @@ class PongMechanics(PongServiceBase):
         self.move_ball(game_state)
         await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
         if max(game_state['score2'], game_state['score1']) == self.game.winning_score:
+            self.winner = 1 if game_state['score1'] == self.game.winning_score else 2
             self.keep_running = False
         return game_state
 

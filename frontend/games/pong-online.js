@@ -1,16 +1,25 @@
 import Ball from "./ball.js"
 import Paddle from "./paddle.js"
 import { getUserToken } from "../utils/userData.js"
+import { checkToken } from "../utils/token.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
+const overlay = document.querySelector('.overlay')
  
 export default class PongOnline {
-    constructor(gameId) {
-        this.start(gameId)
+    constructor() {
+        const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
+        this.start(gameInfo)
+        this.stop = this.stop.bind(this)
+        this.destroy = this.destroy.bind(this);
+        this.winScore = gameInfo.winScore
+        this.player1 = gameInfo.player1
+        this.player2 = gameInfo.player2
+        this.hash = gameInfo.hash
     }
 
-    start(gameId) {
+    async start(gameInfo) {
         this.ball = new Ball()
         this.paddle1 = new Paddle(1)
         this.paddle2 = new Paddle(2)
@@ -27,10 +36,17 @@ export default class PongOnline {
         window.addEventListener('keydown' , this.handleKeydown)
         window.addEventListener('keyup', this.handleKeyUp)
 
+        if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+            this.socket.close();
+        }
+
         // WebSocket connection setup
-        this.gameId = gameId
-        this.token = getUserToken().access
-        this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
+        this.gameId = gameInfo.gameId
+        const isTokenValid = await checkToken()
+        if (isTokenValid) {
+            this.token = getUserToken().access
+            this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
+        }
 
         this.socket.onmessage = this.handleOnmessage.bind(this)
         this.socket.onerror = this.handleOnerror.bind(this)
@@ -59,8 +75,15 @@ export default class PongOnline {
         ctx.font = "30px Arial"
         ctx.fillStyle = "white"
         ctx.textAlign = "center"
-        ctx.fillText(this.score1, canvas.width / 4, 50)
-        ctx.fillText(this.score2, canvas.width * 3 / 4, 50)
+        ctx.fillText(this.score1, canvas.width / 4, 60)
+        ctx.fillText(this.score2, canvas.width * 3 / 4, 60)
+        ctx.font = "20px Arial"
+        if (this.player1) ctx.fillText(this.player1, canvas.width /4, 30)
+        if (this.player2) ctx.fillText(this.player2, canvas.width * 3 / 4, 30)
+        
+        ctx.font = "15px Arial"
+        ctx.fillText("Win Score: " + this.winScore, canvas.width / 2, 30)
+        
     }
 
     handleKeyUp(event) {
@@ -97,16 +120,55 @@ export default class PongOnline {
             this.ball.y = data.ball_y;
             this.score1 = data.score1;
             this.score2 = data.score2;
-            this.update();
+            if (this.score1 == this.winScore || this.score2 == this.winScore)
+                this.drawEndGame
+            else
+                this.update();
         }
+
+        if (data.type == "disconnect") {
+            //alert(data.message)
+        }
+        
+        if (data.type == "end_of_the_game")
+        {
+            window.removeEventListener('keydown', this.handleKeydown);
+            window.removeEventListener('keyup', this.handleKeyUp);
+            ctx.clearRect(0,0, canvas.width, canvas.height)
+            this.drawEndGame(data.winner)
+        }
+    }
+
+    drawEndGame (winner) {
+        const winnerContainer = document.createElement('div')
+        winnerContainer.id = 'end-msg-container'
+
+        const winnerMessage = document.createElement('p')
+        if (!this.player1) this.player1 = "Player 1"
+        if (!this.player2) this.player2 = "Player 2"
+        if (winner == '1')
+            winnerMessage.innerText = "The winner is \n" + this.player1
+        else
+            winnerMessage.innerText = "The winner is \n" + this.player2
+        winnerContainer.appendChild(winnerMessage)
+        overlay.appendChild(winnerContainer)
     }
 
     handleOnerror (error) {
         console.error("WebSocket error:", error);
+        window.removeEventListener('keydown', this.handleKeydown);
+        window.removeEventListener('keyup', this.handleKeyUp);
+        ctx.clearRect(0,0, canvas.width, canvas.height)
+        const errorContainer = document.createElement('div')
+        errorContainer.id = 'end-msg-container'
+        const errorMessage = document.createElement('p')
+        errorMessage.innerText = "An error occured in the game. Please exit"
+        errorContainer.appendChild(errorMessage)
+        overlay.appendChild(errorContainer)
     };
 
     handleOnclose () {
-        alert("Connection closed by the server.");
+        console.log("Connection closed by the server.");
     };
 
     sendAction(action) {
@@ -122,10 +184,14 @@ export default class PongOnline {
     }
 
     stop () {
+        this.destroy()
+        location.hash = this.hash
+    }
+    
+    destroy () {
         this.reset()
         this.closeSocket()
         window.removeEventListener('keydown', this.handleKeydown);
         window.removeEventListener('keyup', this.handleKeyUp);
-        location.hash = '/pong/onlineplayer'
     }
 }

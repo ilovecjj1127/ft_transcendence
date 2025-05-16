@@ -1,5 +1,5 @@
-import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
-import { checkToken } from "../../utils/token.js"
+import { getUserToken } from "../../utils/userData.js"
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
 
 export const init = () => {
     const username = document.getElementById('users-username')
@@ -30,6 +30,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (searchUser.status == 401) deleteTokenReload()
         if (searchUser.ok)
         {
             const userSearched = await searchUser.json()

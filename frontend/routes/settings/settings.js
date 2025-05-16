@@ -1,6 +1,6 @@
 import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
-import { checkToken } from "../../utils/token.js"
-
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { showQrModal } from "../../utils/2fa.js" 
 
 export const init = () => {
     
@@ -9,7 +9,9 @@ export const init = () => {
     const profileImg = document.getElementById('settings-img')
     const confirm = document.getElementById('confirm')
     const imgUpload = document.getElementById('image-upload')
+    const uploadError = document.getElementById('upload-error')
     const closeBtn = document.getElementById('close-button')
+    const twofaButton = document.getElementById('twofa-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
     if (getUserAvatar())
@@ -32,17 +34,20 @@ export const init = () => {
         if (file) {
 
             //change avatar API
-            if (changeAvatar(file)) {
-                //change profile img
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    const imageUrl = e.target.result;
-                    localStorage.setItem("avatar", imageUrl)
-                    profileImg.src = imageUrl;
-                    document.getElementById('profile-img').src = imageUrl
-                };
-                reader.readAsDataURL(file);
-            }
+            changeAvatar(file).then((ok) => {
+                if (ok) {
+
+                    //change profile img
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const imageUrl = e.target.result;
+                        localStorage.setItem("avatar", imageUrl)
+                        profileImg.src = imageUrl;
+                        document.getElementById('profile-img').src = imageUrl
+                    };
+                    reader.readAsDataURL(file);
+                }
+            })
         }
     }
 
@@ -59,12 +64,16 @@ export const init = () => {
             },
             body: formData,
         });
-        
+        if (response.status == 401) deleteTokenReload()
         if (response.ok) {
             console.log("uploaded correctly")
             return true
         } else {
             console.log("failed to upload avatar")
+            uploadError.style.display = 'block'
+            setTimeout( () => {
+                uploadError.style.display = 'none'
+            }, 3000)
             return false
         }
     }
@@ -114,7 +123,7 @@ export const init = () => {
                 },
                 body: JSON.stringify({ old_password, new_password }),
             });
-            
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 message.innerHTML = "<p class='text-success'>Password changed.</p>"
                 clearInputs()
@@ -126,6 +135,11 @@ export const init = () => {
             }
         }
     }
+
+    twofaButton.addEventListener('click', () => {
+        console.log("button clicked")
+        showQrModal()
+    })
     
     imgUpload.addEventListener('change', changeProfileImg)
     profileImg.addEventListener('click', triggerChangeImg)

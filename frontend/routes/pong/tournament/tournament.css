@@ -1,0 +1,274 @@
+#tour-menu {
+    padding: 10px;
+    border-radius: 10px;
+    flex-direction: column;
+    font-family: "rixvideogame-pro", sans-serif;
+    font-size: 20px;
+}
+
+#top-btn-container {
+    display:flex;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+/* Create Button Styling */
+#new-tour {
+    background-color: #facf45;
+    color: rgb(23, 26, 91);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px;
+    font-size: 20px;
+}
+
+#new-tour:hover {
+    background-color: #4c9009;
+}
+
+/* dropdown container */
+
+#dropdown-container {
+    position: relative;
+    width: 700px;
+    height: 400px;
+    overflow-y: auto;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0);
+    border: none;
+    box-sizing: border-box;
+}
+
+#dropdown-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.dropdown {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    transition: margin-bottom 0.3s ease;
+}
+
+.dropdown-button {
+    width: 100%;
+    background-color: #facf45;
+    color: rgb(23, 26, 91);
+    padding: 10px;
+    font-size: 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: left;
+}
+
+.dropdown-button:hover {
+    background-color: #4c9009;
+}
+
+.dropdown-list {
+    display: none;
+    position: absolute;
+    top: 100%;
+    background-color: transparent;
+    width: 100%;
+    border-radius: 5px;
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: max-height 0.3s;
+    opacity: 0;
+}
+
+.dropdown-list li {
+    background-color: #f1f1f1;
+    color: var(--app-blue);
+    padding: 10px 15px;
+    border: none;
+    font-size: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+}
+
+#upcomingBtn {
+    display:flex;
+}
+
+.dropdown-list li button {
+    background-color: #facf45;
+    color: rgb(23, 26, 91);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 16px;
+    margin-left: 10px;
+}
+
+.dropdown-list li button:hover {
+    background-color: #4c9009;
+}
+
+
+/* .dropdown-list li:hover {
+    background-color: #f1f1f1;
+    color: var(--app-blue)
+} */
+
+.dropdown-list.show {
+    display: block;
+    /* max-height: 150px; reactivate for scrollin */
+    opacity: 1;
+    /* overflow-y: auto; reactivate for scrollin*/
+}
+/* reactivate for scrollin */
+/* .dropdown-list::-webkit-scrollbar {
+    display: none;
+} */
+
+
+/* join tournament modal */
+
+#join-modal{
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color:var(--app-trasparent-blue) ;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+#join-modal input, 
+#join-modal select, 
+#join-modal textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+}
+
+#join-btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#reg-button, #cancel-reg {
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    width: 50%;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#reg-button:hover, #cancel-reg:hover {
+    background-color:var(--app-yellow);
+}
+
+
+/* new tournament modal */
+
+#tour-modal {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--app-trasparent-blue);
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+    width: 300px;
+}
+
+#tour-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#tour-form input, 
+#tour-form select, 
+#tour-form textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+}
+
+#tour-form-btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+#tour-form button {
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    width: 50%;
+    transition: background-color 0.3s;
+}
+
+#tour-form button:hover {
+    background-color: var(--app-yellow);
+}
+
+
+#response-container {
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color:var(--app-trasparent-blue) ;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+#response-ok {
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    width: 100%;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#response-ok:hover {
+    background-color:var(--app-yellow);
+}

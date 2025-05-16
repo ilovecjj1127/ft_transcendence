@@ -1,4 +1,4 @@
-import { showLoginModal } from "./modals.js"
+import { handleLogin } from "./login.js"
 import { handleLogout } from "./logout.js"
 import { getUserToken } from "./userData.js"
 
@@ -32,7 +32,7 @@ function createMenu (items) {
                 a.addEventListener('click', handleLogout)
                 break
             case "login":
-                a.addEventListener('click', showLoginModal)
+                a.addEventListener('click', handleLogin) //login function
                 break
             case "stats":
                 a.addEventListener('click', (e) => {

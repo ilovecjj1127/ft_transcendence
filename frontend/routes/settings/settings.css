@@ -129,3 +129,31 @@
 #close-button:hover {
     background-color: #c0392b;
 }
+
+#upload-error {
+    margin-top: 10px;
+    font-size: 12px;
+    background-color: white;
+    color: red;
+    display: none;
+    position: absolute;
+    top: 100%;
+    padding: 8px;
+}
+
+#twofa-button {
+    position: absolute;
+    bottom: 4rem;
+    right: 4rem;
+    padding: 8px 12px;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#twofa-button:hover {
+    background-color: #2980b9;
+}
