@@ -2,7 +2,7 @@ import { getUserToken } from "../utils/userData.js"
 import openChattingBox from "./open_close_chat.js";
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
-const sendRequestToChatButton = document.getElementById("chat-search-form")
+const sendRequestToChatButton = document.getElementById("send-form-button-2")
 
 const DEBUGPRINTS = true
 const chatBox = document.querySelector('.chatbox-message-wrapper')
@@ -69,23 +69,17 @@ sendRequestToChatButton.addEventListener('click', async (event) => {
 
     console.log(username)
 
-	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username02']").value, message: document.querySelector("input[name='username']").value})
-
     OpenRoom(friend = username)
     
     console.log("after OpenRoom log")
     
-
-	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
-    // console.log("hi send")
-	// post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
 })
 
 
 sendFriendshipRequestButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
 
-	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
+	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='message']").value})
     console.log("hi send")
     const statusDiv = document.getElementById('status_send_request');
 	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody, statusDiv)
