@@ -1,6 +1,6 @@
 //const SPEED_PADDLE_INCREASE = .01
-const COMPUTER_PADDLE_SPEED = .06
-const INITIAL_PADDLE_SPEED = 5
+const COMPUTER_PADDLE_SPEED = .03
+const INITIAL_PADDLE_SPEED = 15
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
