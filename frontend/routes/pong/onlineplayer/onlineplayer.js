@@ -191,7 +191,38 @@ function createNewGameButton (menu) {
     menu.appendChild(newGame)
     
     newGame.addEventListener("click", async function () {
+        if (score) {
+            const isTokenValid = await checkToken()
+            if (!isTokenValid) return
+            
+            const response = await fetch(`http://${window.location.host}/api/games/create/`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${getUserToken().access}`
+                },
+                body: JSON.stringify({
+                    player2: null,
+                    winning_score: score,
+                }),
+            });
+            if (response.status == 401) deleteTokenReload()
+            if (response.ok) {
+                const data = await response.json()
+                //alert("game created " + data.game.id)
+                startGame(data.game)
+                //window.dispatchEvent(new HashChangeEvent('hashchange'));
+                return true
+            } else {
+                newGame.innerText = "Error"
+                newGame.style.backgroundColor = "red"
+                newGame.style.color = "white"
+                newGame.disabled = true
+                return false
+            }
+        }
         return createGame()
+          const score = await createScoreModal()
     })
 }
 
@@ -266,38 +297,6 @@ export async function createGameReturnId() {
     } else {
         alert("error creating game")
         return 0
-    }
-
-    const score = await createScoreModal()
-    if (score) {
-        const isTokenValid = await checkToken()
-        if (!isTokenValid) return
-        
-        const response = await fetch(`http://${window.location.host}/api/games/create/`, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${getUserToken().access}`
-            },
-            body: JSON.stringify({
-                player2: null,
-                winning_score: score,
-            }),
-        });
-        if (response.status == 401) deleteTokenReload()
-        if (response.ok) {
-            const data = await response.json()
-            //alert("game created " + data.game.id)
-            startGame(data.game)
-            //window.dispatchEvent(new HashChangeEvent('hashchange'));
-            return true
-        } else {
-            newGame.innerText = "Error"
-            newGame.style.backgroundColor = "red"
-            newGame.style.color = "white"
-            newGame.disabled = true
-            return false
-        }
     }
 }
 
