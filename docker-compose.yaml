@@ -20,9 +20,6 @@ services:
 
   backend:
     container_name: django_app
-    environment:
-      - REDIS_HOST=transcendence_redis
-      - REDIS_PORT=6379
     image: transcendence_backend
     command: ./wait_db.sh uvicorn TranscendenceBackend.asgi:application --host 0.0.0.0 --port 8000
     build:
