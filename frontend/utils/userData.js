@@ -1,4 +1,4 @@
-import { checkToken } from "./token.js";
+import { checkToken, deleteTokenReload } from "./token.js";
 
 export async function saveUserInfo () {
     const isTokenValid = await checkToken()
@@ -11,12 +11,14 @@ export async function saveUserInfo () {
             "Authorization": `Bearer ${getUserToken().access}`
         },
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         const userData = await response.json()
         localStorage.setItem("id", userData.id)
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
+        console.log("2fa enabled: ", userData.is_2fa_enabled)
         setTimeout( () => {}, 2000)
         document.getElementById('profile-img').src = userData.avatar 
         return true

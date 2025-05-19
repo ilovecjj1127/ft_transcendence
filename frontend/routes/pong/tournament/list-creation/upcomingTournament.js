@@ -1,5 +1,5 @@
-import { checkToken } from "../../../../utils/token.js"
-import { getUserId, getUserToken } from "../../../../utils/userData.js"
+import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
+import { getUserToken, getUsername } from "../../../../utils/userData.js"
 
 //list of upcoming tournament where user is registered but not yet started (show/upcoming)
 // use this to pick created by user by id and give the possibility to cancel
@@ -33,6 +33,7 @@ async function requestList (list, listContainer) {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (listResponse.status == 401) deleteTokenReload()
         if (listResponse.ok) {
             const data = await listResponse.json()
             if (data.length === 0) {
@@ -42,12 +43,24 @@ async function requestList (list, listContainer) {
             } else {
             data.forEach((tour) => {
                 const li = document.createElement('li')
-                li.textContent = tour.name
-                if (data.creator == getUserId()) {
-                    const button = document.createElement('button')
-                    button.innerText = "Cancel"
-                    li.appendChild(button)
-                    button.addEventListener('click', () => cancelTournament(tour.id))
+                li.innerHTML = `${tour.name} 
+                - players ${tour.players.length}/${tour.max_players}`
+                if (tour.creator_username == getUsername()) {
+                    const btnContainer = document.createElement('div')
+                    btnContainer.id = 'upcomingBtn'
+                    
+                    if (tour.players.length >= tour.min_players) {
+                        const startButton = document.createElement('button')
+                        startButton.innerText = "Start"
+                        startButton.addEventListener('click', () => startTournament(tour.id, li, startButton))
+                        btnContainer.appendChild(startButton)
+                    }
+                    
+                    const cancelButton = document.createElement('button')
+                    cancelButton.innerText = "Cancel"
+                    btnContainer.appendChild(cancelButton)
+                    cancelButton.addEventListener('click', () => cancelTournament(tour.id, li, cancelButton))
+                    li.appendChild(btnContainer)
                 }
                 list.appendChild(li)
             })
@@ -65,12 +78,12 @@ async function requestList (list, listContainer) {
         }
 }
 
-async function cancelTournament (id) {
+async function cancelTournament (id, li, button) {
     console.log("clicked cancel")
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const cancelResponse = await fetch(`http://${window.location.host}/api/tournament/cancel`, {
+    const cancelResponse = await fetch(`http://${window.location.host}/api/tournament/cancel/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -80,11 +93,39 @@ async function cancelTournament (id) {
             tournament_id: id,
         }),
     });
+    if (cancelResponse.status == 401) deleteTokenReload()
     if (cancelResponse.ok) {
-        alert('cancelled correctly')
-        //change button looking
+        li.remove()
     } else {
-        //add error box
-        alert('error registration')
+        button.innerText = "Error"
+        button.style.backgroundColor = "red"
+        button.style.color = "white"
+        button.disabled = true
     }                
+}
+
+async function startTournament (id, li, button) {
+    console.log("clicked cancel")
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+    
+    const startResponse = await fetch(`http://${window.location.host}/api/tournament/start/`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${getUserToken().access}`
+        },
+        body: JSON.stringify({
+            tournament_id: id,
+        }),
+    });
+    if (startResponse.status == 401) deleteTokenReload()
+    if (startResponse.ok) {
+        li.remove()
+    } else {
+        button.innerText = "Error"
+        button.style.backgroundColor = "red"
+        button.style.color = "white"
+        button.disabled = true
+    }  
 }

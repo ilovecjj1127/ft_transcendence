@@ -1,5 +1,4 @@
-import { createMenuProfile } from "./profile-toggle.js"
-import { saveUserInfo, setUserToken } from "./userData.js"
+import { handleLogin, loginFunction } from "./login.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -14,11 +13,10 @@ export function showLoginModal () {
 }
 
 export function hideLoginModal () {
+    document.getElementById('login-message').innerHTML = ''
+    document.getElementById("login-form").reset()
     loginModal.hide()
-    createMenuProfile()
 }
-
-//forms to fill
 
 loginForm.onsubmit = async (e) => {
     e.preventDefault()
@@ -84,7 +82,7 @@ registerForm.onsubmit = async (e) => {
                 
         setTimeout( () => {
             registerModal.hide()
-            showLoginModal()
+            handleLogin()
         }, 2000)
     } else {
         const errorData = await response.json();
@@ -92,17 +90,11 @@ registerForm.onsubmit = async (e) => {
     }
 }
 
-//button events listener
-
-loginButton.addEventListener('click', () => {
-    loginForm.requestSubmit()
-})
-
 registerButton.addEventListener('click', function () {
     // Close the Login modal
     hideLoginModal()
     // Show the Register modal
-    registerModal.show();
+    registerModal.show()
 });
 
 registerSubmit.addEventListener("click", function () {

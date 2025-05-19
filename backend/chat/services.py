@@ -36,3 +36,20 @@ class ChatRoomService:
 			chatroom.blocked_by = None
 			chatroom.save()
 			return chatroom
+
+	@staticmethod
+	@transaction.atomic
+	def block_action(user: UserProfile, chatroom_id: int) -> ChatRoom:
+		chatroom = get_object_or_404(ChatRoom, id=chatroom_id)
+		if user not in [chatroom.user1, chatroom.user2]:
+			raise PermissionError('No permission to block or unblock this chatroom')
+		if not chatroom.blocked_by:
+			chatroom.blocked_by = user
+			chatroom.save()
+			return chatroom
+		elif chatroom.blocked_by != user:
+			raise PermissionError('You are blocked by another user already.')
+		else:
+			chatroom.blocked_by = None
+			chatroom.save()
+			return chatroom

@@ -1,17 +1,3 @@
-#back-to-menu {
-	position: absolute;
-	color: var(--app-yellow);
-	font-size: 2rem;
-	left: 1rem;
-	top: 1rem;
-}
-
-#back-to-menu:hover {
-	display: block;
-	border-radius: 1rem;
-	background-color: var(--app-hover-blue);
-}
-
 #restart-block{
 	background: #55a012;
 	color: white;

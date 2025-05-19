@@ -1,6 +1,6 @@
 import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
-import { checkToken } from "../../utils/token.js"
-
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { showQrModal } from "../../utils/2fa.js" 
 
 export const init = () => {
     
@@ -11,6 +11,7 @@ export const init = () => {
     const imgUpload = document.getElementById('image-upload')
     const uploadError = document.getElementById('upload-error')
     const closeBtn = document.getElementById('close-button')
+    const twofaButton = document.getElementById('twofa-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
     if (getUserAvatar())
@@ -63,7 +64,7 @@ export const init = () => {
             },
             body: formData,
         });
-        
+        if (response.status == 401) deleteTokenReload()
         if (response.ok) {
             console.log("uploaded correctly")
             return true
@@ -122,7 +123,7 @@ export const init = () => {
                 },
                 body: JSON.stringify({ old_password, new_password }),
             });
-            
+            if (response.status == 401) deleteTokenReload()
             if (response.ok) {
                 message.innerHTML = "<p class='text-success'>Password changed.</p>"
                 clearInputs()
@@ -134,6 +135,11 @@ export const init = () => {
             }
         }
     }
+
+    twofaButton.addEventListener('click', () => {
+        console.log("button clicked")
+        showQrModal()
+    })
     
     imgUpload.addEventListener('change', changeProfileImg)
     profileImg.addEventListener('click', triggerChangeImg)

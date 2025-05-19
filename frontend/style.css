@@ -170,7 +170,7 @@ body {
 }
 
 /* winner message */
-#winner-container
+#end-msg-container
 {
 	display: block;
     position: absolute;
@@ -180,7 +180,7 @@ body {
     background-color:rgb(0,0,0,0);
     color: #fff;
     text-align: center;
-    z-index: 10;
+    z-index: 5;
 	font-family: "rixvideogame-pro", sans-serif;
 	font-weight: 400;
 	font-style: normal;
@@ -188,5 +188,36 @@ body {
 	color:var(--app-yellow)
 }
 
+/* back to menu */
 
+#back-to-menu {
+    position: absolute;
+    color: #facf45;
+    font-size: 2rem;
+    left: 1rem;
+    top: 1rem;
+}
 
+#back-to-menu:hover {
+    display: block;
+    border-radius: 1rem;
+    background-color: rgb(2, 2, 36);
+}
+
+#otp-container {
+	width: 100%;
+	display:flex;
+	/* flex-direction: row; */
+	justify-content: center;
+	gap:10px;
+}
+
+#otp-container input {
+	width: 50px;
+	height: 50px;
+	text-align: center;
+	font-size: 24px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	outline: none;
+}

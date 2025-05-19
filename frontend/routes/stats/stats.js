@@ -1,5 +1,5 @@
 import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
-import { checkToken } from "../../utils/token.js"
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
 
 export const init = () => {
     const username = document.getElementById('stats-username')
@@ -43,6 +43,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (statsRequest.status == 401) deleteTokenReload()
         if (statsRequest.ok)
         {
             const stats = await statsRequest.json()
@@ -66,6 +67,7 @@ export const init = () => {
                 "Authorization": `Bearer ${getUserToken().access}`
             },
         });
+        if (checkUserExist.status == 401) deleteTokenReload()
         if (checkUserExist.ok)
         {
             deleteStatsEvents()

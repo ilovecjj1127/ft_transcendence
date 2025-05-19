@@ -1,17 +1,3 @@
-#back-to-menu {
-    position: absolute;
-    color: #facf45;
-    font-size: 2rem;
-    left: 1rem;
-    top: 1rem;
-}
-
-#back-to-menu:hover {
-    display: block;
-    border-radius: 1rem;
-    background-color: rgb(2, 2, 36);
-}
-
 #menu {
     padding: 10px;
     border-radius: 10px;
@@ -36,23 +22,17 @@
     background-color: #4c9009;
 }
 
-.button-container {
-    display: flex;  /* Enable flexbox layout */
-    gap: 10px;  /* Space between the buttons */
-    justify-content: flex-end;  /* Align the buttons to the right */
-}
-
 /* List container styles */
 #list-container {
     position: relative;
     width: 700px;
     height: 400px;
-    overflow-y: auto;  /* Makes the list scrollable */
-    z-index: 10;  /* Ensures the list appears over the canvas */
-    background-color: rgba(0, 0, 0, 0);  /* Semi-transparent background */
+    overflow-y: auto;
+    z-index: 10;
+    background-color: rgba(0, 0, 0, 0);
     border: none;
     padding: 10px;
-    box-sizing: border-box;  /* Ensures padding is included in total width/height */
+    box-sizing: border-box;
 }
 
 /* List and List Item Styles */
@@ -62,21 +42,26 @@
 }
 
 #list-container li {
-    display: flex;  /* Enable flexbox layout for the list item */
-    justify-content: space-between;  /* Space out the text and buttons */
-    align-items: center;  /* Vertically align content */
+    display: flex;  /* Flex layout for list item */
+    justify-content: space-between;  /* Space out left (game details) and right (status & button) */
+    align-items: center;
     padding: 8px;
     color: #facf45;
     background-color: rgba(0, 0, 0, 0);
     margin: 4px 0;
     cursor: pointer;
-    border: none;  /* Optional: Add a border for clarity */
+    border: none;
 }
 
-#list-container li::before {
-    content: attr(data-id);
-    margin-right: 10px;
-    font-weight: bold;
+/* Game details (left side) */
+.game-details {
+    flex: 1;  /* Takes up available space */
+}
+
+/* Ensure status (span) and button are on the right */
+#list-container li span,
+#list-container li button {
+    margin-left: 10px;  /* Space between the span and button */
 }
 
 /* Button styles */
@@ -88,6 +73,8 @@
     cursor: pointer;
     padding: 5px 10px;
     font-size: 16px;
+    width: 60px;  /* Fixed width to ensure all buttons are the same size */
+    text-align: center; /* Ensures the button text is centered */
 }
 
 #list-container li button:hover {
@@ -96,19 +83,72 @@
 
 /* Scrollbar styles */
 #list-container::-webkit-scrollbar {
-    width: 12px; /* Set the width of the scrollbar */
+    width: 12px;
 }
 
 #list-container::-webkit-scrollbar-thumb {
-    background-color: #facf45;  /* Color of the scrollbar thumb (the part that moves) */
-    border-radius: 10px;  /* Rounded corners for the thumb */
+    background-color: #facf45;
+    border-radius: 10px;
 }
 
 #list-container::-webkit-scrollbar-track {
-    background-color: rgba(0, 0, 0, 0.1);  /* Background color of the track (area the thumb moves along) */
+    background-color: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
 }
 
 #list-container::-webkit-scrollbar-button {
-    background-color: transparent; /* Optional: change the button color of the scrollbar */
+    background-color: transparent;
+}
+
+
+/* score modal */
+
+/* join tournament modal */
+
+#score-modal{
+    display: block;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color:var(--app-trasparent-blue) ;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
+
+#score-modal input, 
+#score-modal select, 
+#score-modal textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    font-size: 1rem;
+}
+
+#score-btn-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#confirm-button, #cancel-new-game {
+    color: black;
+    background-color: white;
+    font-size: 1rem;
+    width: 50%;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+#confirm-button:hover, #cancel-new-game:hover {
+    background-color:var(--app-yellow);
 }

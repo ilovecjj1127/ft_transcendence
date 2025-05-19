@@ -32,7 +32,7 @@ export default class PongOffline {
         this.msPrev = window.performance.now()
         this.player1Direction = 0
         this.player2Direction = 0
-        this.winScore = 1
+        this.winScore = 10
         this.reset()
         this.draw()
 
@@ -104,6 +104,8 @@ export default class PongOffline {
         ctx.textAlign = "center"
         ctx.fillText(this.score1, canvas.width / 4, 50)
         ctx.fillText(this.score2, canvas.width * 3 / 4, 50)
+        ctx.font = "15px Arial"
+        ctx.fillText("Win Score: " + this.winScore, canvas.width / 2, 30)
     }
 
     handleKeyUp(e) {
@@ -142,7 +144,7 @@ export default class PongOffline {
 
     drawEndGame () {
         const winnerContainer = document.createElement('div')
-        winnerContainer.id = 'winner-container'
+        winnerContainer.id = 'end-msg-container'
 
         const winnerMessage = document.createElement('p')
         if (this.score1 == this.winScore)

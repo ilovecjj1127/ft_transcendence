@@ -21,15 +21,17 @@ export function isTokenExpired(token)
 {
     if (!token)
         return  true
+
     const expirationDate = getExpirationDate(token)
     const currentDate = new Date()
-    if (currentDate > expirationDate){
+    if (currentDate.getTime() > expirationDate.getTime()){
         return true         
     }
     return false
 }
 
 export function deleteTokenReload () {
+    alert("User unauthorized. Logging out.")
     localStorage.clear()
     window.location.href ='/'
 }
@@ -44,6 +46,7 @@ async function refreshAccessToken () {
         },
         body: JSON.stringify({refresh: refreshToken}), 
     });
+    if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
@@ -60,12 +63,13 @@ export async function checkToken () {
     const token = getUserToken().access
     if (token) {
         if (isTokenExpired(token)){
-            alert('access token expired')	
+            alert('access token expired')
             if(isTokenExpired(getUserToken().refresh)){
                 alert('refresh token is expired')
                 deleteTokenReload()
                 return false
             }
+            alert("refresh token not expired")
             return (await refreshAccessToken())
         }
         return true
