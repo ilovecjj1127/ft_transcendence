@@ -33,7 +33,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'users.apps.UsersConfig',
-	'games.apps.GamesConfig',
+    'games.apps.GamesConfig',
     'chat.apps.ChatConfig',
     'pong.apps.PongConfig',
     'corsheaders',

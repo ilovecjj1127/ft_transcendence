@@ -13,8 +13,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room = None
 
     async def connect(self):
-        print(self)
-        print(f"New WS connection: {self.scope.get('user')}")
         user = self.scope['user']
         if user.is_anonymous:
             await self.close(code=1006)
