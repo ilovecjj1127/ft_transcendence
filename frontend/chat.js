@@ -249,7 +249,16 @@ export function setChatSocketEventFunctions()
                 const button = chatboxMessageWrapper.querySelector('.join-button[data-gameid="' + gameId + '"]');
                 if (button) {
                     button.addEventListener('click', () => {
+                        const gameInfo = {}
+                        gameInfo.gameId = gameId
+                        // gameInfo.winScore = game.winning_score
+
+                        // gameInfo.player1 = localStorage.getItem("user")
+                        // gameInfo.player2 = currentUser
+                        
+                        localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
                         localStorage.setItem("gameId", gameId);
+
                         location.hash = '/pong/onlineplayer/onlinegame';
                         console.log("location: ", location);
                     });
@@ -344,6 +353,10 @@ invitePlayerForGame.addEventListener('click', async function () {
         const game_id = await createGameWithPlayer(playerId)
 
         console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
+        const gameInfo = {}
+        gameInfo.gameId = localStorage.getItem("gameId")
+        localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
+
         const date = new Date()
         const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
         chatSocket.send(JSON.stringify({
