@@ -40,6 +40,7 @@ export async function loginFunction (password, username) {
                 
         setTimeout( () => {
             hideLoginModal()
+            
         }, 2000)
 
         if (typeof loginResolver == 'function') {

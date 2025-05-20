@@ -9,16 +9,16 @@ export const init = () => {
     
     const user = localStorage.getItem("userSearched")
     localStorage.removeItem("userSearched")
+    console.log("user: ", user)
+    getUserSearched(user)
 
-    getUserSearched()
-    
     function closeStats () {
         deleteStatsEvents()
         location.hash = '/stats'
     }
-    
+
     // get user stats and save it in stats variable
-    async function getUserSearched () {
+    async function getUserSearched (user) {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return

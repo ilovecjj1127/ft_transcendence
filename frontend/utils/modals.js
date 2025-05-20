@@ -18,6 +18,9 @@ export function hideLoginModal () {
     document.getElementById('login-message').innerHTML = ''
     document.getElementById("login-form").reset()
     loginModal.hide()
+    setTimeout( () => {
+        window.location.reload()
+    }, 1000);
 }
 
 loginForm.onsubmit = async (e) => {

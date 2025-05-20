@@ -1,8 +1,8 @@
 import {onloadInit} from "./utils/onload.js"
-
+import { DEBUGPRINTS } from "./config.js"
 
 //Dynamically load HTML, JS, and CSS for each route
-const loadRoute = async (route) => {
+export const loadRoute = async (route) => {
     const app = document.getElementById('app');
     const gameContainer = document.getElementById('game-container')
     const canvas = document.getElementById("gameCanvas")
@@ -68,8 +68,12 @@ const routes = {
 };
 
 export const router = () => {
+    if (DEBUGPRINTS) console.log("%c Hashchange happend!", "color: red;")
+    if (DEBUGPRINTS) console.log("location.hash: ", location.hash)
+
     const hash = location.hash.slice(1) || '/';
     const route = routes[hash] || routes[hash.split('/')[0]]
+    if (DEBUGPRINTS) console.log("route: ", route)
     if (route) {
         loadRoute(route);
     } else {
@@ -78,11 +82,32 @@ export const router = () => {
 };
 
 window.addEventListener('hashchange', router);
+import { getUserToken } from "./utils/userData.js";
+import { showLoginModal } from "./utils/modals.js";
+
+import startRandomTimerForMessage from "./other_stuff/others.js"
 
 window.addEventListener('load', () => {
+    const token = getUserToken().access
+    console.log("pre !token. token=", token)
+
+    if (!token) {
+            document.getElementById("social-menu-container").style.display = "none"
+            showLoginModal()
+
+            console.log("post showLoginModal. token=", token)
+            // window.location.reload();
+            return
+    }
+    document.getElementById("social-menu-container").style.display = "flex"
+
     //all tasks to do at first load of the page
     onloadInit()
+
+    // startRandomTimerForMessage()
 
     //load initial route
     router()
 });
+
+

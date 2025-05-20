@@ -1,3 +1,4 @@
+from datetime import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
@@ -76,7 +77,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         from .models import ChatRoom
         
         data = json.loads(text_data)
-
+        print("\033[94m ws data receive; \033[0m", data)
         self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
         if blocked_by:
@@ -92,7 +93,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat_message = {
             'username': self.username,
-            'message': data['message']
+            'message': data['message'],
+            # 'option-game-invite':  data['option-game-invite'],
+            'date': data['date']
         }
         redis_key = f'chat:{self.room_group_name}:messages'
         await self.redis.rpush(redis_key, json.dumps(chat_message))
@@ -101,7 +104,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
             {
                 'type': 'send_message',
                 'username': self.username,
-                'message': data['message']
+                'message': data['message'],
+                # 'option-game-invite':  data['option-game-invite'],
+                'date': data['date']
             }
         )
 
@@ -118,7 +123,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"
         await self.send(text_data=json.dumps({
-            'message': message
+            'username': event['username'],
+            'message': event['message'],
+            # 'option-game-invite':  event['option-game-invite'],
+            'date': event.get('date', str(timezone.dst))
         }))
 
     async def save_messages(self):

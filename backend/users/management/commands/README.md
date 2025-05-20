@@ -1,0 +1,3 @@
+if you want you can manually through docker bash into django_app container, create friends with command;
+python3 manage.py make_friends david bob cathy ....
+
