@@ -10,6 +10,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         super().__init__(*args, **kwargs)
         self.users_statuses = {}
         self.unread_chats = set()
+        self.task_check_users_statuses = None
 
     async def connect(self):
         self.user = self.scope['user']
@@ -25,7 +26,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         user_connections = await self.redis.incr(f"user:{self.user.username}:online")
         await self._check_unread_chats()
         if user_connections == 1:
-            asyncio.create_task(self.check_users_statuses())
+            self.task_check_users_statuses = asyncio.create_task(self.check_users_statuses())
 
     async def disconnect(self, close_code):
         if self.user.is_anonymous:
@@ -33,6 +34,9 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         user_connections = await self.redis.decr(f"user:{self.user.username}:online")
         if user_connections == 0:
             await self.redis.delete(f"user:{self.user.username}:online")
+            if self.task_check_users_statuses:
+                self.task_check_users_statuses.cancel()
+                await self.task_check_users_statuses
         await self.channel_layer.group_discard(
             f"user_{self.user.username}",
             self.channel_name
@@ -85,22 +89,25 @@ class NotificationConsumer(AsyncWebsocketConsumer):
         return users_statuses
 
     async def check_users_statuses(self):
-        while await self.redis.exists(f"user:{self.user.username}:online"):
-            status_update = {}
-            for username, old_status in self.users_statuses.items():
-                new_status = await self.redis.exists(f"user:{username}:online")
-                if old_status != new_status:
-                    self.users_statuses[username] = new_status
-                    status_update[username] = new_status
-            if status_update:
-                await self.channel_layer.group_send(
-                    f"user_{self.user.username}",
-                    {
-                        "type": "send_user_status_updates",
-                        "update": status_update
-                    }
-                )
-            await asyncio.sleep(30)
+        try:
+            while True:
+                status_update = {}
+                for username, old_status in self.users_statuses.items():
+                    new_status = await self.redis.exists(f"user:{username}:online")
+                    if old_status != new_status:
+                        self.users_statuses[username] = new_status
+                        status_update[username] = new_status
+                if status_update:
+                    await self.channel_layer.group_send(
+                        f"user_{self.user.username}",
+                        {
+                            "type": "send_user_status_updates",
+                            "update": status_update
+                        }
+                    )
+                await asyncio.sleep(30)
+        except asyncio.CancelledError:
+            pass
 
     async def _check_unread_chats(self):
         from chat.services import ChatRoomService
@@ -113,6 +120,3 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                 "unread_chats": unread_chats
             }
         )
-
-# Check if users's status was changed twice during sleep() method. Need to kill a task
-# Change hardcoded redis path
