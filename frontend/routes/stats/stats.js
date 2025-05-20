@@ -8,7 +8,6 @@ export const init = () => {
     const searchError = document.getElementById('search-error')
     const closeBtn = document.getElementById('stats-close-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
-    console.log("init of stats.js called!")
 
     getUserStats()
     if (getUserAvatar())

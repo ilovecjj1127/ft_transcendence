@@ -64,11 +64,6 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'TranscendenceBackend.urls'
 
-
-# print("os.path.join(BASE_DIR, 'frontend'): ")
-
-# print(os.path.join(BASE_DIR, 'frontend'))
-
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -88,14 +83,13 @@ TEMPLATES = [
 # WSGI_APPLICATION = 'TranscendenceBackend.wsgi.application'
 ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3', # for quick testing with python manage.py runserver
-        # 'NAME': BASE_DIR / 'db.sqlite3',        # for quick testing with python manage.py runserver
+        # 'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME'BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),
@@ -185,7 +179,7 @@ CHANNEL_LAYERS = {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
             "hosts": [(REDIS_HOST, int(REDIS_PORT))],  # Ensure this matches your Redis host and port
-            # 'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
+            'hosts': [os.getenv('REDIS_URL', 'redis:/127.0.0.1:6379/0')],
         },
     }
 }

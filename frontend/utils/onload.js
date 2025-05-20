@@ -7,29 +7,30 @@ import { populateInRequest, populateOutRequest, get_data } from "../social/init_
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
-    const refreshToken = getUserToken().refresh
+    // const refreshToken = getUserToken().refresh
 
-    if (!accessToken) {
-        console.log("Access token not found")
-        //showLoginModal()
-    }
-    else {
-        console.log("Access token found:" + accessToken)
-    
-    if (accessToken) {
-        saveUserInfo()
-    }
-    if (location.hash != '/')
-        location.hash = '/'
+    // what to do if accesToken not found??
+    // if (!accessToken) {
+    //     console.log("Access token not found")
+    //     //showLoginModal()
+    // }
+    // else {
+    //     console.log("Access token found:" + accessToken)
 
-    updateSocialRequestsData()
+        if (accessToken) {
+            saveUserInfo()
+        }
+        if (location.hash != '/')
+            location.hash = '/'
 
-    populateFriendList()
+        updateSocialRequestsData()
 
-    createMenuProfile()
+        populateFriendList()
 
-    moveFaces()
-}
+        createMenuProfile()
+
+        moveFaces()
+   // }
 }
 
 async function updateSocialRequestsData ()

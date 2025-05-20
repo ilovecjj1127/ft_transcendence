@@ -1,5 +1,8 @@
 import {onloadInit} from "./utils/onload.js"
 import { DEBUGPRINTS } from "./config.js"
+import { getUserToken } from "./utils/userData.js";
+import { showLoginModal } from "./utils/modals.js";
+import { startRandomTimerForMessage } from "./other_stuff/others.js"
 
 //Dynamically load HTML, JS, and CSS for each route
 export const loadRoute = async (route) => {
@@ -13,7 +16,7 @@ export const loadRoute = async (route) => {
     
     //gets the last part of route, to handle sub-route if present
     const routeName = route.split('/').pop()
-    
+
     // Load the HTML file
     const res = await fetch(`./routes/${route}/${routeName}.html`)
     if (res.ok) {
@@ -82,24 +85,20 @@ export const router = () => {
 };
 
 window.addEventListener('hashchange', router);
-import { getUserToken } from "./utils/userData.js";
-import { showLoginModal } from "./utils/modals.js";
-
-import startRandomTimerForMessage from "./other_stuff/others.js"
 
 window.addEventListener('load', () => {
-    const token = getUserToken().access
-    console.log("pre !token. token=", token)
+    // const token = getUserToken().access
+    // console.log("pre !token. token=", token)
 
-    if (!token) {
-            document.getElementById("social-menu-container").style.display = "none"
-            showLoginModal()
+    // if (!token) {
+    //         document.getElementById("social-menu-container").style.display = "none"
+    //         showLoginModal()
 
-            console.log("post showLoginModal. token=", token)
-            // window.location.reload();
-            return
-    }
-    document.getElementById("social-menu-container").style.display = "flex"
+    //         console.log("post showLoginModal. token=", token)
+    //         // window.location.reload();
+    //         return
+    // }
+    // document.getElementById("social-menu-container").style.display = "flex"
 
     //all tasks to do at first load of the page
     onloadInit()

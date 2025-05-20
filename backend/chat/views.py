@@ -33,26 +33,21 @@ class ChatGetOrCreateView(APIView):
         serializer = ChatGetOrCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
         user1 = request.user
         username = serializer.validated_data['username']
         try:
             chatroom, created = ChatRoomService.get_or_create_chat(
                 user1=user1, username=username
             )
-            # Ensure that `blocked_by` is serialized properly
-            blocked_by = chatroom.blocked_by
-            print("\033[94m")
-            print(" chatroom.blocked_by ", chatroom.blocked_by)
-            if blocked_by:
-                # You can either use the username or the ID
-                blocked_by = blocked_by.username  # or blocked_by.id if you prefer
-                print("blocked_by.username ", blocked_by)
-            print("\033[0m")
+            # print("\033[94m")
+            # print("chatroom.blocked_by ", chatroom.blocked_by)
+            # print("blocked_by.username ", blocked_by.username)
+            # print("\033[0m")
             return Response(
                 {
                     "chat_room_id": chatroom.id,
-                    "blocked_by": blocked_by,
+                    "blocked_by": chatroom.blocked_by,
                     "is_newly_created": created
                 }, status=status.HTTP_200_OK)
         except ValidationError as e:
@@ -71,7 +66,9 @@ class ChatBlockorUnblockView(APIView):
         serializer = ChatGetOrCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         chatroom_id = request.query_params.get('chatroom_id')
+
         if not chatroom_id:
             return Response({'error': 'ChatRoom ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         user = request.user

@@ -36,8 +36,6 @@ services:
       - redis
     volumes:
       - ./avatars:/app/media/avatars
-      - ./backend/chat/templates/chat/:/app/chat/templates/chat/
-      - ./backend/frontend/:/app/frontend/
 
   nginx:
     image: nginx:latest

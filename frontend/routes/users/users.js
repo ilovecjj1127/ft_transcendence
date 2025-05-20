@@ -9,7 +9,7 @@ export const init = () => {
     
     const user = localStorage.getItem("userSearched")
     localStorage.removeItem("userSearched")
-    console.log("user: ", user)
+    // if (DEBUG) console.log("user: ", user)
     getUserSearched(user)
 
     function closeStats () {
