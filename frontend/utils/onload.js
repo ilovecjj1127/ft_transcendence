@@ -22,6 +22,18 @@ export async function onloadInit () {
     if (location.hash != '/')
         location.hash = '/'
 
+    updateSocialRequestsData()
+
+    populateFriendList()
+
+    createMenuProfile()
+
+    moveFaces()
+}
+}
+
+async function updateSocialRequestsData ()
+{
     const url = `http://${window.location.host}/api/users/me/`
     let data = null
     data = await get_data(url);
@@ -30,13 +42,6 @@ export async function onloadInit () {
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
         // populateChatSearch("chat-search", data)
-
-    populateFriendList()
-
-    createMenuProfile()
-
-    moveFaces()
-}
 }
 
 // import chat_button from "../?"

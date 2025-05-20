@@ -20,44 +20,9 @@ import { loadRoute } from "./app.js"
 
 const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
 const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
-import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer.js"
+import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
 import { get_data } from "./social/init_friends_data.js"
-import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer.js"
-
-
-//example to check the overflow-y
-const friends = [
-    {name: "friend1"},
-    {name: "friend2"},
-    {name: "friend3"},
-    {name: "friend4"},
-    {name: "friend5"},
-    {name: "friend6"},
-    {name: "friend7"},
-    {name: "friend8"},
-    {name: "friend9"},
-    {name: "friend10"},
-    {name: "friend11"},
-    {name: "friend12"},
-    {name: "friend13"},
-    {name: "friend14"},
-    {name: "friend15"},
-    {name: "friend17"},
-    {name: "friend18"},
-    {name: "friend20"},
-    {name: "friend21"},
-    {name: "friend22"},
-    {name: "friend23"},
-    {name: "friend24"},
-    {name: "friend25"},
-    {name: "friend26"},
-    {name: "friend27"},
-    {name: "friend28"},
-    {name: "friend29"},
-    {name: "friend30"},
-    {name: "friend31"},
-    {name: "friend32"},
-]
+import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
 
 //chatbox message
 
