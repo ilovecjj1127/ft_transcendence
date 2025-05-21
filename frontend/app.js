@@ -1,7 +1,9 @@
 import {onloadInit} from "./utils/onload.js"
 import { DEBUGPRINTS } from "./config.js"
-import { getUserToken } from "./utils/userData.js";
+import { getUsername, getUserToken } from "./utils/userData.js";
 import { showLoginModal } from "./utils/modals.js";
+import { checkToken } from "./utils/token.js";
+import { getUserInfo } from "./chat.js";
 
 //Dynamically load HTML, JS, and CSS for each route
 export const loadRoute = async (route) => {
@@ -85,9 +87,26 @@ export const router = () => {
 
 window.addEventListener('hashchange', router);
 
-window.addEventListener('load', () => {
-    // const token = getUserToken().access
-    // console.log("pre !token. token=", token)
+window.addEventListener('load', async () => {
+
+    if (checkToken() == true)
+    {
+        if (DEBUGPRINTS) console.log("checkToken ok. token=", getUserToken().access)
+
+        document.getElementById("social-menu-container").style.display = "flex"
+    }
+    else
+    {
+        if (DEBUGPRINTS) console.log("checkToken not ok. token=", getUserToken().access)
+
+        document.getElementById("social-menu-container").style.display = "none"
+        // showLoginModal()
+        // return
+    }
+    if (DEBUGPRINTS) console.log("userInfo  now. token=", await getUserInfo(getUsername()))
+
+    // what to do if token not correct? why not showlogin modal again?
+
 
     // if (!token) {
     //         document.getElementById("social-menu-container").style.display = "none"

@@ -115,6 +115,27 @@ utils/modals.js
 
 # reload window after loginmodal close, so that u dont have to do manually
 
+utils/modals.js
+window.addEventListener('load', () => {
+    if (checkToken() == true)
+    {
+        if (DEBUGPRINTS) console.log("checkToken ok. token=", getUserToken().access)
+
+        document.getElementById("social-menu-container").style.display = "flex"
+    }
+    else
+    {
+        if (DEBUGPRINTS) console.log("checkToken not ok. token=", getUserToken().access)
+
+        document.getElementById("social-menu-container").style.display = "none"
+        // showLoginModal()
+        // return
+    }
+    if (DEBUGPRINTS) console.log("userInfo  now. token=", await getUserInfo(getUsername()))
+
+//what to do if token not correct? why not showlogin modal again?
+
+# to hide socialmenu when not logged in..
 
 nginx.conf;
 add_header X-Content-Type-Options nosniff;
