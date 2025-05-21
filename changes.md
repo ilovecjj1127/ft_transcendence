@@ -63,8 +63,22 @@ app.js;
 if (DEBUGPRINTS) console.log("%c Hashchange happend!", "color: red;")
 if (DEBUGPRINTS) console.log("location.hash: ", location.hash)
 
-# i think good to keep for debugging later
+# good to keep for debugging later
+settings.py;
 
+REDIS_HOST = os.getenv("REDIS_HOST", "transcendence_redis")  # Defaults to service name
+REDIS_PORT = os.getenv("REDIS_PORT", "6379")  # Defaults to service name
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
++            "hosts": [(REDIS_HOST, int(REDIS_PORT))],  # Ensure this matches your Redis host and port
+-
+        },
+    }
+}
+# correct working hosts config now
 
 ## frontend
 
