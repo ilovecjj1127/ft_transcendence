@@ -135,8 +135,10 @@ export async function OpenRoom(friend)
         img.src = data.avatar || "./media/default.jpeg";
 
         console.log("chatboxid = ", chat_box_id)
+        console.log("window.location.host = ", window.location.host)
+
         chatSocket = new WebSocket(
-                `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
+                `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
         );
 
         // getUserInfo(friend)

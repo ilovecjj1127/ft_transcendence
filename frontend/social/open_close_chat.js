@@ -56,7 +56,7 @@ export default async function openChattingBox(frienda)
             return
         }
         chatSocket = new WebSocket(
-            `ws://127.0.0.1:8000/ws/chat/${chat_box_id}/?token=${token}`
+            `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
         );
         chatBox.querySelector('.chatbox-message-name').innerHTML = frienda
         
