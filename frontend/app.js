@@ -2,7 +2,6 @@ import {onloadInit} from "./utils/onload.js"
 import { DEBUGPRINTS } from "./config.js"
 import { getUserToken } from "./utils/userData.js";
 import { showLoginModal } from "./utils/modals.js";
-import { startRandomTimerForMessage } from "./other_stuff/others.js"
 
 //Dynamically load HTML, JS, and CSS for each route
 export const loadRoute = async (route) => {
