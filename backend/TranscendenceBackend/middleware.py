@@ -20,6 +20,7 @@ class JWTAuthMiddleware(BaseMiddleware):
         else:
             scope['user'] = await self.get_user_from_token(token)
         return await super().__call__(scope, receive, send)
+        
     @database_sync_to_async
     def get_user_from_token(self, token):
         from django.contrib.auth import get_user_model
