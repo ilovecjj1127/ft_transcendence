@@ -75,3 +75,28 @@ class GameService:
             'win_percentage': round(win_percentage, 2),
             'avgerage_points_per_game': round(avg_points_per_game, 2),
         }
+
+    @staticmethod
+    def get_game_history(username: str) -> list[dict]:
+        try:
+            user = UserProfile.objects.get(username=username)
+        except UserProfile.DoesNotExist:
+            return []
+        completed_games = Game.objects.filter(Q(player1=user) | Q(player2=user)) \
+            .filter(status='completed').select_related('player1', 'player2', 'tournament') \
+            .order_by('-modified_at')
+        game_history = [
+            {
+                'is_winner': True if game.winner == user else False,
+                'opponent_name': game.player2.username \
+                    if game.player1 == user else game.player1.username,
+                'score_own': game.score_player1 \
+                    if game.player1 == user else game.score_player2,
+                'score_opponent': game.score_player2 \
+                    if game.player1 == user else game.score_player1,
+                'tournament_name': game.tournament.name \
+                    if game.tournament else "",
+                'finished_at': int(game.modified_at.timestamp())
+            } for game in completed_games
+        ]
+        return game_history
