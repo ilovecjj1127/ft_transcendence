@@ -1,4 +1,7 @@
 import { handleLogin, loginFunction } from "./login.js"
+import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+import { checkToken } from "./utils/token.js";
+import { getUserToken } from "./utils/token.js";
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -14,13 +17,17 @@ export function showLoginModal () {
     loginModal.show()
 }
 
+
 export function hideLoginModal () {
     document.getElementById('login-message').innerHTML = ''
     document.getElementById("login-form").reset()
     loginModal.hide()
-    setTimeout( () => {
-        window.location.reload()
-    }, 1000);
+
+    const accessToken = checkToken(getUserToken().access)
+    hideOrShowSocialMenu(accessToken)
+    // setTimeout( () => {
+    //     window.location.reload()
+    // }, 1000);
 }
 
 loginForm.onsubmit = async (e) => {
