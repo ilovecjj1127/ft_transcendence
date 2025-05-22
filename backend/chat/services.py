@@ -36,4 +36,3 @@ class ChatRoomService:
             chatroom.blocked_by = None
             chatroom.save()
             return chatroom
-

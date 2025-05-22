@@ -40,10 +40,6 @@ class ChatGetOrCreateView(APIView):
             chatroom, created = ChatRoomService.get_or_create_chat(
                 user1=user1, username=username
             )
-            # print("\033[94m")
-            # print("chatroom.blocked_by ", chatroom.blocked_by)
-            # print("blocked_by.username ", blocked_by.username)
-            # print("\033[0m")
             return Response(
                 {
                     "chat_room_id": chatroom.id,

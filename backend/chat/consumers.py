@@ -75,7 +75,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         from .models import ChatRoom
-        
         data = json.loads(text_data)
         self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
@@ -100,7 +99,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                # 'type': 'send_message',
                 'username': self.username,
                 'message': data['message'],
                 'date': data['date']
