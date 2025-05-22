@@ -47,6 +47,77 @@ export const init = () => {
         {
             const stats = await statsRequest.json()
             setStatsValues(stats)
+
+            //to move with an api call function
+            
+            const games = [
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"bob", score1: 1, score2: 3},
+    {result: "loss", opponent:"alice", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "loss", opponent:"David", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "loss", opponent:"alice", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "loss", opponent:"bob", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
+]
+
+            function populateHistoryList() {
+                const history = document.getElementById("stats-history-list")
+                
+                games.forEach(game => {
+                    const li = document.createElement('li')
+                    const details = document.createElement('div')
+                    details.classList.add('stats-game-details')
+                    const result = document.createElement('span')
+                    result.innerText = game.result.toUpperCase()
+                    const opponent = document.createElement('span')
+                    opponent.innerText = " vs " + game.opponent
+                    const score = document.createElement('span')
+                    score.innerText = game.score1 + " - " + game.score2
+                    details.appendChild(result)
+                    details.appendChild(opponent)
+                    details.appendChild(score)
+                    li.appendChild(details)
+                    history.appendChild(li)
+                })
+            }
+
+            populateHistoryList()
+
+
         } else {
             setStatsValues(null)
         }
