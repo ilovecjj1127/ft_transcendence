@@ -3,7 +3,7 @@ import { saveUserInfo, getUserToken } from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
 import { populateFriendList } from "../chat.js"
 import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
-import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+// import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
@@ -23,7 +23,7 @@ export async function onloadInit () {
         if (location.hash != '/')
             location.hash = '/'
 
-        hideOrShowSocialMenu(accessToken)
+        // hideOrShowSocialMenu(accessToken)
 
         updateSocialRequestsData()
 

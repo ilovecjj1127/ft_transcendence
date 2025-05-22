@@ -1,7 +1,7 @@
 import { handleLogin, loginFunction } from "./login.js"
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
-import { checkToken } from "./utils/token.js";
-import { getUserToken } from "./utils/token.js";
+// import { checkToken } from "./utils/token.js";
+// import { getUserToken } from "./utils/token.js";
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
