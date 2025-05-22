@@ -2,7 +2,7 @@ import { getUserToken } from "../utils/userData.js"
 import openChattingBox from "./open_close_chat.js";
 
 const sendFriendshipRequestButton = document.getElementById("send-form-button")
-const sendRequestToChatButton = document.getElementById("send-form-button-2")
+const sendRequestToChatButton = document.getElementById("chat-search-form-button")
 
 const DEBUGPRINTS = true
 const chatBox = document.querySelector('.chatbox-message-wrapper')
