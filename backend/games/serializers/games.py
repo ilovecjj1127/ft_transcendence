@@ -2,11 +2,13 @@ from rest_framework import serializers
 
 from games.models import Game, TournamentPlayer
 
+
 class GameCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Game
         fields = ['id', 'player1', 'player2', 'winning_score', 'status']
         read_only_fields = ['player1', 'status']
+
     def validate(self, data):
         request = self.context.get('request')
         if not (0 < data.get('winning_score', 10) <= 20):
@@ -22,9 +24,11 @@ class GameCreateSerializer(serializers.ModelSerializer):
             data['status'] = 'pending'
         return data
 
+
 class GameCreateResponseSerializer(serializers.Serializer):
     message = serializers.CharField()
     game = GameCreateSerializer()
+
 
 class GameDetailSerializer(serializers.ModelSerializer):
     player1_username = serializers.CharField(source='player1.username')
@@ -40,6 +44,7 @@ class GameDetailSerializer(serializers.ModelSerializer):
             'score_player1', 'score_player2', 'winning_score', 'status', 'winner',
             'tournament', 'created_at', 'modified_at'
         ]
+
     def get_player1_alias(self, obj):
         return self.get_player_alias(obj, obj.player1)
 
@@ -54,10 +59,21 @@ class GameDetailSerializer(serializers.ModelSerializer):
             return alias if alias else None
         return None
 
+
 class GameActionSerializer(serializers.Serializer):
     game_id = serializers.IntegerField()
-    
+
+
 class GameUpdateSerializer(serializers.Serializer):
     game_id = serializers.IntegerField(required=True)
     new_score_player1 = serializers.IntegerField(required=True)
     new_score_player2 = serializers.IntegerField(required=True)
+
+
+class GameHistorySerializer(serializers.Serializer):
+    is_winner = serializers.BooleanField()
+    opponent_name = serializers.CharField()
+    score_own = serializers.IntegerField()
+    score_opponent = serializers.IntegerField()
+    tournament_name = serializers.CharField()
+    finished_at = serializers.IntegerField()
