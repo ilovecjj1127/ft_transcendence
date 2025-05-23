@@ -42,9 +42,9 @@ export function populateOutRequest(list_name, data) {
         const img = document.createElement('img');
     
         const userInfo = await getUserInfo(player.to_user)
-        console.log("player: ", player.to_user)
+        if (DEBUGPRINTS) console.log("player: ", player.to_user)
     
-        console.log("data player: ", userInfo)
+        if (DEBUGPRINTS) console.log("data player: ", userInfo)
         img.src = userInfo.avatar || "./media/default.jpeg";
         // const avatar = getUserInfo(player).avatar || "./media/default.jpeg";
         
@@ -86,9 +86,9 @@ export function populateInRequest(list_name, data) {
         const img = document.createElement('img');
 
         const userInfo = await getUserInfo(player.from_user)
-        console.log("player: ", player.from_user)
+        if (DEBUGPRINTS) console.log("player: ", player.from_user)
 
-        console.log("data player: ", userInfo)
+        if (DEBUGPRINTS) console.log("data player: ", userInfo)
         img.src = userInfo.avatar || "./media/default.jpeg";
         img.alt = player.from_user;
 

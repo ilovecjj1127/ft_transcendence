@@ -168,7 +168,7 @@ export default class PongOnline {
     };
 
     handleOnclose () {
-        console.log("Connection closed by the server.");
+        if (DEBUGPRINTS) console.log("Connection closed by the server.");
     };
 
     sendAction(action) {

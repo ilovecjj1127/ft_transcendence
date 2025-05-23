@@ -57,7 +57,7 @@ export const init = () => {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return
-        console.log("searchUser() of stats.js called!")
+        if (DEBUGPRINTS) console.log("searchUser() of stats.js called!")
 
         const checkUserExist = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
             method: "HEAD",

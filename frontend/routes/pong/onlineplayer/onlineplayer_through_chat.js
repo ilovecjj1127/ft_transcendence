@@ -43,7 +43,7 @@ export async function createGameWithPlayer(PlayerId) {
         alert("game created " + data.game.id)
         localStorage.setItem("gameId", data.game.id)
         location.hash = '/pong/onlineplayer/onlinegame'
-        console.log("gameid ;", data.game.id)
+        if (DEBUGPRINTS) console.log("gameid ;", data.game.id)
         return data.game.id
     } else {
         alert("error creating game")

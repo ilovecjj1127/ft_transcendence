@@ -9,7 +9,7 @@ var chatSocket = null
 // returns id of chatbox
 export async function getOrcreateChattingBox(frienda)
 {
-    console.log("hi create chat box with:", frienda)
+    if (DEBUGPRINTS) console.log("hi create chat box with:", frienda)
 
     try {
 
@@ -24,7 +24,7 @@ export async function getOrcreateChattingBox(frienda)
 
         const data = await response.json();  // ✅ Parse JSON
 
-        console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
+        if (DEBUGPRINTS) console.log("response id: ", data["chat_room_id"]);  // ✅ Access property
         return data["chat_room_id"];
     }
     catch(err) {
@@ -72,7 +72,7 @@ export default async function openChattingBox(frienda)
             if (chatSocket != null)
                 {
                     chatSocket.close()
-                    console.log("close called")
+                    if (DEBUGPRINTS) console.log("close called")
                 }
                 chattingBox.style.display = "none";
                 switch_bool = true

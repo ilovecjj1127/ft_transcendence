@@ -24,9 +24,9 @@ export async function cancelRequest(request_id)
         },
         body: JSON.stringify({request_id})
     });
-    console.log("PATCH: /api/users/friendship_request/cancel/, status: ", response.status)
+    if (DEBUGPRINTS) console.log("PATCH: /api/users/friendship_request/cancel/, status: ", response.status)
     const response_data = await response.json()
-    console.log("response_data: ", response_data)
+    if (DEBUGPRINTS) console.log("response_data: ", response_data)
     location.reload();
 }
 
@@ -41,7 +41,7 @@ export async function declineRequest(request_id)
         body: JSON.stringify({request_id})
     });
     const response_data = await response.json()
-    console.log("response_data: ", response_data)
+    if (DEBUGPRINTS) console.log("response_data: ", response_data)
     location.reload();
 }
 
@@ -55,7 +55,7 @@ export async function acceptRequest(request_id)
         },
         body: JSON.stringify({request_id})
     });
-    console.log("PATCH: /api/users/friendship_request/accept, status: ", response.status)
+    if (DEBUGPRINTS) console.log("PATCH: /api/users/friendship_request/accept, status: ", response.status)
     const response_data = await response.json()
     location.reload();
 }
@@ -67,17 +67,17 @@ sendRequestToChatButton.addEventListener('click', async (event) => {
     // make new or existing chatroom with user....
     const username = document.querySelector("input[name='username02']").value
 
-    console.log(username)
+    if (DEBUGPRINTS) console.log(username)
 
 	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username02']").value, message: document.querySelector("input[name='username']").value})
 
     OpenRoom(friend = username)
     
-    console.log("after OpenRoom log")
+    if (DEBUGPRINTS) console.log("after OpenRoom log")
     
 
 	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
-    // console.log("hi send")
+    // if (DEBUGPRINTS) console.log("hi send")
 	// post(`http://${window.location.host}/api/users/friendship_request/`, requestBody)
 })
 
@@ -86,7 +86,7 @@ sendFriendshipRequestButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
 
 	const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
-    console.log("hi send")
+    if (DEBUGPRINTS) console.log("hi send")
     const statusDiv = document.getElementById('status_send_request');
 	post(`http://${window.location.host}/api/users/friendship_request/`, requestBody, statusDiv)
 })
