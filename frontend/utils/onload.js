@@ -7,7 +7,6 @@ import { populateInRequest, populateOutRequest, get_data } from "../social/init_
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
-    // const refreshToken = getUserToken().refresh
 
     // what to do if accesToken not found??
     // if (!accessToken) {
@@ -23,11 +22,14 @@ export async function onloadInit () {
         if (location.hash != '/')
             location.hash = '/'
 
-        // hideOrShowSocialMenu(accessToken)
+        if (accessToken)
+        {
+            // hideOrShowSocialMenu(accessToken)
 
-        updateSocialRequestsData()
+            updateSocialRequestsData()
 
-        populateFriendList()
+            populateFriendList()
+        }
 
         createMenuProfile()
 

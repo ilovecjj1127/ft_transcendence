@@ -125,7 +125,7 @@ export async function OpenRoom(friend)
         {
                 statusDiv.textContent = `Status: chat_box_id is undefined`;
                 chatBox.classList.remove('show')
-                chatSocket.close()
+                if (chatSocket != null) chatSocket.close()
                 return
         }
         const data = await getUserInfo(friend)
