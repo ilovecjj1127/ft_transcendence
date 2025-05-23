@@ -1,3 +1,4 @@
+from datetime import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
@@ -74,9 +75,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         from .models import ChatRoom
-        
         data = json.loads(text_data)
-
         self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
         if blocked_by:
@@ -92,16 +91,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat_message = {
             'username': self.username,
-            'message': data['message']
+            'message': data['message'],
+            'date': data['date']
         }
         redis_key = f'chat:{self.room_group_name}:messages'
         await self.redis.rpush(redis_key, json.dumps(chat_message))
         await self.channel_layer.group_send(
             self.room_group_name,
             {
-                'type': 'send_message',
                 'username': self.username,
-                'message': data['message']
+                'message': data['message'],
+                'date': data['date']
             }
         )
 
@@ -118,7 +118,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"
         await self.send(text_data=json.dumps({
-            'message': message
+            'username': event['username'],
+            'message': event['message'],
+            'date': event.get('date', str(timezone.dst))
         }))
 
     async def save_messages(self):

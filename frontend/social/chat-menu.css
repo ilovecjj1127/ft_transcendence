@@ -1,0 +1,39 @@
+#chat-menu-container {
+    display: none;
+}
+
+
+#chat-room-list-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+	/* margin: auto; */
+    max-height: 200px; /* Scrollable container */
+    overflow-y: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background: #f9f9f9;
+}
+
+#chat-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1%;
+    width: 100%;
+}
+
+#chat-room-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#chat-room-list li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+}
+
+#chat-room-list li:hover {
+    background: #e0e0e0;
+}

@@ -8,14 +8,14 @@ export const init = () => {
     const searchError = document.getElementById('search-error')
     const closeBtn = document.getElementById('stats-close-button')
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
-    
+
     getUserStats()
     if (getUserAvatar())
         profileImg.src = getUserAvatar()
 
     if (getUsername())
         username.innerText = getUsername()
-    
+
     function handleSearch (e) {
         if (e.key == 'Enter' && searchInput.value) {
             e.preventDefault()
@@ -28,13 +28,13 @@ export const init = () => {
         deleteStatsEvents()
         location.hash = '/'
     }
-    
+
     //get user stats and save it in stats variable
     async function getUserStats () {
         const isTokenValid = await checkToken()
-        
+
         if (!isTokenValid) return
-        
+
         const statsRequest = await fetch(`http://${window.location.host}/api/games/statistics`, {
             method: "GET",
             headers: {
@@ -51,13 +51,14 @@ export const init = () => {
             setStatsValues(null)
         }
     }
-    
+ 
     //check if user exist with HEAD request
     async function searchUser (user) {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return
-        
+        if (DEBUGPRINTS) console.log("searchUser() of stats.js called!")
+
         const checkUserExist = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
             method: "HEAD",
             headers: {
