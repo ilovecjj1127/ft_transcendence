@@ -52,7 +52,7 @@ registerForm.onsubmit = async (e) => {
     const message = document.getElementById("register-message")
 
     message.innerHTML = ""
-    
+ 
     if (password != confirmPassword) {
 
         message.innerHTML = "<p class='text-danger'>The passwords differ.</p>"
@@ -72,7 +72,7 @@ registerForm.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         message.innerHTML = "<p class='text-success'>Registered successful! Now you can login.</p>"
-                
+    
         setTimeout( () => {
             registerModal.hide()
             handleLogin()
