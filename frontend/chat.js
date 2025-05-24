@@ -278,7 +278,7 @@ gotoProfileButton.addEventListener('click', async (e) =>  {
 });
 
 blockOrUnblockButton.addEventListener('click', async function () {
-
+ 
         const isBlocking = this.innerHTML.trim() === "Block";
         const elemChatbox = document.getElementById('chatting-box-id-v2')
         if (DEBUGPRINTS) console.log(elemChatbox); // should not be null
