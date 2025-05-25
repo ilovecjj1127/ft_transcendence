@@ -27,7 +27,7 @@ export async function saveUserInfo () {
         return false
     }
 }
- 
+
 export function removeUserData() {
     localStorage.removeItem("username")
     localStorage.removeItem("avatar")

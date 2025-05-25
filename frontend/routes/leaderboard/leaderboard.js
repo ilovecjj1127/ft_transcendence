@@ -62,27 +62,3 @@ function createDiv(name, info, li) {
     div.appendChild(span)
     li.appendChild(div)
 }
-
-
-// {
-//   "dudu": {
-//     "game_count": 0,
-//     "game_win": 0,
-//     "total_score": 0,
-//     "ranking": 1
-//   },
-//   "hello": {
-//     "game_count": 0,
-//     "game_win": 0,
-//     "total_score": 0,
-//     "ranking": 1
-//   },
-//   "dood": {
-//     "game_count": 0,
-//     "game_win": 0,
-//     "total_score": 0,
-//     "ranking": 1
-//   }
-// }
-
-//on error show leaderboard not ready for this tour

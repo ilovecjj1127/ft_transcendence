@@ -6,10 +6,10 @@
     justify-content: flex-start;
     align-items: center;
     background-color: var(--app-blue);
-    color: black;
     border-radius: 10px;
     padding: 20px;
     position: relative;
+    color:#facf45;
 }
 
 #stats-name-container {
@@ -22,7 +22,9 @@
 #stats-username {
     font-size: 3rem;
     font-weight: bold;
-    color: white;
+    font-family: "rixvideogame-pro", sans-serif;
+    letter-spacing: 5px;
+    /* color: white; */
 }
 
 #stats-img-container {
@@ -104,7 +106,7 @@
 }
 
 #stats-list li {
-    color:aliceblue;
+    /* color:aliceblue; */
     margin: 10px 0;
 }
 
@@ -115,4 +117,44 @@
 #stats-list li span {
     color: #3498db; /* Customize the value color */
     padding: 10px;
+}
+
+#stats-history-container {
+    position: absolute;
+    background-color: transparent;
+    /* color: white; */
+    top: 11rem;
+    right: 4rem;
+    border: none;
+    height: 60%;
+    width: 40%;
+    overflow-y: auto;
+}
+
+#stats-history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#stats-history-list li {
+    display: flex;  /* Flex layout for list item */
+    justify-content: space-between;  /* Space out left (game details) and right (status & button) */
+    align-items: center;
+    padding: 8px;
+    /* color: white; */
+    background-color: rgba(0, 0, 0, 0);
+    margin: 4px 0;
+    border: solid;
+    border-radius: 5px;
+    width: 100%;
+}
+
+#stats-history-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.stats-game-details {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
 }
