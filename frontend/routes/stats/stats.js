@@ -10,6 +10,7 @@ export const init = () => {
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
     
     getUserStats()
+    getUserHistory()
     if (getUserAvatar())
         profileImg.src = getUserAvatar()
 
@@ -48,79 +49,61 @@ export const init = () => {
             const stats = await statsRequest.json()
             setStatsValues(stats)
 
-            //to move with an api call function
             
-            const games = [
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"bob", score1: 1, score2: 3},
-    {result: "loss", opponent:"alice", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "loss", opponent:"David", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "loss", opponent:"alice", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "loss", opponent:"bob", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-    {result: "win", opponent:"Lisa", score1: 1, score2: 3},
-]
-
-            function populateHistoryList() {
-                const history = document.getElementById("stats-history-list")
-                
-                games.forEach(game => {
-                    const li = document.createElement('li')
-                    const details = document.createElement('div')
-                    details.classList.add('stats-game-details')
-                    const result = document.createElement('span')
-                    result.innerText = game.result.toUpperCase()
-                    const opponent = document.createElement('span')
-                    opponent.innerText = " vs " + game.opponent
-                    const score = document.createElement('span')
-                    score.innerText = game.score1 + " - " + game.score2
-                    details.appendChild(result)
-                    details.appendChild(opponent)
-                    details.appendChild(score)
-                    li.appendChild(details)
-                    history.appendChild(li)
-                })
-            }
-
-            populateHistoryList()
-
 
         } else {
             setStatsValues(null)
         }
+    }
+
+    async function getUserHistory() {
+        const isTokenValid = await checkToken()
+        const user = getUsername()
+        if (!isTokenValid) return
+
+        const historyResponse = await fetch(`http://${window.location.host}/api/games/history/?username=${user}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+        });
+        if (historyResponse.status == 401) deleteTokenReload()
+        if (historyResponse.ok) {
+            const history = await historyResponse.json()
+            console.log(history)
+            for (const game in history) {
+                createEntry(history[game])
+            }
+        }
+        else
+        {
+            const history = document.getElementById("stats-history-list")
+            const li = document.createElement('li')
+            const details = document.createElement('div')
+            details.innerText = "Error retrieving history"
+            li.appendChild(details)
+            history.appendChild(li)
+        }
+    }
+
+    function createEntry(game) {
+        const history = document.getElementById("stats-history-list")
+        const li = document.createElement('li')
+        const details = document.createElement('div')
+        details.classList.add('stats-game-details')
+        const result = document.createElement('span')
+        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        const opponent = document.createElement('span')
+        game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
+            opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"
+        const score = document.createElement('span')
+        score.innerText = game.score_own + " - " + game.score_opponent
+        details.appendChild(result)
+        details.appendChild(opponent)
+        details.appendChild(score)
+        li.appendChild(details)
+        history.appendChild(li)
     }
     
     //check if user exist with HEAD request
