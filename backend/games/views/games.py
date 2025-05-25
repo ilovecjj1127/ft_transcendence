@@ -8,7 +8,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 
 from games.serializers.games import GameCreateSerializer, GameDetailSerializer, GameActionSerializer, \
-                                    GameCreateResponseSerializer
+                                    GameCreateResponseSerializer, GameHistorySerializer
 from users.serializers.UserProfile import SuccessResponseSerializer
 from games.models import Game
 from games.services.games import GameService
@@ -150,3 +150,21 @@ class GameStatisticsView(APIView):
     def get(self, request: Request) -> Response:
         stats = GameService.calculate_user_statistics(request.user)
         return Response(stats, status=status.HTTP_200_OK)
+
+class GameHistoryView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        parameters=[OpenApiParameter(name='username', required=True, type=str)],
+        summary="Get list of user's finished games",
+        responses={200: GameHistorySerializer},
+        tags=['Games'],
+    )
+    def get(self, request: Request) -> Response:
+        username = request.query_params.get('username')
+        if username is None:
+            return Response({'error': 'Username query parameter is required'},
+                            status=status.HTTP_400_BAD_REQUEST)
+        game_history = GameService.get_game_history(username)
+        serializer = GameHistorySerializer(game_history, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
