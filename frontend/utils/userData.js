@@ -17,8 +17,9 @@ export async function saveUserInfo () {
         localStorage.setItem("id", userData.id)
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
-        localStorage.setItem("friends", userData.friends)
-        console.log("2fa enabled: ", userData.is_2fa_enabled)
+        localStorage.setItem("friends", JSON.stringify(userData.friends))
+        localStorage.setItem("received", JSON.stringify(userData.received_requests))
+        localStorage.setItem("sent", JSON.stringify(userData.sent_requests))
         setTimeout( () => {}, 2000)
         document.getElementById('profile-img').src = userData.avatar 
         return true
