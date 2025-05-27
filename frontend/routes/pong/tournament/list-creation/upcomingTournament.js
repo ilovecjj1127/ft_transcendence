@@ -79,7 +79,7 @@ async function requestList (list, listContainer) {
 }
 
 async function cancelTournament (id, li, button) {
-    console.log("clicked cancel")
+    if (DEBUGPRINTS) console.log("clicked cancel")
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
@@ -105,7 +105,7 @@ async function cancelTournament (id, li, button) {
 }
 
 async function startTournament (id, li, button) {
-    console.log("clicked cancel")
+    if (DEBUGPRINTS) console.log("clicked cancel")
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     

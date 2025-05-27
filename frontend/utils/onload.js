@@ -3,38 +3,26 @@ import { saveUserInfo, getUserToken } from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
 import { populateFriendList } from "../chat.js"
 import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
-// import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
 
-    // what to do if accesToken not found??
-    // if (!accessToken) {
-    //     console.log("Access token not found")
-    //     //showLoginModal()
-    // }
-    // else {
-    //     console.log("Access token found:" + accessToken)
+    if (accessToken) {
+        saveUserInfo()
 
-        if (accessToken) {
-            saveUserInfo()
-        }
-        if (location.hash != '/')
-            location.hash = '/'
+        hideOrShowSocialMenu(accessToken)
 
-        if (accessToken)
-        {
-            // hideOrShowSocialMenu(accessToken)
+        updateSocialRequestsData()
 
-            updateSocialRequestsData()
+        populateFriendList()
+    }
+    if (location.hash != '/')
+        location.hash = '/'
 
-            populateFriendList()
-        }
+    createMenuProfile()
 
-        createMenuProfile()
-
-        moveFaces()
-   // }
+    moveFaces()
 }
 
 async function updateSocialRequestsData ()
@@ -46,17 +34,11 @@ async function updateSocialRequestsData ()
         document.getElementById("username-text-home-page").innerHTML = data.username
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
-        // populateChatSearch("chat-search", data)
 }
 
 // import chat_button from "../?"
-
 // function populateChatSearch () {
-
 //     chat_button.addEventListener('click', () => showSearchBarChat());
-
 // }
-
 // showSearchBarChat()
 // {
-    

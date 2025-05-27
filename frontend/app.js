@@ -97,5 +97,3 @@ window.addEventListener('load', async () => {
     //load initial route
     router()
 });
-
-

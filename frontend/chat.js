@@ -106,10 +106,8 @@ export async function OpenRoom(friend)
         //here change id with whatever
         if (DEBUGPRINTS) console.log("click on img friend; ", friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
-        // if (DEBUGPRINTS) console.log("Outer html chatBox; ", chatBox.outerHTML)
-        // if (DEBUGPRINTS) console.log("Inner html chatBox; ", chatBox.innerHTML)
         const token = getUserToken().access
-        
+
         if (!token) {
                 showLoginModal()
                 return
@@ -134,16 +132,14 @@ export async function OpenRoom(friend)
         const img = document.querySelector('.chatbox-message-image');
         img.src = data.avatar || "./media/default.jpeg";
 
-        console.log("chatboxid = ", chat_box_id)
-        console.log("window.location.host = ", window.location.host)
+        if (DEBUGPRINTS) console.log("chatboxid = ", chat_box_id)
+        if (DEBUGPRINTS) console.log("window.location.host = ", window.location.host)
 
         chatSocket = new WebSocket(
                 `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
         );
 
-        // getUserInfo(friend)
         localStorage.setItem("chatbox-playerId", data.id)
-
 
 
         chatboxMessageWrapper.innerHTML = '';
@@ -182,19 +178,19 @@ export function setChatSocketEventFunctions()
             'option-game-invite' : 0,
             'date': new Date()
         }));
-        console.log("data #chat-message-submit; ", message)
+        if (DEBUGPRINTS) console.log("data #chat-message-submit; ", message)
 
         messageInput.value = '';
     };
     chatSocket.onmessage = function(event) {
         const data = JSON.parse(event.data);
-        console.log("data onmessage; ", data)
-        console.log("date onmessage; ", data.date)
-        console.log("username onmessage; ", data.username)
+        if (DEBUGPRINTS) console.log("data onmessage; ", data)
+        if (DEBUGPRINTS) console.log("date onmessage; ", data.date)
+        if (DEBUGPRINTS) console.log("username onmessage; ", data.username)
 
         const split_data = data.message.split(":");
         const currentUser = document.querySelector('.chatbox-message-name').textContent.trim();
-        
+
         let format
         if (data.username == currentUser)
                 format = "sent"
@@ -202,7 +198,7 @@ export function setChatSocketEventFunctions()
                 format = "received"
 
         var match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
-        console.log("Hi printing match; ", match);
+        if (DEBUGPRINTS) console.log("Hi printing match; ", match);
 
         var gameId = null
         if (match)
@@ -210,7 +206,7 @@ export function setChatSocketEventFunctions()
 
         format_and_put_Reply(data, format, gameId)
 
-        console.log("Hi printing match; ", match);
+        if (DEBUGPRINTS) console.log("Hi printing match; ", match);
 
         if (gameId) {
                 const button = chatboxMessageWrapper.querySelector('.join-button[data-gameid="' + gameId + '"]');
@@ -222,16 +218,15 @@ export function setChatSocketEventFunctions()
 
                         // gameInfo.player1 = localStorage.getItem("user")
                         // gameInfo.player2 = currentUser
-                        
+
                         localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
                         localStorage.setItem("gameId", gameId);
 
                         location.hash = '/pong/onlineplayer/onlinegame';
-                        console.log("location: ", location);
+                        if (DEBUGPRINTS) console.log("location: ", location);
                     });
                     
                     document.querySelector('#chat-log').innerHTML += `<p>${data.message}</p>`;
-                    
                 }
             }
     };
@@ -245,21 +240,14 @@ export function setChatSocketEventFunctions()
         } else {
             console.error('Chat socket closed unexpectedly');
         }
-        console.log(".onclose called")
+        if (DEBUGPRINTS) console.log(".onclose called")
     };
-}
-
-function updateChat (friend) {
-    /* 
-    here update all content of chat box
-    */
-   chatBox.classList.add('show')
 }
 
 closeChat.addEventListener('click', function (){
     chatBox.classList.remove('show')
     chatSocket.close()
-    console.log("closing socket")
+    if (DEBUGPRINTS) console.log("closing socket")
 })
 
 dropDownToggle.addEventListener('click', function () {
@@ -275,13 +263,12 @@ document.addEventListener('click', function (e) {
 gotoProfileButton.addEventListener('click', async (e) =>  {
 
         e.preventDefault()
-        console.log("hi goto profile")
+        if (DEBUGPRINTS) console.log("hi goto profile")
 
         const chatboxname = document.querySelector('.chatbox-message-name').innerHTML
-        console.log("chatboxname; ", chatboxname)
+        if (DEBUGPRINTS) console.log("chatboxname; ", chatboxname)
         localStorage.setItem('userSearched', chatboxname);
         location.hash = '#/users'
-        // init()
         await loadRoute('users');
 });
 
@@ -289,11 +276,11 @@ blockOrUnblockButton.addEventListener('click', async function () {
 
         const isBlocking = this.innerHTML.trim() === "Block";
         const elemChatbox = document.getElementById('chatting-box-id-v2')
-        console.log(elemChatbox); // should not be null
+        if (DEBUGPRINTS) console.log(elemChatbox); // should not be null
         const chatboxIdValue = elemChatbox.dataset.chatboxIdValue
-        console.log(chatboxIdValue); // should not be null
+        if (DEBUGPRINTS) console.log(chatboxIdValue); // should not be null
         const nameinchatbox = document.querySelector('.chatbox-message-name').textContent.trim();
-        console.log(nameinchatbox); // should not be null
+        if (DEBUGPRINTS) console.log(nameinchatbox); // should not be null
 
         const response = await fetch(`http://${window.location.host}/api/chat/block_or_unblock/?chatroom_id=${chatboxIdValue}`, {
                 method: "PATCH",
@@ -319,7 +306,7 @@ invitePlayerForGame.addEventListener('click', async function () {
         const friendname = document.querySelector(".chatbox-message-name")
         const game_id = await createGameWithPlayer(playerId)
 
-        console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
+        if (DEBUGPRINTS) console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
         const gameInfo = {}
         gameInfo.gameId = localStorage.getItem("gameId")
         localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
@@ -328,7 +315,6 @@ invitePlayerForGame.addEventListener('click', async function () {
         const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
         chatSocket.send(JSON.stringify({
         'message' : message,
-        // 'option-game-invite': game_id,
         'date': date
         }));
         localStorage.setItem("chatbox-playerId", "")
@@ -338,12 +324,11 @@ invitePlayerForGame.addEventListener('click', async function () {
 removeFriendElem.addEventListener('click', function () {
 
 let playername = document.querySelector('.chatbox-message-name').textContent.trim();
-        console.log("removing player as friend;  ", playername)
+        if (DEBUGPRINTS) console.log("removing player as friend;  ", playername)
 removeFriend(playername)
 chatBox.classList.remove('show')
 
 })
-
 
 textarea.addEventListener('input', function () {
         let line = textarea.value.split('\n').length
@@ -375,41 +360,14 @@ chatboxForm.addEventListener('submit', function (e) {
                 //     'option-game-invite': 0,
                     'date': date
                 }));
-                console.log("data #chatboxForm; ", message, "\nnow; ", date)
+                if (DEBUGPRINTS) console.log("data #chatboxForm; ", message, "\nnow; ", date)
                 scrollBottom()
         }
 })
 
-function addZero(num) {
-        return num < 10 ? '0'+num : num
-}
-
-function writeMessage () {
-        const today = new Date()
-        let message = `
-                <div class="chatbox-message-item sent">
-                        <span class="chatbox-message-item-text">
-                                ${textarea.value.trim().replace(/\n/g, '<br>\n')}
-                        </span>
-                        <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
-                </div>
-        `
-
-        //insert the message into the chatbox    
-        chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
-        //reset the input 
-        chatboxForm.style.alignItems = 'center'
-        textarea.rows = 1
-        textarea.focus()
-        textarea.value = ''
-        chatBoxNoMessage.style.display = 'none'
-        scrollBottom()
-}
-
 export default function format_and_put_Reply (data, format, gameId) {
         const today = new Date()
         const sent_date = new Date(data.date)
-
 
         let buttonHTML = '';
         if (gameId) {
@@ -429,16 +387,4 @@ export default function format_and_put_Reply (data, format, gameId) {
                         // \tarrived:${addZero(today.getHours())}:${addZero(today.getMinutes())} - ${sent_date.getUTCDate()} - ${addZero(sent_date.getUTCMonth())}</span>
         chatboxMessageWrapper.insertAdjacentHTML('beforeend', message)
         scrollBottom()
-}
-
-// scroll bottom on new message
-function scrollBottom () {
-        chatboxMessageWrapper.scrollTo(0, chatboxMessageWrapper.scrollHeight)
-}
-
-function isValid(value) {
-        let text = value.replace(/\n/g, '')
-        text = text.replace(/\s/g, '')
-
-        return text.length > 0
 }

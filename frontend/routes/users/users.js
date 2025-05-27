@@ -9,7 +9,7 @@ export const init = () => {
     
     const user = localStorage.getItem("userSearched")
     localStorage.removeItem("userSearched")
-    // if (DEBUG) console.log("user: ", user)
+    // if (DEBUG) if (DEBUGPRINTS) console.log("user: ", user)
     getUserSearched(user)
 
     function closeStats () {
@@ -37,7 +37,7 @@ export const init = () => {
             username.innerText = userSearched.username
             profileImg.src = userSearched.avatar
         } else {
-            console.log("user search error")
+            if (DEBUGPRINTS) console.log("user search error")
         }
     }
             

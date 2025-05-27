@@ -1,4 +1,9 @@
+## ~-~-~-~-~-~-~-~
+## header current file from root = ./frontend/utils/userData.js
+## ~-~-~-~-~-~-~-~
+
 import { checkToken, deleteTokenReload } from "./token.js";
+import { DEBUGPRINTS } from "../../config.js"
 
 export async function saveUserInfo () {
     const isTokenValid = await checkToken()
@@ -18,12 +23,12 @@ export async function saveUserInfo () {
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
         localStorage.setItem("friends", userData.friends)
-        console.log("2fa enabled: ", userData.is_2fa_enabled)
+        if (DEBUGPRINTS) console.log("2fa enabled: ", userData.is_2fa_enabled)
         setTimeout( () => {}, 2000)
         document.getElementById('profile-img').src = userData.avatar 
         return true
     } else {
-        console.log("error saving user info")
+        if (DEBUGPRINTS) console.log("error saving user info")
         return false
     }
 }
