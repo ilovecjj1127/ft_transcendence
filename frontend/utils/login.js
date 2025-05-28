@@ -2,6 +2,8 @@ import { hideOtpModal, showOtpModal } from "./2fa.js"
 import { showLoginModal, hideLoginModal } from "./modals.js"
 import { createMenuProfile } from "./profile-toggle.js"
 import { saveUserInfo, setUserToken } from "./userData.js"
+import { populateFriendList } from "../social/chat.js"
+import { populateRequestList } from "../social/chat-menu.js"
 
 let loginResolver
 
@@ -34,8 +36,10 @@ export async function loginFunction (password, username) {
     } else if (response.status == 200) { //without 2fa
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        saveUserInfo()
+        await saveUserInfo()
         createMenuProfile()
+        populateFriendList()
+        populateRequestList("received-tab")
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {
@@ -80,8 +84,10 @@ export async function verify_twofa (otpcode) {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        saveUserInfo()
+        await saveUserInfo()
         createMenuProfile()
+        populateFriendList()
+        populateRequestList("received-tab")
         
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
         

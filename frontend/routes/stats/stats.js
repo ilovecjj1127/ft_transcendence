@@ -71,7 +71,6 @@ export const init = () => {
         if (historyResponse.status == 401) deleteTokenReload()
         if (historyResponse.ok) {
             const history = await historyResponse.json()
-            console.log(history)
             for (const game in history) {
                 createEntry(history[game])
             }

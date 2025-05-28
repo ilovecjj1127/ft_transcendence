@@ -1,43 +1,22 @@
+import { checkToken, deleteTokenReload } from "../utils/token.js"
+import { getUserToken } from "../utils/userData.js"
+
 const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 
-//example to check the overflow-y
-// const friends = [
-//     {name: "friend1"},
-//     {name: "friend2"},
-//     {name: "friend3"},
-//     {name: "friend4"},
-//     {name: "friend5"},
-//     {name: "friend6"},
-//     {name: "friend7"},
-//     {name: "friend8"},
-//     {name: "friend9"},
-//     {name: "friend10"},
-//     {name: "friend11"},
-//     {name: "friend12"},
-//     {name: "friend13"},
-//     {name: "friend14"},
-//     {name: "friend15"},
-//     {name: "friend17"},
-//     {name: "friend18"},
-//     {name: "friend20"},
-//     {name: "friend21"},
-//     {name: "friend22"},
-//     {name: "friend23"},
-//     {name: "friend24"},
-//     {name: "friend25"},
-//     {name: "friend26"},
-//     {name: "friend27"},
-//     {name: "friend28"},
-//     {name: "friend29"},
-//     {name: "friend30"},
-//     {name: "friend31"},
-//     {name: "friend32"},
-
-// ]
-
 //used to check if same friend is pressed
 let friendChatOpen = null
+let friendOpenDataSet = null
+
+export function getFriendDataSet() {
+	return friendOpenDataSet
+}
+
+export function closeChatOpen() {
+	friendChatOpen = null
+	friendOpenDataSet = null
+	chatBox.classList.remove('show')
+}
 
 export function populateFriendList() {
 
@@ -48,21 +27,24 @@ export function populateFriendList() {
 			const li = document.createElement('li')
 			console.log(friend)
 			const img = document.createElement('img')
-			img.src = friend.img ? friend.img : "./media/default.jpeg";
+			getUser(friend, img, li)
 			img.addEventListener('click', () => {
 			//here change id with whatever
-				if (friendChatOpen && friendChatOpen.name == friend.name) {
+				if (friendChatOpen && friendChatOpen == friend) {
 					chatBox.classList.remove('show')
 					friendChatOpen = null
 				} else {                
 					if (chatBox.classList.contains('show')) {
 						chatBox.classList.remove('show')
 				
-						setTimeout(() => updateChat(friend), 600)
 						friendChatOpen = friend
+						friendOpenDataSet = li.dataset
+						setTimeout(() => updateChat(friend, li.dataset.img), 1000)
 					} else {
-						updateChat(friend)
 						friendChatOpen = friend
+						friendOpenDataSet = li.dataset
+						updateChat(friend, li.dataset.img)
+
 					}
 				}
 			})
@@ -72,12 +54,40 @@ export function populateFriendList() {
 	}
 }
 
-function updateChat (friend) {
-    /* 
-    here update all content of chat box
-    */
-   //get user infos and then update the chat
-   chatBox.classList.add('show')
+async function getUser(user, profileImg, li) {
+	const isTokenValid = await checkToken()
+	
+	if (!isTokenValid) return
+	
+	const searchUser = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${getUserToken().access}`
+		},
+	});
+	if (searchUser.status == 401) deleteTokenReload()
+	if (searchUser.ok)
+	{
+		const userSearched = await searchUser.json()
+		li.dataset.user = user
+		li.dataset.id = userSearched.id
+		li.dataset.img = userSearched.avatar
+		profileImg.src = userSearched.avatar
+	} else {
+		profileImg.src = "./media/default.jpeg"
+	}
+}
+
+function updateChat (friend, imgSrc) {
+
+   	let chatName = document.querySelector('.chatbox-message-name')
+	let chatImg = document.querySelector('.chatbox-message-image')
+	chatName.innerText = friend
+	imgSrc != null ? chatImg.src = imgSrc : chatImg = "/media/default.jpeg"
+	//get and update chat content
+	//open websocket
+   	chatBox.classList.add('show')
 }
 
 const closeChat = document.querySelector('.chatbox-message-close')

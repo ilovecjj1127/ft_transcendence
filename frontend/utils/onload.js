@@ -1,16 +1,17 @@
 import { createMenuProfile } from "./profile-toggle.js"
 import { saveUserInfo, getUserToken } from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
-import { fillReceived } from "../social/chat-menu.js"
+import { populateRequestList } from "../social/chat-menu.js"
 import { populateFriendList } from "../social/chat.js"
 
-export function onloadInit () {
+export async function onloadInit () {
     const accessToken = getUserToken().access
     
     if (accessToken) {
-        if (saveUserInfo()) {
+        const getInfo = await saveUserInfo()
+        if (getInfo) {
             populateFriendList()
-            fillReceived()
+            populateRequestList("received-tab")
         }
     }
     if (location.hash != '/')

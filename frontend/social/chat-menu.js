@@ -1,5 +1,6 @@
 import { checkToken } from "../utils/token.js"
 import { getUserToken, saveUserInfo } from "../utils/userData.js"
+import { populateFriendList } from "./chat.js"
 
 const requestPanel = document.getElementById("request-panel")
 const requestButton = document.getElementById("request-friend-btn")
@@ -9,6 +10,7 @@ const newFriendButton = document.getElementById("add-friend-btn")
 
 //button friend request panel
 requestButton.addEventListener('click', () => {
+    populateRequestList("received-tab")
     if (!requestPanel.classList.contains('show')) {
         if (newFriendPanel.classList.contains('show')) newFriendPanel.classList.remove('show')
         requestPanel.classList.add('show')
@@ -32,8 +34,6 @@ newFriendButton.addEventListener('click', () => {
 const tabButtons = document.querySelectorAll('.tab-btn');
 const tabContents = document.querySelectorAll('.tab-content');
 
-//populateList("received-tab") //initialize first time
-
 //switch tab in request panel
 tabButtons.forEach(button => {
     button.addEventListener('click', () => {
@@ -44,14 +44,14 @@ tabButtons.forEach(button => {
 
         button.classList.add('active');
         document.getElementById(targetTab).style.display = 'block';
+        populateRequestList(targetTab)
 
-        targetTab == "received-tab" ? fillReceived() : fillSent()
     });
 });
 
 // populate the list of requests to update
 //TRY TO USE THIS FUNCTION TO UPDATE REQUEST ON NOTIFICATION
-async function populateList(tabId) {
+export async function populateRequestList(tabId) {
 
     const requestData = await saveUserInfo()
     
@@ -83,17 +83,22 @@ export function fillReceived() {
             
             const acceptBtn = document.createElement('button')
             acceptBtn.innerText = "Accept"
-            acceptBtn.addEventListener('click', () => {
-                if (handleRequest(li.dataset.id, li, list, acceptBtn, "accept")) {
-                    //addFriend or repopulate list
-                    console.log("friend added")
+            acceptBtn.addEventListener('click', async () => {
+                const checkRequest = await handleRequest(li.dataset.id, li, list, acceptBtn, "accept")
+                if (checkRequest) {
+                    const check = await saveUserInfo()
+                    if (check) 
+                    {
+                        populateFriendList()
+                        console.log("friend added in list")
+                    }
                 }
             })
             
             const declineBtn = document.createElement('button')
             declineBtn.innerText = "Decline"
-            declineBtn.addEventListener('click', () => {
-                handleRequest(li.dataset.id, li, list, declineBtn, "reject")
+            declineBtn.addEventListener('click', async () => {
+                await handleRequest(li.dataset.id, li, list, declineBtn, "reject")
             })
             
             btnContainer.appendChild(acceptBtn)
@@ -150,6 +155,7 @@ async function handleRequest (id, li, list, btn, url) {
     if (response.status == 401) deleteTokenReload()
     if (response.ok) {
         list.removeChild(li)
+        return true
     } else {
         btn.innerText = "Error"
         btn.style.backgroundColor = "red"
@@ -161,6 +167,7 @@ async function handleRequest (id, li, list, btn, url) {
             btn.style.color = "black"
             btn.disabled = false
         }, 3000)
+        return false
     }
 }
 
@@ -202,6 +209,7 @@ async function sendRequest(user) {
         setTimeout( () => {
             responseMsg.style.display = 'none'
         }, 3000)
+        populateRequestList('sent-tab')
     } else {
         responseMsg.innerText = "Error sending request"
         responseMsg.style.color = "red"
