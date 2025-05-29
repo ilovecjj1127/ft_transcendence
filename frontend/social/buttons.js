@@ -1,3 +1,4 @@
+import { DEBUGPRINTS } from "../config.js"
 
 // const socialmenubuttons_class = document.querySelector("social-menu-button")
 const show_requests_button = document.getElementById("show-requests")

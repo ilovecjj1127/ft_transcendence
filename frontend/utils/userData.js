@@ -1,6 +1,7 @@
-## ~-~-~-~-~-~-~-~
-## header current file from root = ./frontend/utils/userData.js
-## ~-~-~-~-~-~-~-~
+
+// ~-~-~-~-~-~-~-~
+// current file from root = ./frontend/utils/userData.js;
+// ~-~-~-~-~-~-~-~
 
 import { checkToken, deleteTokenReload } from "./token.js";
 import { DEBUGPRINTS } from "../../config.js"
