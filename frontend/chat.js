@@ -23,7 +23,10 @@ const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
 import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
 import { get_data } from "./social/init_friends_data.js"
 import  { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
-
+import { updateChat } from "./tmp_utils_rik/tmp_utils.js"
+import { isValid } from "./tmp_utils_rik/tmp_utils.js"
+import { scrollBottom } from "./tmp_utils_rik/tmp_utils.js"
+import { checkToken } from "./utils/token.js"
 //chatbox message
 
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
@@ -108,10 +111,10 @@ export async function OpenRoom(friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
         const token = getUserToken().access
 
-        if (!token) {
-                showLoginModal()
-                return
-        }
+        // if (!token) {
+        //         showLoginModal()
+        //         return
+        // }
         if (chatSocket != null)
         {
                 chatSocket.close()
@@ -134,6 +137,8 @@ export async function OpenRoom(friend)
 
         if (DEBUGPRINTS) console.log("chatboxid = ", chat_box_id)
         if (DEBUGPRINTS) console.log("window.location.host = ", window.location.host)
+        
+        if (DEBUGPRINTS) console.log("is valid?; ", checkToken(getUserToken()));
 
         chatSocket = new WebSocket(
                 `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`

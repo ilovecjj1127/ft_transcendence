@@ -1,1 +1,1 @@
-export const DEBUGPRINTS = false
+export const DEBUGPRINTS = true
