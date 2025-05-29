@@ -4,7 +4,7 @@ import { moveFaces } from "./bg-animation.js"
 import { populateFriendList } from "../chat.js"
 import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
-import { updateSocialRequestsData } from "../tmp_utils_rik/chat_onload_functions.js"
+import { updateSocialRequestsData } from "../social/chat/chat_onload_functions.js"
 
 export async function onloadInit () {
     const accessToken = getUserToken().access

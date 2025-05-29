@@ -23,7 +23,7 @@ const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
 import { createGameReturnId } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
 import { get_data } from "./social/init_friends_data.js"
 import { createGameWithPlayer } from "./routes/pong/onlineplayer/onlineplayer_through_chat.js"
-import { updateChat } from "./tmp_utils_rik/chat_utils.js"
+import { updateChat } from "./social/chat/chat_utils.js"
 
 // chatbox message
 
