@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "../utils/token.js"
 import { getUserToken } from "../utils/userData.js"
+import { createWebSocket } from "./chat-socket.js"
 
 const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
@@ -12,24 +13,29 @@ export function getFriendDataSet() {
 	return friendOpenDataSet
 }
 
+export function getFriendChatOpen () {
+	return friendChatOpen
+}
+
 export function closeChatOpen() {
 	friendChatOpen = null
 	friendOpenDataSet = null
 	chatBox.classList.remove('show')
 }
 
-export function populateFriendList() {
+export async function populateFriendList() {
 
 	const friends = JSON.parse(localStorage.getItem("friends"))
 	list.innerHTML = ''
 	if (friends.length > 0){
-		friends.forEach(friend => {
+		for (const friend of friends) {
 			const li = document.createElement('li')
-			console.log(friend)
 			const img = document.createElement('img')
 			getUser(friend, img, li)
+			const chatId = await getCreateChat(friend)
+			li.dataset.chatId = chatId
+			createWebSocket(chatId)
 			img.addEventListener('click', () => {
-			//here change id with whatever
 				if (friendChatOpen && friendChatOpen == friend) {
 					chatBox.classList.remove('show')
 					friendChatOpen = null
@@ -50,8 +56,19 @@ export function populateFriendList() {
 			})
 			li.appendChild(img)
 			list.appendChild(li)
-		});
+		}
 	}
+}
+
+async function updateChat (friend, imgSrc) {
+	
+	let chatName = document.querySelector('.chatbox-message-name')
+	let chatImg = document.querySelector('.chatbox-message-image')
+	chatName.innerText = friend
+	imgSrc != null ? chatImg.src = imgSrc : chatImg.src = "/media/default.jpeg"
+	//get and update chat content
+	
+	chatBox.classList.add('show')
 }
 
 async function getUser(user, profileImg, li) {
@@ -79,19 +96,34 @@ async function getUser(user, profileImg, li) {
 	}
 }
 
-function updateChat (friend, imgSrc) {
-
-   	let chatName = document.querySelector('.chatbox-message-name')
-	let chatImg = document.querySelector('.chatbox-message-image')
-	chatName.innerText = friend
-	imgSrc != null ? chatImg.src = imgSrc : chatImg = "/media/default.jpeg"
-	//get and update chat content
-	//open websocket
-   	chatBox.classList.add('show')
-}
+async function getCreateChat(user) {
+		const isTokenValid = await checkToken()
+	
+	if (!isTokenValid) return
+	
+	const openChat = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${getUserToken().access}`
+		},
+		body: JSON.stringify({username: user}),
+	});
+	if (openChat.status == 401) deleteTokenReload()
+	if (openChat.ok)
+	{
+		const data = await openChat.json()
+		const chatId = data.chat_room_id
+		return chatId
+	} else {
+		return null
+	}
+} 
 
 const closeChat = document.querySelector('.chatbox-message-close')
 
 closeChat.addEventListener('click', function (){
+	friendChatOpen = null
+	friendOpenDataSet = null
     chatBox.classList.remove('show')
 })

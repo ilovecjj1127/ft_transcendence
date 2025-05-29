@@ -124,7 +124,7 @@ async function inviteForGame() {
 				inviteBtn.style.color = "black"
 				inviteBtn.disabled = false
 			}, 3000)
-	}
+		}
 	}
 }
 
