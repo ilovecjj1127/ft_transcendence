@@ -123,16 +123,16 @@
 
         <!-- Friendship requests menu -->
         <div id="friendship-menu" style="flex-direction: row;">
-            <button class="social-menu-button" id="send-requests" onclick="showHide('send-request-form','flex')">
+            <button class="social-menu-button" id="send-requests">
                 <i class='bx bxs-user-plus'></i>
                 <i class='bx bx-search-alt-2'></i>
                 Send requests
             </button>
-            <button class="social-menu-button" id="show-requests" onclick="showHide('show-requests-box','flex')">
+            <button class="social-menu-button" id="show-requests">
                 <i class='bx bxs-user-detail'></i>
                 Show requests
             </button>
-            <button class="social-menu-button" id="chat" onclick="showHide('chat-search-form','flex')">
+            <button class="social-menu-button" id="chat">
                 <i class='bx bxs-user-chat'></i>
                 Chat(in progress)
             </button>
@@ -289,7 +289,8 @@
     
     <script src="app.js" type="module"></script>
     <script src="chat.js" type="module"></script>
-    
+    <script src="eventlistenersSocial.js" type="module"></script>
+
     <script src="utils/modals.js" type="module"></script>
     <script src="utils/userData.js" type="module"></script>
 

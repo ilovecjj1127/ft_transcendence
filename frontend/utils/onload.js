@@ -4,10 +4,12 @@ import { moveFaces } from "./bg-animation.js"
 import { populateFriendList } from "../chat.js"
 import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+import { DEBUGPRINTS } from "../config.js"
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
 
+    if (DEBUGPRINTS) console.log("onLoadInit")
     if (accessToken) {
         saveUserInfo()
 
@@ -18,7 +20,10 @@ export async function onloadInit () {
         populateFriendList()
     }
     if (location.hash != '/')
+    {
+        hideOrShowSocialMenu(accessToken)
         location.hash = '/'
+    }
 
     createMenuProfile()
 
