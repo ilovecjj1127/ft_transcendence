@@ -4,6 +4,7 @@ import { createMenuProfile } from "./profile-toggle.js"
 import { saveUserInfo, setUserToken } from "./userData.js"
 import { populateFriendList } from "../social/chat.js"
 import { populateRequestList } from "../social/chat-menu.js"
+import { onLogin } from "./onload.js"
 
 let loginResolver
 
@@ -36,10 +37,7 @@ export async function loginFunction (password, username) {
     } else if (response.status == 200) { //without 2fa
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        await saveUserInfo()
-        createMenuProfile()
-        populateFriendList()
-        populateRequestList("received-tab")
+        onLogin()
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
                 
         setTimeout( () => {

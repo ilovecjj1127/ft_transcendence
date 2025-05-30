@@ -1,7 +1,6 @@
 import aioredis
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
-from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError
 
@@ -41,7 +40,7 @@ class RedisPoolMiddleware(BaseMiddleware):
     def __init__(self, inner):
         super().__init__(inner)
         self.redis_pool = aioredis.from_url(
-            settings.REDIS_URL, encoding="utf-8", decode_responses=True
+            "redis://redis:6379", encoding="utf-8", decode_responses=True
         )
 
     async def __call__(self, scope, receive, send):

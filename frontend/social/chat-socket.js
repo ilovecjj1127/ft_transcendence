@@ -1,12 +1,23 @@
 import { getUsername, getUserToken } from "../utils/userData.js"
 import { checkToken } from "../utils/token.js"
 
-export async function createWebSocket (chatId) {
-    const isTokenValid = await checkToken()
-    if (isTokenValid) {
-        let token = getUserToken().access
-        const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}/?token=${token}`)
+let activeSocket = null
 
+export async function createWebSocket (chatId, li) {
+    let socket
+
+    const isTokenValid = await checkToken()
+    if (!isTokenValid) return
+
+        if (activeSocket && (activeSocket.readyState === WebSocket.OPEN || activeSocket.readyState === WebSocket.CONNECTING)) {
+        activeSocket.close(); // Close previous socket
+    }
+        let token = getUserToken().access
+        socket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}/?token=${token}`)
+        activeSocket = socket
+        
+        
+        
         socket.onmessage = function (event) {
             const data = JSON.parse(event.data)
             const username = data.message.split(':')[0].trim();
@@ -15,6 +26,9 @@ export async function createWebSocket (chatId) {
         }
     
         function sendMessage (message) {
+
+            if (socket !== activeSocket) return
+
             if (socket.readyState == WebSocket.OPEN) {
                 socket.send(JSON.stringify ({
                     message: message
@@ -88,7 +102,7 @@ export async function createWebSocket (chatId) {
                     textarea.rows = 1
                     textarea.focus()
                     textarea.value = ''
-                    chatBoxNoMessage.style.display = 'none'
+                    //  chatBoxNoMessage.style.display = 'none'
 
                 } else {
                     msg = `
@@ -119,6 +133,11 @@ export async function createWebSocket (chatId) {
 
                 return text.length > 0
         }
+}
 
+export function closeActiveWebsocket () {
+    if (activeSocket) {
+        activeSocket.close()
+        activeSocket = null
     }
 }

@@ -194,6 +194,7 @@
     margin-bottom: 0.5rem;
 	justify-content: center;
 	align-items: center;
+	position: relative;
 }
 
 #friends-list li img {
@@ -203,11 +204,25 @@
     border-radius: 50%;
     cursor: pointer;
 	object-fit: cover;
-  	display: block; 
+  	display: block;
+	border: solid;
+	border-color: yellowgreen;
 }
 
 #friends-list img:hover {
     scale: 110%;
+}
+
+.notify-dot {
+	position: absolute;
+	display: block;
+	background-color: yellow;
+	width: 30%;
+	height: 30%;
+	z-index: 100;
+	top: 80%;
+	left: 10%;
+	border-radius: 50%;
 }
 
 /* chat */

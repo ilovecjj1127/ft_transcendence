@@ -1,6 +1,6 @@
 import { checkToken, deleteTokenReload } from "../utils/token.js"
 import { getUserToken } from "../utils/userData.js"
-import { createWebSocket } from "./chat-socket.js"
+import { createWebSocket, closeActiveWebsocket } from "./chat-socket.js"
 
 const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
@@ -20,6 +20,7 @@ export function getFriendChatOpen () {
 export function closeChatOpen() {
 	friendChatOpen = null
 	friendOpenDataSet = null
+	closeActiveWebsocket()
 	chatBox.classList.remove('show')
 }
 
@@ -31,37 +32,41 @@ export async function populateFriendList() {
 		for (const friend of friends) {
 			const li = document.createElement('li')
 			const img = document.createElement('img')
+			const notifyDot = document.createElement('div')
+			notifyDot.classList.add('notify-dot')
 			getUser(friend, img, li)
-			const chatId = await getCreateChat(friend)
-			li.dataset.chatId = chatId
-			createWebSocket(chatId)
 			img.addEventListener('click', () => {
 				if (friendChatOpen && friendChatOpen == friend) {
-					chatBox.classList.remove('show')
-					friendChatOpen = null
+					closeChatOpen()
 				} else {                
 					if (chatBox.classList.contains('show')) {
-						chatBox.classList.remove('show')
+						closeChatOpen()
 				
 						friendChatOpen = friend
 						friendOpenDataSet = li.dataset
-						setTimeout(() => updateChat(friend, li.dataset.img), 1000)
+						setTimeout(() => updateChat(friend, li.dataset.img, li), 1000)
 					} else {
 						friendChatOpen = friend
 						friendOpenDataSet = li.dataset
-						updateChat(friend, li.dataset.img)
+						updateChat(friend, li.dataset.img, li)
 
 					}
 				}
 			})
 			li.appendChild(img)
+			li.appendChild(notifyDot)
 			list.appendChild(li)
 		}
 	}
 }
 
-async function updateChat (friend, imgSrc) {
-	
+async function updateChat (friend, imgSrc, li) {
+	const chatId = await getCreateChat(friend)
+	li.dataset.chatId = chatId
+	createWebSocket(chatId)
+
+	let chatboxContent = document.querySelector('.chatbox-message-content')
+	chatboxContent.innerHTML = ''
 	let chatName = document.querySelector('.chatbox-message-name')
 	let chatImg = document.querySelector('.chatbox-message-image')
 	chatName.innerText = friend
@@ -122,8 +127,4 @@ async function getCreateChat(user) {
 
 const closeChat = document.querySelector('.chatbox-message-close')
 
-closeChat.addEventListener('click', function (){
-	friendChatOpen = null
-	friendOpenDataSet = null
-    chatBox.classList.remove('show')
-})
+closeChat.addEventListener('click', closeChatOpen)

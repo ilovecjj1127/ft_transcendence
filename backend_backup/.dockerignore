@@ -1,0 +1,6 @@
+__pycache__/
+.env
+.env.example
+Dockerfile
+*.sqlite3
+static/
