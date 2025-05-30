@@ -102,6 +102,8 @@ async function addFriendInList(friend)
 }
 const statusDiv = document.getElementById('status_chat_search');
 
+let chat_box_id
+
 export async function OpenRoom(friend)
 {
         // openChattingBox(friend)
@@ -120,7 +122,7 @@ export async function OpenRoom(friend)
                 chatSocket.close()
                 console.log("close called")
         }
-        const chat_box_id = await getOrcreateChattingBox(friend)
+        chat_box_id = await getOrcreateChattingBox(friend)
 
         if (chat_box_id == null)
         {
@@ -354,21 +356,30 @@ chatboxForm.addEventListener('submit', function (e) {
 
         if (isValid(textarea.value)) {
                 const message = textarea.value.trim().replace(/\n/g, '<br>\n');
-                // writeMessage()
-                //remove autoreply, used for debugging
-                // setTimeout(autoReply, 1000)
-
                 const date = new Date()
 
                 chatSocket.send(JSON.stringify({
                     'message': message,
-                //     'option-game-invite': 0,
                     'date': date
                 }));
                 if (DEBUGPRINTS) console.log("data #chatboxForm; ", message, "\nnow; ", date)
                 scrollBottom()
         }
 })
+
+function reconnectChatSocket(chatBoxId, token) {
+    if (chatSocket.readyState === WebSocket.CLOSING || chatSocket.readyState === WebSocket.CLOSED) {
+        console.log('Reconnecting WebSocket...');
+        chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatBoxId}/?token=${token}`);
+        setChatSocketEventFunctions();
+    }
+}
+
+// import { addZero } from "./unused_functions_tmp/tmp_file_unused_functions.js"
+
+export function addZero(num) {
+    return num < 10 ? '0'+num : num
+}
 
 export default function format_and_put_Reply (data, format, gameId) {
         const today = new Date()
