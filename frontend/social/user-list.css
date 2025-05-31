@@ -1,0 +1,60 @@
+/* friends.css */
+
+/* Shared layout for friend/request items */
+.friend-item {
+    display: flex;
+    flex-direction: row;
+    background-color: transparent;
+    width: 100%;
+	height: 46px;
+    gap: 10px;
+	/* outline: 1px dashed red; */
+    align-items: center;
+    justify-content: center;
+}
+
+/* Friend image styling */
+.friend-item img {
+    /* width: 40px;
+	/* height: 40px; */
+    /* height: 80%; */
+	height: 100%;
+    border-radius: 50%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover; 
+    /* object-fit: cover; */
+    /* cursor: pointer; */
+}
+
+/* Name under the avatar */
+.friend-name-tag {
+    align-items: center;
+    justify-content: center;
+    margin-top: 5px;
+    font-size: 0.9em;
+}
+
+/* Container for action buttons */
+.friend-buttons {
+	/* width: 100%; */
+	max-height: 32px;
+    align-items: center;
+    justify-content: center;
+	align-self: center;
+    display: flex;
+	flex-direction: column;
+	/* outline: 1px dashed blue; */
+}
+
+/* Accept/Decline/etc buttons */
+.friend-buttons button {
+    font-size: 0.8em;
+    /* border-radius: 4px; */
+    cursor: pointer;
+    background-color: #ddd;
+}
+
+.friend-buttons button:hover {
+    background-color: #ccc;
+}
+
