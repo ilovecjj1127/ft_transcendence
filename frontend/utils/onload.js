@@ -6,6 +6,24 @@ import { populateInRequest, populateOutRequest, get_data } from "../social/init_
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 import { DEBUGPRINTS } from "../config.js"
 
+import { io } from "socket.io-client";
+
+const socket = io(`http://${window.location.host}`);
+
+// Authenticate if needed
+socket.on('connect', () => {
+    socket.emit("authenticate", getUserToken().access);
+});
+
+// Listen for events
+socket.on('new_friend_request', (data) => {
+    populateInRequest("incoming-requests", data);
+});
+
+socket.on('new_notification', (data) => {
+    updateNotificationsUI(data);
+});
+
 export async function onloadInit () {
     const accessToken = getUserToken().access
 

@@ -5,7 +5,6 @@ import { DEBUGPRINTS } from "../config.js";
 let switch_bool = true
 var chatSocket = null
 
-
 // returns id of chatbox
 export async function getOrcreateChattingBox(frienda)
 {
@@ -36,7 +35,6 @@ export async function getOrcreateChattingBox(frienda)
         return null
     }
 };
-
 
 export default async function openChattingBox(frienda)
 {

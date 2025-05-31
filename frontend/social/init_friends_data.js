@@ -10,6 +10,7 @@ let url;
 let accessToken;
 let friends;
 let data;
+const dat2 = 2;
 
 export async function get_data(url_parameter)
 {
@@ -23,7 +24,6 @@ export async function get_data(url_parameter)
     const response_data = await response.json()
     if (response.status != 200)
         return null;
-
     return response_data;
 }
 
