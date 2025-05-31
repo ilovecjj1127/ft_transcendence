@@ -6,23 +6,36 @@ import { populateInRequest, populateOutRequest, get_data } from "../social/init_
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 import { DEBUGPRINTS } from "../config.js"
 
-import { io } from "socket.io-client";
+// import { io } from "socket.io-client";
+import { initSocket } from "../dynamic_showing_of_requests.js";
+import { io } from "https://cdn.socket.io/4.7.2/socket.io.esm.min.js";
 
-const socket = io(`http://${window.location.host}`);
+function initGeneralSocialDataSocket()
+{
+    // const socket = io(`http://${window.location.host}`);
+    
+    const socket = new WebSocket(
+            `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
+    );
 
-// Authenticate if needed
-socket.on('connect', () => {
-    socket.emit("authenticate", getUserToken().access);
-});
+    // Authenticate if needed
+    socket.on('connect', () => {
+        if (DEBUGPRINTS) console.log("calling: socket.on('connect', ()")
+        socket.emit("authenticate", getUserToken().access);
+    });
+    
+    // Listen for events
+    socket.on('new_friend_request', (data) => {
+        if (DEBUGPRINTS) console.log("calling: socket.on('new_friend_request', (data)")
+        populateInRequest("incoming-requests", data);
+    });
 
-// Listen for events
-socket.on('new_friend_request', (data) => {
-    populateInRequest("incoming-requests", data);
-});
+    socket.on('new_notification', (data) => {
+        if (DEBUGPRINTS) console.log("calling: socket.on('new_notification', (data)")
+        updateNotificationsUI(data);
+    });
 
-socket.on('new_notification', (data) => {
-    updateNotificationsUI(data);
-});
+}
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
@@ -30,6 +43,8 @@ export async function onloadInit () {
     if (DEBUGPRINTS) console.log("onLoadInit")
     if (accessToken) {
         saveUserInfo()
+
+        initGeneralSocialDataSocket()
 
         hideOrShowSocialMenu(accessToken)
 
