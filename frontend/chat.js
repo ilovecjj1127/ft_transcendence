@@ -113,10 +113,6 @@ export async function OpenRoom(friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
         const token = getUserToken().access
 
-        // if (!token) {
-        //         showLoginModal()
-        //         return
-        // }
         if (chatSocket != null)
         {
                 chatSocket.close()
