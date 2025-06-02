@@ -361,6 +361,7 @@ chatboxForm.addEventListener('submit', function (e) {
                 if (DEBUGPRINTS) console.log("data #chatboxForm; ", message, "\nnow; ", date)
                 scrollBottom()
         }
+        textarea.value = '';
 })
 
 function reconnectChatSocket(chatBoxId, token) {

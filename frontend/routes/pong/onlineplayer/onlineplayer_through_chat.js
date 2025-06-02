@@ -1,5 +1,6 @@
 import { checkToken } from "../../../utils/token.js"
 import { getUserToken } from "../../../utils/userData.js"
+import { DEBUGPRINTS } from "../../../config.js"
 
 export default async function createGame() {
     const isTokenValid = await checkToken()
@@ -42,7 +43,7 @@ export async function createGameWithPlayer(PlayerId) {
         const data = await response.json()
         alert("game created " + data.game.id)
         localStorage.setItem("gameId", data.game.id)
-        location.hash = '/pong/onlineplayer/onlinegame'
+        // location.hash = '/pong/onlineplayer/onlinegame'
         if (DEBUGPRINTS) console.log("gameid ;", data.game.id)
         return data.game.id
     } else {
@@ -67,7 +68,7 @@ export async function createGameReturnId() {
         const data = await response.json()
         alert("game created " + data.game.id)
         localStorage.setItem("gameId", data.game.id)
-        location.hash = '/pong/onlineplayer/onlinegame'
+        // location.hash = '/pong/onlineplayer/onlinegame'
         return data.game.id
     } else {
         alert("error creating game")

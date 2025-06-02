@@ -6,6 +6,7 @@ export const init = () => {
     const overlay = document.querySelector('.overlay')
     const canvas = document.getElementById('gameCanvas')
     const ctx = document.getElementById('gameCanvas').getContext('2d')
+    overlay.innerHTML = ""; // clear previouse overlay content to prevent duplicates
     ctx.clearRect( 0,0, canvas.width, canvas.height)
     createBackToMenu(overlay, '/pong')
     if (getUserToken().access) {
