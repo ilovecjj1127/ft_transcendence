@@ -127,6 +127,7 @@ export async function OpenRoom(friend)
                 if (chatSocket != null) chatSocket.close()
                 return
         }
+
         const data = await getUserInfo(friend)
         if (DEBUGPRINTS) console.log("adding avatar", data)
 
@@ -149,8 +150,10 @@ export async function OpenRoom(friend)
         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
         setChatSocketEventFunctions()
         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
-        if (friendChatOpen && friendChatOpen.name == friend.name && friendChatOpen.name != undefined){
-                if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friendChatOpen.name, friend.name)
+        if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friend)
+        if (friendChatOpen && friendChatOpen == friend && friendChatOpen != undefined){
+                if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friendChatOpen, friend)
+
                 chatBox.classList.remove('show')
                 friendChatOpen = null
         } else {                
