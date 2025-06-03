@@ -1,9 +1,8 @@
-import {onloadInit} from "./utils/onload.js"
+import {onloadInit} from "@utils/onload.js"
 import { DEBUGPRINTS } from "./config.js"
 import { getUsername, getUserToken } from "./utils/userData.js";
-import { showLoginModal } from "./utils/modals.js";
-import { checkToken } from "./utils/token.js";
-import { getUserInfo } from "./chat.js";
+import { showLoginModal } from "@utils/modals.js";
+import { checkToken } from "@utils/token.js";
 
 //Dynamically load HTML, JS, and CSS for each route
 export const loadRoute = async (route) => {

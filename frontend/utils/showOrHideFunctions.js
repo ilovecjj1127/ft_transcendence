@@ -1,4 +1,4 @@
-import { getUserInfo } from "../chat.js"
+import { getUserInfo } from "./userData.js"
 import { DEBUGPRINTS } from "../config.js"
 import { checkToken } from "./token.js"
 import { getUsername } from "./userData.js"

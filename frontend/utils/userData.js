@@ -69,3 +69,17 @@ export function getUserId () {
 export function getUserFriendlist () {
     return (localStorage.getItem("friends"))
 }
+
+export async function getUserInfo(username) {
+    const response = await fetch(`http://${window.location.host}/api/users/?username=${username}`, {
+            method: 'GET',
+            headers: {
+              'accept': 'application/json',
+              'Authorization': `Bearer ${getUserToken().access}`
+            },
+    });
+    const response_data = await response.json()
+
+    console.log("avatar: ", response_data.avatar)
+    return response_data;
+}

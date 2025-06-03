@@ -1,4 +1,7 @@
 
+import { scrollBottom } from "../chat_utils.js"
+
+
 function writeMessage () {
     const today = new Date()
     let message = `

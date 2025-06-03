@@ -1,10 +1,8 @@
 import { showLoginModal } from "../utils/modals.js"
 import { getUserToken } from "../utils/userData.js";
-import openChattingBox from "./open_close_chat.js";
-import openSelectFriend from "./select_friend_menu.js"
 import { DEBUGPRINTS } from "../config.js"
 import { cancelRequest, declineRequest, acceptRequest } from "./requests.js"
-import { getUserInfo } from "../chat.js";
+import { getUserInfo } from "../utils/userData.js";
 
 let url;
 let accessToken;

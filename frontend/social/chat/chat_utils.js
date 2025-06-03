@@ -1,4 +1,3 @@
-
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 
@@ -16,4 +15,8 @@ export function scrollBottom () {
 
 export function updateChat (friend) {
     chatBox.classList.add('show')
+}
+
+export function addZero(num) {
+    return num < 10 ? '0'+num : num
 }

@@ -287,9 +287,20 @@
 
     <main id="app"></main>
     
+    <script type="importmap">
+        {
+          "imports": {
+            "@social/": "/social/",
+            "@chat/": "/social/chat/",
+            "@utils/": "/utils/"
+          }
+        }
+    </script>
+
+
     <script src="app.js" type="module"></script>
-    <script src="chat.js" type="module"></script>
-    <script src="eventlistenersSocial.js" type="module"></script>
+    <!-- <script src="chat.js" type="module"></script> -->
+    <!-- <script src="eventlistenersSocial.js" type="module"></script> -->
 
     <script src="utils/modals.js" type="module"></script>
     <script src="utils/userData.js" type="module"></script>

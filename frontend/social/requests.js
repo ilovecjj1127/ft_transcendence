@@ -11,7 +11,7 @@ import getOrcreateChattingBox from "./open_close_chat.js"
 var friend = null
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 import setChatSocketEventFunctions from "./open_close_chat.js"
-import { OpenRoom } from "../chat.js"
+import { OpenRoom } from "./chat/live_chatbox/open_chatbox.js"
 
 
 export async function cancelRequest(request_id)
