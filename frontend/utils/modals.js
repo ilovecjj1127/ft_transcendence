@@ -1,4 +1,7 @@
 import { handleLogin, loginFunction } from "./login.js"
+import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+// import { checkToken } from "./utils/token.js";
+// import { getUserToken } from "./utils/token.js";
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -14,10 +17,17 @@ export function showLoginModal () {
     loginModal.show()
 }
 
+
 export function hideLoginModal () {
     document.getElementById('login-message').innerHTML = ''
     document.getElementById("login-form").reset()
     loginModal.hide()
+
+    // const accessToken = checkToken(getUserToken().access)
+    // hideOrShowSocialMenu(accessToken)
+    // setTimeout( () => {
+    //     window.location.reload()
+    // }, 1000);
 }
 
 loginForm.onsubmit = async (e) => {
@@ -42,7 +52,7 @@ registerForm.onsubmit = async (e) => {
     const message = document.getElementById("register-message")
 
     message.innerHTML = ""
-    
+ 
     if (password != confirmPassword) {
 
         message.innerHTML = "<p class='text-danger'>The passwords differ.</p>"
@@ -62,7 +72,7 @@ registerForm.onsubmit = async (e) => {
     if (response.ok) {
         const data = await response.json()
         message.innerHTML = "<p class='text-success'>Registered successful! Now you can login.</p>"
-                
+    
         setTimeout( () => {
             registerModal.hide()
             handleLogin()

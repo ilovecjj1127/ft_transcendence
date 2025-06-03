@@ -9,16 +9,16 @@ export const init = () => {
     
     const user = localStorage.getItem("userSearched")
     localStorage.removeItem("userSearched")
+    // if (DEBUG) if (DEBUGPRINTS) console.log("user: ", user)
+    getUserSearched(user)
 
-    getUserSearched()
-    
     function closeStats () {
         deleteStatsEvents()
         location.hash = '/stats'
     }
-    
+
     // get user stats and save it in stats variable
-    async function getUserSearched () {
+    async function getUserSearched (user) {
         const isTokenValid = await checkToken()
         
         if (!isTokenValid) return
@@ -37,7 +37,7 @@ export const init = () => {
             username.innerText = userSearched.username
             profileImg.src = userSearched.avatar
         } else {
-            console.log("user search error")
+            if (DEBUGPRINTS) console.log("user search error")
         }
     }
             

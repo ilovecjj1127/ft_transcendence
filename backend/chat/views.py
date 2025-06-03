@@ -13,8 +13,11 @@ from .services import ChatRoomService
 
 
 def room(request, room_id):
+    username_to_chat_with = request.GET.get("username_to_chat_with", "unknown") 
     return render(request, 'chat/room.html', {
-        'room_id': room_id
+        'room_id': room_id,
+        'username_to_chat_with': username_to_chat_with,
+        'current_user': request.user.username
     })
 
 class ChatGetOrCreateView(APIView):
@@ -30,7 +33,7 @@ class ChatGetOrCreateView(APIView):
         serializer = ChatGetOrCreateSerializer(data=request.data)
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
         user1 = request.user
         username = serializer.validated_data['username']
         try:
@@ -56,7 +59,12 @@ class ChatBlockorUnblockView(APIView):
         tags=['Chat'],
     )
     def patch(self, request: Request) -> Response:
+        serializer = ChatGetOrCreateSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
         chatroom_id = request.query_params.get('chatroom_id')
+
         if not chatroom_id:
             return Response({'error': 'ChatRoom ID is required'}, status=status.HTTP_400_BAD_REQUEST)
         user = request.user

@@ -1,6 +1,8 @@
+import { DEBUGPRINTS } from "../config.js"
 import { hideOtpModal, showOtpModal } from "./2fa.js"
 import { showLoginModal, hideLoginModal } from "./modals.js"
 import { createMenuProfile } from "./profile-toggle.js"
+import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 import { saveUserInfo, setUserToken } from "./userData.js"
 
 let loginResolver
@@ -37,11 +39,14 @@ export async function loginFunction (password, username) {
         saveUserInfo()
         createMenuProfile()
         message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
-                
+        document.getElementById("social-menu-container").style.display = "flex"
+        
         setTimeout( () => {
-            hideLoginModal()
+            // hideLoginModal()
+            hideOrShowSocialMenu()
         }, 2000)
-
+        
+        if (DEBUGPRINTS) console.log("after login 200")
         if (typeof loginResolver == 'function') {
             loginResolver(true)
             loginResolver = null
@@ -57,7 +62,6 @@ export async function loginFunction (password, username) {
             loginResolver(false)
             loginResolver = null
         }
-
     }
 }
 

@@ -2,11 +2,12 @@ import Ball from "./ball.js"
 import Paddle from "./paddle.js"
 import { getUserToken } from "../utils/userData.js"
 import { checkToken } from "../utils/token.js"
+import { DEBUGPRINTS } from "../config.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
 const overlay = document.querySelector('.overlay')
- 
+
 export default class PongOnline {
     constructor() {
         const gameInfo = JSON.parse(localStorage.getItem("gameInfo"))
@@ -168,7 +169,7 @@ export default class PongOnline {
     };
 
     handleOnclose () {
-        console.log("Connection closed by the server.");
+        if (DEBUGPRINTS) console.log("Connection closed by the server.");
     };
 
     sendAction(action) {
