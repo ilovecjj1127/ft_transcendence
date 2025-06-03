@@ -64,7 +64,7 @@ export async function OpenRoom(friend)
 
         chatboxMessageWrapper.innerHTML = '';
         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
-        setChatSocketEventFunctions(c)
+        setChatSocketEventFunctions(chatSocket)
         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
         if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friend)
         if (friendChatOpen && friendChatOpen == friend && friendChatOpen != undefined){
