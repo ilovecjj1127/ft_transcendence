@@ -9,15 +9,10 @@ const removeFriendElem = document.querySelector('#remove-as-friend-button')
 const invitePlayerForGame = document.querySelector('#invite-player-for-game-button')
 const chatboxForm = document.querySelector('.chatbox-message-form')
 const textarea = document.querySelector('.chatbox-message-input')
-const closeChat = document.querySelector('.chatbox-message-close')
+const chatBox = document.querySelector('.chatbox-message-wrapper')
+import { chatSocket } from "@social/open_close_chat.js"
 import { removeFriend } from "./social/select_friend_menu.js"
 import { createGameWithPlayer } from "../../routes/pong/onlineplayer/onlineplayer_through_chat.js"
-
-closeChat.addEventListener('click', function (){
-    chatBox.classList.remove('show')
-    chatSocket.close()
-    if (DEBUGPRINTS) console.log("closing socket")
-})
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')

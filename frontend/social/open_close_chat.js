@@ -1,9 +1,35 @@
 import { showLoginModal } from "../utils/modals.js";
 import { getUserToken } from "../utils/userData.js";
+const closeChat = document.querySelector('.chatbox-message-close')
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 import { DEBUGPRINTS } from "../config.js";
 let switch_bool = true
-var chatSocket = null
+import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js";
+
+// chatState.js
+let chatSocket = null;
+
+// export function getChatSocket() {
+//   return chatSocket;
+// }
+
+// export function setChatSocket(socket) {
+//   chatSocket = socket;
+// }
+
+// export function closeChatSocket() {
+//   if (chatSocket) {
+//     chatSocket.close();
+//     chatSocket = null;
+//   }
+// }
+
+closeChat.addEventListener('click', function (){
+    chatBox.classList.remove('show')
+    if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
+    chatSocket.close()
+    if (DEBUGPRINTS) console.log("closing socket")
+})
 
 
 // returns id of chatbox
@@ -59,11 +85,12 @@ export default async function openChattingBox(frienda)
             `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
         );
         chatBox.querySelector('.chatbox-message-name').innerHTML = frienda
-        
+        if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
+
         // document.getElementById("chat-user-name").textContent = frienda;
         document.getElementById('chat-log').innerHTML = ""
         
-        setChatSocketEventFunctions()
+        setChatSocketEventFunctions(chatSocket)
         
         chattingBox.style.display = "block";
     }
@@ -80,3 +107,4 @@ export default async function openChattingBox(frienda)
                 console.error("Error: #chatting-box not found in the DOM.");
             }
 }
+

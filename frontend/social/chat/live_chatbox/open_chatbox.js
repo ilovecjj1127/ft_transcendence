@@ -1,14 +1,15 @@
 
 const chatBox = document.querySelector('.chatbox-message-wrapper')
-import { DEBUGPRINTS } from "./config.js"
-import { getUserToken } from "./utils/userData.js";
-import { getOrcreateChattingBox } from "./social/open_close_chat.js"
-import { updateChat } from "./tmp_utils_rik/tmp_utils.js"
-import { checkToken } from "./utils/token.js"
+import { DEBUGPRINTS } from "@/config.js"
+import { getUserToken } from "@/utils/userData.js";
+import { getOrcreateChattingBox } from "@/social/open_close_chat.js"
+import { checkToken } from "@utils/token.js"
+import { getUserInfo } from "@utils/userData.js"
+import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js"
 
 
 //chatbox message
-import { updateChat } from "./social/chat/chat_utils.js"
+import { updateChat } from "@chat/chat_utils.js"
 
 // chatbox message
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
@@ -18,16 +19,16 @@ let chat_box_id
 //used to check if same friend is pressed
 let friendChatOpen = null
 
-var chatSocket = null
 
 
 export async function OpenRoom(friend)
 {
-        //here change id with whatever
-        if (DEBUGPRINTS) console.log("click on img friend; ", friend)
+	//here change id with whatever
+	if (DEBUGPRINTS) console.log("click on img friend; ", friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
-        const token = getUserToken().access
-
+			const token = getUserToken().access
+		
+		var chatSocket = null
         if (chatSocket != null)
         {
                 chatSocket.close()
@@ -63,7 +64,7 @@ export async function OpenRoom(friend)
 
         chatboxMessageWrapper.innerHTML = '';
         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
-        setChatSocketEventFunctions()
+        setChatSocketEventFunctions(c)
         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
         if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friend)
         if (friendChatOpen && friendChatOpen == friend && friendChatOpen != undefined){

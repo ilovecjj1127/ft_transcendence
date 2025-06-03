@@ -1,7 +1,13 @@
 import { scrollBottom } from "../chat_utils.js"
+import { DEBUGPRINTS } from "@/config.js";
+import { addZero } from "@chat/chat_utils.js"
+const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 
-export function setChatSocketEventFunctions()
+export function setChatSocketEventFunctions(chatSocket)
 {
+	if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
+	if (chatSocket == null)
+		return
     document.getElementById('chat-message-submit').onclick = async function() {
         const messageInput = document.getElementById('chat-message-input');
         const message = messageInput.value;

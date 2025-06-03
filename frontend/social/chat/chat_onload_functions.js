@@ -3,8 +3,14 @@
 //  refreshing page, first loading webpage,
 //  changing route
 //
-import { get_data } from "./social/init_friends_data.js"
-import { getUserFriendlist } from "./utils/userData.js"
+import { get_data } from "@social/init_friends_data.js"
+import { getUserFriendlist } from "@utils/userData.js"
+import { DEBUGPRINTS } from "@/config.js"
+import { getUserInfo } from "@utils/userData.js"
+import { populateInRequest } from "@social/init_friends_data.js"
+import { populateOutRequest } from "@social/init_friends_data.js"
+import { OpenRoom } from "@chat/live_chatbox/open_chatbox.js"
+
 const list = document.getElementById("friends-list")
 
 export function populateFriendList() {
@@ -31,7 +37,7 @@ export function populateFriendList() {
 		});
 }
 
-async function updateSocialRequestsData ()
+export async function updateSocialRequestsData ()
 {
     const url = `http://${window.location.host}/api/users/me/`
     let data = null
