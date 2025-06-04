@@ -10,9 +10,11 @@ const invitePlayerForGame = document.querySelector('#invite-player-for-game-butt
 const chatboxForm = document.querySelector('.chatbox-message-form')
 const textarea = document.querySelector('.chatbox-message-input')
 const chatBox = document.querySelector('.chatbox-message-wrapper')
-import { getChatSocket } from "@social/open_close_chat.js"
+import { getChatSocket } from "@chat/chatSocketState.js"
 import { removeFriend } from "@social/select_friend_menu.js"
 import { createGameWithPlayer } from "../../routes/pong/onlineplayer/onlineplayer_through_chat.js"
+import { DEBUGPRINTS } from "@/config.js"
+
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')

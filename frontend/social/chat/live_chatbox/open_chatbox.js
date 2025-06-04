@@ -2,7 +2,7 @@
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 import { DEBUGPRINTS } from "@/config.js"
 import { getUserToken } from "@/utils/userData.js";
-import { getOrcreateChattingBox } from "@/social/open_close_chat.js"
+import { getOrcreateChattingBox } from "@social/open_close_chat.js"
 import { checkToken } from "@utils/token.js"
 import { getUserInfo } from "@utils/userData.js"
 import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js"
@@ -20,8 +20,9 @@ let chat_box_id
 //used to check if same friend is pressed
 let friendChatOpen = null
 
-var chatSocket = null
-
+import { getChatSocket } from '@chat/chatSocketState.js';
+import { setChatSocket } from '@chat/chatSocketState.js';
+import { closeChatSocket } from '@chat/chatSocketState.js';
 
 export async function OpenRoom(friend)
 {
@@ -30,9 +31,9 @@ export async function OpenRoom(friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
 			const token = getUserToken().access
 		
-        if (chatSocket != null)
+        if (getChatSocket() != null)
         {
-                chatSocket.close()
+                getChatSocket().close()
                 console.log("close called")
         }
         chat_box_id = await getOrcreateChattingBox(friend)
@@ -41,7 +42,7 @@ export async function OpenRoom(friend)
         {
                 statusDiv.textContent = `Status: chat_box_id is undefined`;
                 chatBox.classList.remove('show')
-                if (chatSocket != null) chatSocket.close()
+                if (getChatSocket() != null) getChatSocket().close()
                 return
         }
 
@@ -56,16 +57,16 @@ export async function OpenRoom(friend)
         
         if (DEBUGPRINTS) console.log("is valid?; ", checkToken(getUserToken()));
 
-        chatSocket = new WebSocket(
+        const socket = new WebSocket(
                 `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
         );
-
+        setChatSocket(socket)
         localStorage.setItem("chatbox-playerId", data.id)
 
 
         chatboxMessageWrapper.innerHTML = '';
         document.getElementById('chatting-box-id-v2').dataset.chatboxIdValue = chat_box_id;
-        setChatSocketEventFunctions(chatSocket)
+        setChatSocketEventFunctions(getChatSocket())
         chatBox.querySelector('.chatbox-message-name').innerHTML = friend
         if (DEBUGPRINTS) console.log("friendChatOpen && friendChatOpen.name == friend.name; ", friendChatOpen, friend)
         if (friendChatOpen && friendChatOpen == friend && friendChatOpen != undefined){
@@ -94,7 +95,7 @@ closeChat.addEventListener('click', function (){
         // statusDiv.textContent = `Status: chat_box with ${friend} has been closed`;
         friendChatOpen = null
         chatBox.classList.remove('show')
-        chatSocket.close()
+        getChatSocket().close()
         
         if (DEBUGPRINTS) console.log("closeChat button clicked")
         if (DEBUGPRINTS) console.log("closing socket")

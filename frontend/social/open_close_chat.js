@@ -7,11 +7,11 @@ let switch_bool = true
 import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js";
 
 // chatState.js
-let chatSocket = null;
+// let chatSocket = null;
 
-export function getChatSocket() {
-  return chatSocket;
-}
+// export function getChatSocket() {
+//   return chatSocket;
+// }
 
 // export function setChatSocket(socket) {
 //   chatSocket = socket;
@@ -64,47 +64,47 @@ export async function getOrcreateChattingBox(frienda)
 };
 
 
-export default async function openChattingBox(frienda)
-{
-    const chat_box_id = await getOrcreateChattingBox(frienda)
+// export default async function openChattingBox(frienda)
+// {
+//     const chat_box_id = await getOrcreateChattingBox(frienda)
 
-    let chattingBox = document.getElementById("chatting-box-id-v2");
-    chattingBox.setAttribute("value", chat_box_id)
+//     let chattingBox = document.getElementById("chatting-box-id-v2");
+//     chattingBox.setAttribute("value", chat_box_id)
 
     
-    if (chattingBox.getAttribute("value") && switch_bool) {
+//     if (chattingBox.getAttribute("value") && switch_bool) {
         
-        switch_bool = false
-        const token = getUserToken().access
+//         switch_bool = false
+//         const token = getUserToken().access
         
-        if (!token) {
-            showLoginModal()
-            return
-        }
-        chatSocket = new WebSocket(
-            `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
-        );
-        chatBox.querySelector('.chatbox-message-name').innerHTML = frienda
-        if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
+//         if (!token) {
+//             showLoginModal()
+//             return
+//         }
+//         chatSocket = new WebSocket(
+//             `ws://${window.location.host}/ws/chat/${chat_box_id}/?token=${token}`
+//         );
+//         chatBox.querySelector('.chatbox-message-name').innerHTML = frienda
+//         if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
 
-        // document.getElementById("chat-user-name").textContent = frienda;
-        document.getElementById('chat-log').innerHTML = ""
+//         // document.getElementById("chat-user-name").textContent = frienda;
+//         document.getElementById('chat-log').innerHTML = ""
         
-        setChatSocketEventFunctions(chatSocket)
+//         setChatSocketEventFunctions(chatSocket)
         
-        chattingBox.style.display = "block";
-    }
-    else if (chattingBox.getAttribute("value") && !switch_bool)
-        {
-            if (chatSocket != null)
-                {
-                    chatSocket.close()
-                    if (DEBUGPRINTS) console.log("close called")
-                }
-                chattingBox.style.display = "none";
-                switch_bool = true
-            } else {
-                console.error("Error: #chatting-box not found in the DOM.");
-            }
-}
+//         chattingBox.style.display = "block";
+//     }
+//     else if (chattingBox.getAttribute("value") && !switch_bool)
+//         {
+//             if (chatSocket != null)
+//                 {
+//                     chatSocket.close()
+//                     if (DEBUGPRINTS) console.log("close called")
+//                 }
+//                 chattingBox.style.display = "none";
+//                 switch_bool = true
+//             } else {
+//                 console.error("Error: #chatting-box not found in the DOM.");
+//             }
+// }
 

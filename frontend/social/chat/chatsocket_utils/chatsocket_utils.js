@@ -3,6 +3,11 @@ import { DEBUGPRINTS } from "@/config.js";
 import { addZero } from "@chat/chat_utils.js"
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 
+import { getChatSocket } from '@chat/chatSocketState.js';
+import { setChatSocket } from '@chat/chatSocketState.js';
+import { closeChatSocket } from '@chat/chatSocketState.js';
+
+
 export function setChatSocketEventFunctions(chatSocket)
 {
 	if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
@@ -12,7 +17,7 @@ export function setChatSocketEventFunctions(chatSocket)
         const messageInput = document.getElementById('chat-message-input');
         const message = messageInput.value;
 
-        chatSocket.send(JSON.stringify({
+        getChatSocket().send(JSON.stringify({
             'message': message,
             'option-game-invite' : 0,
             'date': new Date()
@@ -21,7 +26,7 @@ export function setChatSocketEventFunctions(chatSocket)
 
         messageInput.value = '';
     };
-    chatSocket.onmessage = function(event) {
+    getChatSocket().onmessage = function(event) {
         const data = JSON.parse(event.data);
         if (DEBUGPRINTS) console.log("data onmessage; ", data)
         if (DEBUGPRINTS) console.log("date onmessage; ", data.date)
@@ -69,7 +74,7 @@ export function setChatSocketEventFunctions(chatSocket)
                 }
             }
     };
-    chatSocket.onclose = function(event) {
+    getChatSocket().onclose = function(event) {
         if (event.code === 1006) {
             alert(`Unauthorized: please log in first, reason; ${event.reason}`);
         } else if (event.code === 4000) {
@@ -108,9 +113,10 @@ export default function format_and_put_Reply (data, format, gameId) {
 }
 
 function reconnectChatSocket(chatBoxId, token) {
-    if (chatSocket.readyState === WebSocket.CLOSING || chatSocket.readyState === WebSocket.CLOSED) {
+    if (getChatSocket().readyState === WebSocket.CLOSING || chatSocket.readyState === WebSocket.CLOSED) {
         console.log('Reconnecting WebSocket...');
-        chatSocket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatBoxId}/?token=${token}`);
+        const socket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatBoxId}/?token=${token}`);
+        setChatSocket(socket)
         setChatSocketEventFunctions();
     }
 }
