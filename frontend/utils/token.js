@@ -39,7 +39,7 @@ export function deleteTokenReload () {
 async function refreshAccessToken () {
     const refreshToken = getUserToken().refresh
 
-    const response = await fetch(`http://${window.location.host}/api/users/token_refresh/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/token_refresh/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

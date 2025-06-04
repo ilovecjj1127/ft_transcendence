@@ -5,8 +5,6 @@ services:
   db:
     container_name: transcendence_db
     image: postgres:17-alpine
-    # ports:
-    #   - "5432:5432"
     env_file:
       - db/.env
     # volumes:
@@ -35,11 +33,15 @@ services:
   nginx:
     image: nginx:latest
     container_name: nginx
+    build:
+      context: nginx
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf
       - ./frontend:/usr/share/nginx/html
       - ./avatars:/usr/share/nginx/avatars
+      - ./certs:/etc/ssl/certs
     ports:
-      - "8080:8080"
+      - "8443:8443"
+    entrypoint: ["/bin/sh", "-c", "/etc/ssl/certs/generate_cert.sh && nginx -g 'daemon off;'"]
     depends_on:
       - backend
