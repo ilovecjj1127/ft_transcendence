@@ -44,7 +44,7 @@ async function createGamesList (list) {
     list.innerHTML = ""
 
     //Fill with games
-    const listGamesResponse = await fetch(`http://${window.location.host}/api/games/show/`, {
+    const listGamesResponse = await fetch(`https://${window.location.host}/api/games/show/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -136,7 +136,7 @@ async function startGame (game) {
 async function joinGame (game, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
-    const response = await fetch(`http://${window.location.host}/api/games/join/`, {
+    const response = await fetch(`https://${window.location.host}/api/games/join/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -162,7 +162,7 @@ async function cancelGame(gameId, li, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const response = await fetch(`http://${window.location.host}/api/games/cancel/`, {
+    const response = await fetch(`https://${window.location.host}/api/games/cancel/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -196,7 +196,7 @@ function createNewGameButton (menu) {
             const isTokenValid = await checkToken()
             if (!isTokenValid) return
             
-            const response = await fetch(`http://${window.location.host}/api/games/create/`, {
+            const response = await fetch(`https://${window.location.host}/api/games/create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

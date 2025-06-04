@@ -29,7 +29,7 @@ export async function showQrModal () {
     return
     }
 
-    const response = await fetch(`http://${window.location.host}/api/users/setup_2fa/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/setup_2fa/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -130,7 +130,7 @@ async function setup_twofa (otpcode) {
         return
     }
     const message = document.getElementById("otp-message")
-    const response = await fetch(`http://${window.location.host}/api/users/setup_2fa/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/setup_2fa/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

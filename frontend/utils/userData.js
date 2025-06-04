@@ -4,7 +4,7 @@ export async function saveUserInfo () {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
 
-    const response = await fetch(`http://${window.location.host}/api/users/me`, {
+    const response = await fetch(`https://${window.location.host}/api/users/me`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

@@ -36,7 +36,7 @@ export const init = () => {
         
         if (!isTokenValid) return
         
-        const statsRequest = await fetch(`http://${window.location.host}/api/games/statistics`, {
+        const statsRequest = await fetch(`https://${window.location.host}/api/games/statistics`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export const init = () => {
         const user = getUsername()
         if (!isTokenValid) return
 
-        const historyResponse = await fetch(`http://${window.location.host}/api/games/history/?username=${user}`, {
+        const historyResponse = await fetch(`https://${window.location.host}/api/games/history/?username=${user}`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -112,7 +112,7 @@ export const init = () => {
         
         if (!isTokenValid) return
         
-        const checkUserExist = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
+        const checkUserExist = await fetch(`https://${window.location.host}/api/users/?username=${user}`, {
             method: "HEAD",
             headers: {
                 "Content-Type": "application/json",

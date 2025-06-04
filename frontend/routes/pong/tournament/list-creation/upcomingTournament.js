@@ -26,7 +26,7 @@ async function requestList (list, listContainer) {
         const isTokenValid = await checkToken()
         if (!isTokenValid) return
 
-        const listResponse = await fetch(`http://${window.location.host}/api/tournament/show/upcoming`, {
+        const listResponse = await fetch(`https://${window.location.host}/api/tournament/show/upcoming`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -83,7 +83,7 @@ async function cancelTournament (id, li, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const cancelResponse = await fetch(`http://${window.location.host}/api/tournament/cancel/`, {
+    const cancelResponse = await fetch(`https://${window.location.host}/api/tournament/cancel/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -109,7 +109,7 @@ async function startTournament (id, li, button) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const startResponse = await fetch(`http://${window.location.host}/api/tournament/start/`, {
+    const startResponse = await fetch(`https://${window.location.host}/api/tournament/start/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -25,7 +25,7 @@ async function requestList (list, listContainer) {
         const isTokenValid = await checkToken()
         if (!isTokenValid) return
 
-        const listResponse = await fetch(`http://${window.location.host}/api/tournament/show/ongoing`, {
+        const listResponse = await fetch(`https://${window.location.host}/api/tournament/show/ongoing`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

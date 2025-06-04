@@ -45,7 +45,7 @@ export default class PongOnline {
         const isTokenValid = await checkToken()
         if (isTokenValid) {
             this.token = getUserToken().access
-            this.socket = new WebSocket(`ws://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
+            this.socket = new WebSocket(`wss://${window.location.host}/ws/pong/${this.gameId}/?token=${this.token}`)
         }
 
         this.socket.onmessage = this.handleOnmessage.bind(this)
