@@ -1,9 +1,9 @@
 import aioredis
 from channels.middleware import BaseMiddleware
 from channels.db import database_sync_to_async
+from django.conf import settings
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.exceptions import TokenError
-
 
 
 class JWTAuthMiddleware(BaseMiddleware):
@@ -20,7 +20,7 @@ class JWTAuthMiddleware(BaseMiddleware):
         else:
             scope['user'] = await self.get_user_from_token(token)
         return await super().__call__(scope, receive, send)
-    
+
     @database_sync_to_async
     def get_user_from_token(self, token):
         from django.contrib.auth import get_user_model
@@ -40,7 +40,7 @@ class RedisPoolMiddleware(BaseMiddleware):
     def __init__(self, inner):
         super().__init__(inner)
         self.redis_pool = aioredis.from_url(
-            "redis://redis:6379", encoding="utf-8", decode_responses=True
+            settings.REDIS_URL, encoding="utf-8", decode_responses=True
         )
 
     async def __call__(self, scope, receive, send):

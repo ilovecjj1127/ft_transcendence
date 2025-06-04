@@ -5,6 +5,7 @@ from django.shortcuts import get_object_or_404
 from django.db.models import Q
 from django.core.exceptions import ValidationError
 
+
 class ChatRoomService:
     @staticmethod
     @transaction.atomic
@@ -19,7 +20,7 @@ class ChatRoomService:
             return chatroom, False
         chatroom = ChatRoom.objects.create(user1=user1, user2=user2)
         return chatroom, True
-    
+
     @staticmethod
     @transaction.atomic
     def block_action(user: UserProfile, chatroom_id: int) -> ChatRoom:
@@ -36,3 +37,9 @@ class ChatRoomService:
             chatroom.blocked_by = None
             chatroom.save()
             return chatroom
+
+    @staticmethod
+    def get_unread_chats(user: UserProfile) -> list[str]:
+        chats = ChatRoom.objects.filter(unread_by=user).select_related('user1', 'user2') \
+            .only('user1__username', 'user2__username')
+        return [chat.user1.username if chat.user1 != user else chat.user2.username for chat in chats]
