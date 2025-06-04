@@ -9,9 +9,9 @@ import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_u
 // chatState.js
 let chatSocket = null;
 
-// export function getChatSocket() {
-//   return chatSocket;
-// }
+export function getChatSocket() {
+  return chatSocket;
+}
 
 // export function setChatSocket(socket) {
 //   chatSocket = socket;
@@ -24,12 +24,12 @@ let chatSocket = null;
 //   }
 // }
 
-closeChat.addEventListener('click', function (){
-    chatBox.classList.remove('show')
-    if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
-    chatSocket.close()
-    if (DEBUGPRINTS) console.log("closing socket")
-})
+// closeChat./addEventListener('click', function (){
+//     chatBox.classList.remove('show')
+//     if (DEBUGPRINTS) console.log("chatSocket= ", chatSocket)
+//     chatSocket.close()
+//     if (DEBUGPRINTS) console.log("closing socket")
+// })
 
 
 // returns id of chatbox

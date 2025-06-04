@@ -6,6 +6,7 @@ import { getOrcreateChattingBox } from "@/social/open_close_chat.js"
 import { checkToken } from "@utils/token.js"
 import { getUserInfo } from "@utils/userData.js"
 import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js"
+const closeChat = document.querySelector('.chatbox-message-close')
 
 
 //chatbox message
@@ -19,6 +20,7 @@ let chat_box_id
 //used to check if same friend is pressed
 let friendChatOpen = null
 
+var chatSocket = null
 
 
 export async function OpenRoom(friend)
@@ -28,7 +30,6 @@ export async function OpenRoom(friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
 			const token = getUserToken().access
 		
-		var chatSocket = null
         if (chatSocket != null)
         {
                 chatSocket.close()
@@ -88,3 +89,13 @@ export async function OpenRoom(friend)
         }
         }
 }
+
+closeChat.addEventListener('click', function (){
+        // statusDiv.textContent = `Status: chat_box with ${friend} has been closed`;
+        friendChatOpen = null
+        chatBox.classList.remove('show')
+        chatSocket.close()
+        
+        if (DEBUGPRINTS) console.log("closeChat button clicked")
+        if (DEBUGPRINTS) console.log("closing socket")
+})

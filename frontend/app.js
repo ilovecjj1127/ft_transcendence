@@ -4,6 +4,9 @@ import { getUsername, getUserToken } from "./utils/userData.js";
 import { showLoginModal } from "@utils/modals.js";
 import { checkToken } from "@utils/token.js";
 
+import "@social/eventlistenersSocial.js";
+import "@chat/chat_eventlisteners.js";
+
 //Dynamically load HTML, JS, and CSS for each route
 export const loadRoute = async (route) => {
     const app = document.getElementById('app');

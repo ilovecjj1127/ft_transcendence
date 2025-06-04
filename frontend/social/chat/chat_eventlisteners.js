@@ -1,8 +1,8 @@
-import { scrollBottom } from "../chat_utils.js"
-import { isValid } from "../chat_utils.js"
+import { scrollBottom } from "@chat/chat_utils.js"
+import { isValid } from "@chat/chat_utils.js"
 const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
 const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
-import { loadRoute } from "./app.js"
+import { loadRoute } from "@/app.js"
 const gotoProfileButton = document.querySelector('#go-to-profile-button')
 const blockOrUnblockButton = document.querySelector('#block-chatroom-button')
 const removeFriendElem = document.querySelector('#remove-as-friend-button')
@@ -10,8 +10,8 @@ const invitePlayerForGame = document.querySelector('#invite-player-for-game-butt
 const chatboxForm = document.querySelector('.chatbox-message-form')
 const textarea = document.querySelector('.chatbox-message-input')
 const chatBox = document.querySelector('.chatbox-message-wrapper')
-import { chatSocket } from "@social/open_close_chat.js"
-import { removeFriend } from "./social/select_friend_menu.js"
+import { getChatSocket } from "@social/open_close_chat.js"
+import { removeFriend } from "@social/select_friend_menu.js"
 import { createGameWithPlayer } from "../../routes/pong/onlineplayer/onlineplayer_through_chat.js"
 
 dropDownToggle.addEventListener('click', function () {
@@ -77,7 +77,7 @@ invitePlayerForGame.addEventListener('click', async function () {
 
         const date = new Date()
         const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
-        chatSocket.send(JSON.stringify({
+        getChatSocket().send(JSON.stringify({
         'message' : message,
         'date': date
         }));
@@ -115,7 +115,7 @@ chatboxForm.addEventListener('submit', function (e) {
                 const message = textarea.value.trim().replace(/\n/g, '<br>\n');
                 const date = new Date()
 
-                chatSocket.send(JSON.stringify({
+                getChatSocket().send(JSON.stringify({
                     'message': message,
                     'date': date
                 }));

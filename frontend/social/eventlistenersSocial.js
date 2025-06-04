@@ -1,10 +1,13 @@
 
 // import { showHide } from "./social/buttons.js"
 
+import { DEBUGPRINTS } from "@/config.js";
+
 document.addEventListener('DOMContentLoaded', function() {
     const sendRequestsButton = document.getElementById('send-requests');
     const showRequestsButton = document.getElementById('show-requests');
     const chatButton = document.getElementById('chat');
+    if (DEBUGPRINTS) console.log("adding eventlisteners", showRequestsButton, sendRequestsButton, chat)
 
     if (sendRequestsButton) {
         sendRequestsButton.addEventListener('click', function() {
