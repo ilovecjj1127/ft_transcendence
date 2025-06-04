@@ -4,7 +4,7 @@ import { getUsername, getUserToken } from "./utils/userData.js";
 import { showLoginModal } from "@utils/modals.js";
 import { checkToken } from "@utils/token.js";
 
-import "@social/open_close_chat.js";
+import "@social/get_or_create_chatbox.js";
 import "@social/eventlistenersSocial.js";
 import "@chat/chat_eventlisteners.js";
 import "@chat/chatSocketState.js";

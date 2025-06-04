@@ -1,10 +1,11 @@
 import { DEBUGPRINTS } from "../config.js"
+import { populateFriendList } from "../social/chat/chat_onload_functions.js"
 import { hideOtpModal, showOtpModal } from "./2fa.js"
 import { showLoginModal, hideLoginModal } from "./modals.js"
 import { createMenuProfile } from "./profile-toggle.js"
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
 import { saveUserInfo, setUserToken } from "./userData.js"
-
+import { updateSocialRequestsData } from "@chat/chat_onload_functions.js"
 let loginResolver
 
 export function handleLogin() {
@@ -42,8 +43,10 @@ export async function loginFunction (password, username) {
         document.getElementById("social-menu-container").style.display = "flex"
         
         setTimeout( () => {
-            // hideLoginModal()
+            hideLoginModal()
             hideOrShowSocialMenu()
+            populateFriendList()
+            updateSocialRequestsData()
         }, 2000)
         
         if (DEBUGPRINTS) console.log("after login 200")

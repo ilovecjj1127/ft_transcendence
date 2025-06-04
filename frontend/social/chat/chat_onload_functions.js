@@ -3,6 +3,7 @@
 //  refreshing page, first loading webpage,
 //  changing route
 //
+
 import { get_data } from "@social/init_friends_data.js"
 import { getUserFriendlist } from "@utils/userData.js"
 import { DEBUGPRINTS } from "@/config.js"
@@ -43,9 +44,14 @@ export async function updateSocialRequestsData ()
     let data = null
     data = await get_data(url);
     if (data)
-        document.getElementById("username-text-home-page").innerHTML = data.username
+		updateUserNameTagHTML(data.username)
         populateInRequest("incoming-requests", data)
         populateOutRequest("outgoing-requests", data)
+}
+
+function updateUserNameTagHTML(username)
+{
+    document.getElementById("username-text-home-page").innerHTML = username
 }
 
 async function addFriendInList(friend)

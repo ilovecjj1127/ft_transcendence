@@ -2,7 +2,7 @@
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 import { DEBUGPRINTS } from "@/config.js"
 import { getUserToken } from "@/utils/userData.js";
-import { getOrcreateChattingBox } from "@social/open_close_chat.js"
+import { getOrcreateChattingBox } from "@social/get_or_create_chatbox.js"
 import { checkToken } from "@utils/token.js"
 import { getUserInfo } from "@utils/userData.js"
 import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js"

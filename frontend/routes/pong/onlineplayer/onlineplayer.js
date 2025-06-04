@@ -118,7 +118,7 @@ async function createGamesList (list) {
     }
 }
 
-async function startGame (game) {
+export async function startGame (game) {
     const gameInfo = {}
     gameInfo.gameId = game.id
     gameInfo.winScore = game.winning_score
@@ -226,7 +226,7 @@ function createNewGameButton (menu) {
     })
 }
 
-async function createScoreModal() {
+export async function createScoreModal() {
     return new Promise((resolve) => {
         const overlay = document.querySelector('.overlay')
         const scoreModal = document.createElement('div')

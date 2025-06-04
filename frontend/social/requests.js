@@ -6,7 +6,7 @@ const sendRequestToChatButton = document.getElementById("chat-search-form-button
 const DEBUGPRINTS = true
 const chatBox = document.querySelector('.chatbox-message-wrapper')
 var chatSocket = null
-import { getOrcreateChattingBox } from "@social/open_close_chat.js"
+import { getOrcreateChattingBox } from "@social/get_or_create_chatbox.js"
 var friend = null
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 import { OpenRoom } from "./chat/live_chatbox/open_chatbox.js"
