@@ -14,7 +14,7 @@ import { getChatSocket } from "@chat/chatSocketState.js"
 import { removeFriend } from "@social/select_friend_menu.js"
 import { createGameWithPlayer } from "../../routes/pong/onlineplayer/onlineplayer_through_chat.js"
 import { DEBUGPRINTS } from "@/config.js"
-
+import { getUserToken } from "@/utils/userData.js"
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')

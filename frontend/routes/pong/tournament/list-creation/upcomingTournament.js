@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
 import { getUserToken, getUsername } from "../../../../utils/userData.js"
+import { DEBUGPRINTS } from "@/config.js"
 
 //list of upcoming tournament where user is registered but not yet started (show/upcoming)
 // use this to pick created by user by id and give the possibility to cancel
@@ -105,7 +106,6 @@ async function cancelTournament (id, li, button) {
 }
 
 async function startTournament (id, li, button) {
-    if (DEBUGPRINTS) console.log("clicked cancel")
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
