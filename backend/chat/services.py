@@ -15,7 +15,7 @@ class ChatRoomService:
         user2 = UserProfile.objects.get(username=username)
         chatroom = ChatRoom.objects.filter(
             (Q(user1=user1, user2=user2) | Q(user1=user2, user2=user1))
-        ).first()
+        ).select_related('blocked_by').only('blocked_by__username').first()
         if chatroom:
             return chatroom, False
         chatroom = ChatRoom.objects.create(user1=user1, user2=user2)

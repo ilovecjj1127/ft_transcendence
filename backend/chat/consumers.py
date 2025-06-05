@@ -131,8 +131,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
     async def save_messages(self):
+        from .models import ChatRoom
+
         messages = await self.redis.lrange(f'chat:{self.room_group_name}:messages', 0, -1)
         messages = [json.loads(msg) for msg in messages]
+        self.room = await ChatRoom.objects.aget(id=self.room_id)
         self.room.history.extend(messages)
         await database_sync_to_async(self.room.save)()
-
