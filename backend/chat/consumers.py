@@ -1,7 +1,11 @@
+from datetime import timezone
+import json
+
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
-import json
+
+from .utils import notify_about_unread_chats
 
 
 class ChatConsumer(AsyncWebsocketConsumer):
@@ -10,6 +14,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_id: int = 0
         self.room_group_name: str = ""
         self.room = None
+        self.interlocutor = None
 
     async def connect(self):
         user = self.scope['user']
@@ -34,27 +39,30 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.redis.incr(key_user_count)
         await self.load_previous_messages()
     
-    @database_sync_to_async
-    def is_user_in_room(self, user):
+    async def is_user_in_room(self, user):
         from .models import ChatRoom
 
         try:
-            self.room = ChatRoom.objects.get(id=self.room_id)
-            if user == self.room.user1 or user == self.room.user2:
-                return True, 0
-            return False, 4001
+            self.room = await ChatRoom.objects.select_related('user1', 'user2', 'unread_by') \
+                .aget(id=self.room_id)
+            if user == self.room.user1:
+                self.interlocutor = self.room.user2
+            elif user == self.room.user2:
+                self.interlocutor = self.room.user1
+            else:
+                return False, 4001
+            return True, 0
         except ObjectDoesNotExist:
             return False, 4000
 
     async def load_previous_messages(self):
-        history_messages = await database_sync_to_async(lambda: self.room.history)()
-        for msg in history_messages:
+        for msg in self.room.history:
             await self.send_message(msg)
         key_messages = f'chat:{self.room_group_name}:messages'
         redis_messages = await self.redis.lrange(key_messages, 0, -1)
         for msg in redis_messages:
             await self.send_message(json.loads(msg))
-        await self.update_unread_by(self.scope['user'])
+        await self.update_unread_by(None)
 
     async def disconnect(self, close_code):
         if self.scope['user'].is_anonymous:
@@ -77,9 +85,9 @@ class ChatConsumer(AsyncWebsocketConsumer):
         
         data = json.loads(text_data)
 
-        self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
-        blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
-        if blocked_by:
+        self.room = await ChatRoom.objects.select_related('blocked_by', 'unread_by') \
+            .aget(id=self.room_id)
+        if self.room.blocked_by:
             await self.send(text_data=json.dumps({
                 'message': "This chatroom is blocked. You cannot send messages."
             }))
@@ -88,7 +96,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         key_user_count = f'chat:{self.room_group_name}:user_count'
         user_count = int(await self.redis.get(key_user_count) or 0)
         if user_count == 1:
-            await self.update_unread_by(self.scope['user'])
+            await self.update_unread_by(self.interlocutor)
 
         chat_message = {
             'username': self.username,
@@ -105,15 +113,16 @@ class ChatConsumer(AsyncWebsocketConsumer):
             }
         )
 
-    @database_sync_to_async
-    def update_unread_by(self, user):
-        if self.room.unread_by == user:
+    async def update_unread_by(self, user):
+        if user == None and self.room.unread_by == self.scope['user']:
             self.room.unread_by = None
-        elif self.room.user1 == user:
-            self.room.unread_by = self.room.user2
+        elif user == self.interlocutor and self.room.unread_by != self.interlocutor:
+            self.room.unread_by = self.interlocutor
         else:
-            self.room.unread_by = self.room.user1
-        self.room.save()
+            return
+        await database_sync_to_async(self.room.save)()
+        notified_user = user if self.room.unread_by is not None else self.scope['user']
+        await notify_about_unread_chats(notified_user)
 
     async def send_message(self, event):
         message = f"{event['username']}: {event['message']}"
@@ -122,8 +131,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
         }))
 
     async def save_messages(self):
+        from .models import ChatRoom
+
         messages = await self.redis.lrange(f'chat:{self.room_group_name}:messages', 0, -1)
         messages = [json.loads(msg) for msg in messages]
+        self.room = await ChatRoom.objects.aget(id=self.room_id)
         self.room.history.extend(messages)
         await database_sync_to_async(self.room.save)()
-

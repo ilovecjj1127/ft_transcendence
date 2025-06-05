@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from users.models import UserProfile
+from users.models import UserProfile, FriendshipRequest
 from games.models import Game, Tournament, TournamentPlayer
 from chat.models import ChatRoom
 
@@ -83,6 +83,11 @@ class Command(BaseCommand):
                 user1=user1,
                 user2=user2
             )
+
+        # Add friends
+        if user1 and user2:
+            FriendshipRequest.objects.create(from_user=user1, to_user=user2, status='accepted')
+            user1.friends.add(user2)
 
         self.stdout.write('Creating DB objects...')
 
