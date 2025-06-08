@@ -89,7 +89,12 @@ export const router = () => {
     }
 };
 
-window.addEventListener('hashchange', router);
+// window.addEventListener('hashchange', router);
+window.addEventListener('hashchange', () => 
+{   
+    console.trace('Hash changed') 
+    router()
+} );
 
 window.addEventListener('load', async () => {
 
