@@ -52,6 +52,10 @@ export async function createGameWithPlayer(PlayerId) {
 
 // with help from chatgpt
 
+// note; something to do with ;this.winScore = gameInfo.winScore
+// (about err/why wasnt workin - about the undefined score)
+//
+
 export async function createScoreModal_v2_for_chat() {
     const overlay = document.querySelector('.overlay');
     const scoreModal = document.createElement('div');
