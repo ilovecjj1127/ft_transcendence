@@ -7,6 +7,7 @@ let switch_bool = true
 import { setChatSocketEventFunctions } from "@chat/chatsocket_utils/chatsocket_utils.js";
 import { handleLogout } from "../utils/logout.js";
 
+
 // returns id of chatbox
 export async function getOrcreateChattingBox(frienda)
 {
