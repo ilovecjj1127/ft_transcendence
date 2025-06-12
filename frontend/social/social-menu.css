@@ -4,6 +4,7 @@ div#social-menu-container{
 	top: 0;
 	box-sizing: border-box;
 	max-width: 100%;
+	z-index: 100000;
 
 	flex-direction: column;
 	/* width: 10%; */

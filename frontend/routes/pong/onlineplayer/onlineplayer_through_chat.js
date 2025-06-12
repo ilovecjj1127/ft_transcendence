@@ -50,6 +50,8 @@ export async function createGameWithPlayer(PlayerId) {
     }
 }
 
+// with help from chatgpt
+
 export async function createScoreModal_v2_for_chat() {
     const overlay = document.querySelector('.overlay');
     const scoreModal = document.createElement('div');
@@ -71,7 +73,7 @@ export async function createScoreModal_v2_for_chat() {
 
     const scoreMessage = document.createElement('p');
     scoreMessage.innerText = 'Choose the winning score for this game (1 - 20)';
-
+    scoreMessage.style.color = 'red'
     const confirmButton = document.createElement('button');
     confirmButton.id = 'confirm-button';
     confirmButton.innerText = 'Confirm';

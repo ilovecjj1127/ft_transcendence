@@ -81,7 +81,7 @@ export default class PongOffline {
     isLose () {
         return this.ball.x + this.ball.radius >= canvas.width || this.ball.x - this.ball.radius <= 0
     }
-    
+
     handleLose () {
         if (this.ball.x + this.ball.radius >= canvas.width)
             this.score1++
@@ -97,7 +97,7 @@ export default class PongOffline {
         }
         requestAnimationFrame((time) => this.update(time))
     }
-    
+
     drawScore() {
         ctx.font = "30px Arial"
         ctx.fillStyle = "white"

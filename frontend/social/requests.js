@@ -11,7 +11,7 @@ var friend = null
 const chatboxMessageWrapper = document.querySelector('.chatbox-message-content')
 import { OpenRoom } from "./chat/live_chatbox/open_chatbox.js"
 
-
+// chat
 export async function cancelRequest(request_id)
 {
     const response = await fetch(`http://${window.location.host}/api/users/friendship_request/cancel/`, {
@@ -57,7 +57,7 @@ export async function acceptRequest(request_id)
     const response_data = await response.json()
     location.reload();
 }
-
+// open room, chat
 sendRequestToChatButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
 
