@@ -55,6 +55,12 @@ export async function addOutRequest(list_name, player_ws_obj)
 
     const cancelBtn = document.createElement('button');
     cancelBtn.textContent = 'Cancel';
+
+
+
+
+
+    
     cancelBtn.addEventListener('click', () => cancelRequest(player_ws_obj.to_user_id));
 
     buttonContainer.appendChild(cancelBtn);
@@ -140,6 +146,9 @@ export async function addInRequest(list_name, player_ws_obj)
 
     const acceptBtn = document.createElement('button');
     acceptBtn.textContent = 'Accept';
+
+
+
 
     console.log("from_user_id:", player_ws_obj.from_user_id, typeof player_ws_obj.from_user_id);
     acceptBtn.addEventListener('click', () => acceptRequest(player_ws_obj.from_user_id));
