@@ -25,9 +25,12 @@ export async function get_data(url_parameter)
     return response_data;
 }
 
-export function populateOutRequest(list_name, data) {
+export function populateOutRequest(list_name, data, dynamic_addition_bool) {
     const playerList = document.getElementById(list_name);
-    playerList.innerHTML = ""; // Clear existing content
+
+    if (dynamic_addition_bool == false)
+        playerList.innerHTML = ""; // Clear existing content
+
     if (DEBUGPRINTS) console.log("data populateOutRequest", data)
 
     if (data == null)
@@ -68,11 +71,12 @@ export function populateOutRequest(list_name, data) {
     })
 }
 
-export function populateInRequest(list_name, data) {
+export function populateInRequest(list_name, data, dynamic_addition_bool) {
     const playerList = document.getElementById(list_name);
     if (DEBUGPRINTS) console.log("data populateInRequest", data)
 
-    playerList.innerHTML = ""; // Clear existing content
+    if (dynamic_addition_bool == false)
+        playerList.innerHTML = ""; // Clear existing content
     if (data == null)
         return
 

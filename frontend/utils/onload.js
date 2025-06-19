@@ -7,6 +7,7 @@ import { DEBUGPRINTS } from "@/config.js"
 
 import { populateInRequest, populateOutRequest, get_data } from "../social/init_friends_data.js"
 import { hideOrShowSocialMenu } from "./showOrHideFunctions.js"
+import { initGeneralSocialDataSocket } from "../social/for_dynamic_generalSocialDataSocket.js"
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
@@ -15,7 +16,7 @@ export async function onloadInit () {
     if (accessToken) {
         saveUserInfo()
 
-        // initGeneralSocialDataSocket()
+        initGeneralSocialDataSocket()
 
         hideOrShowSocialMenu(accessToken)
 

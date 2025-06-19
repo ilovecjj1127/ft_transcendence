@@ -3,7 +3,57 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from django.core.exceptions import ObjectDoesNotExist
 import json
+from django.contrib.auth import get_user
 
+
+class GeneralSocialConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.user = await self.get_authenticated_user(self.scope)
+
+        if not self.user:
+            print("WebSocket rejected: unauthenticated.")
+            await self.close()
+            return
+
+        print(f"WebSocket connected: user {self.user.username}")
+        await self.channel_layer.group_add(f"user_{self.user.id}", self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if hasattr(self, 'user') and self.user:
+            await self.channel_layer.group_discard(f"user_{self.user.id}", self.channel_name)
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        # Optional: token-based auth
+        if data.get("type") == "authenticate":
+            # Implement token-based user auth here if needed
+            pass
+
+    # Called by backend (e.g. via group_send)
+    async def new_incoming_friend_request(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "new_incoming_friend_request",
+            "payload": event["payload"]
+        }))
+
+    async def new_outgoing_friend_request(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "new_outgoing_friend_request",
+            "payload": event["payload"]
+        }))
+
+    async def new_friend(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "new_friend",
+            "payload": event["payload"]
+        }))
+
+    @database_sync_to_async
+    def get_authenticated_user(self, scope):
+        user = scope["user"]
+        return user if user.is_authenticated else None
 
 class ChatConsumer(AsyncWebsocketConsumer):
     def __init__(self, *args, **kwargs):
@@ -129,4 +179,3 @@ class ChatConsumer(AsyncWebsocketConsumer):
         messages = [json.loads(msg) for msg in messages]
         self.room.history.extend(messages)
         await database_sync_to_async(self.room.save)()
-

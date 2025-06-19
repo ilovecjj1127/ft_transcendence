@@ -45,8 +45,8 @@ export async function updateSocialRequestsData ()
     data = await get_data(url);
     if (data)
 		updateUserNameTagHTML(data.username)
-        populateInRequest("incoming-requests", data)
-        populateOutRequest("outgoing-requests", data)
+        populateInRequest("incoming-requests", data, false)
+        populateOutRequest("outgoing-requests", data, false)
 }
 
 function updateUserNameTagHTML(username)
@@ -54,7 +54,7 @@ function updateUserNameTagHTML(username)
     document.getElementById("username-text-home-page").innerHTML = username
 }
 
-async function addFriendInList(friend)
+export async function addFriendInList(friend)
 {
 		const li = document.createElement('li')
 
@@ -73,7 +73,7 @@ async function addFriendInList(friend)
 		nameTag.style.fontSize = '0.9em';
 
 		img.addEventListener('click', async () =>  {
-				OpenRoom(friend)
+			OpenRoom(friend)
 		})
 		li.appendChild(img)
 		li.appendChild(nameTag);

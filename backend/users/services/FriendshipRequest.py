@@ -3,7 +3,8 @@ from django.db.models import Prefetch
 
 from .UserProfile import UserProfileService
 from ..models import FriendshipRequest, UserProfile
-
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 class FriendshipRequestService:
     @staticmethod
@@ -25,6 +26,31 @@ class FriendshipRequestService:
             request.save()
         except FriendshipRequest.DoesNotExist:
             FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
+        
+        
+        # WebSocket notification
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{to_user.id}",
+            {
+                "type": "new_incoming_friend_request",
+                "payload": {
+                    "from_user_id": from_user.id,
+                    "from_user_username": from_user.username,
+                }
+            }
+        )
+        async_to_sync(channel_layer.group_send)(
+            f"user_{from_user.id}",
+            {
+                "type": "new_outgoing_friend_request",
+                "payload": {
+                    "to_user_id": to_user.id,
+                    "to_user_username": to_user.username,
+                }
+            }
+        )
+
 
     @staticmethod
     @transaction.atomic
@@ -40,6 +66,20 @@ class FriendshipRequestService:
         UserProfileService.add_friend(request.from_user, to_user)
         request.status = 'accepted'
         request.save()
+        
+        # WebSocket notify both
+        channel_layer = get_channel_layer()
+        for user, friend in [(request.from_user, to_user), (to_user, request.from_user)]:
+            async_to_sync(channel_layer.group_send)(
+                f"user_{user.id}",
+                {
+                    "type": "new_friend",
+                    "payload": {
+                        "friend_id": friend.id,
+                        "friend_username": friend.username,
+                    }
+                }
+            )
 
     @staticmethod
     @transaction.atomic

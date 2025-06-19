@@ -15,7 +15,6 @@ from channels.routing import ProtocolTypeRouter, URLRouter
 from .middleware import JWTAuthMiddleware, RedisPoolMiddleware
 from .routing import websocket_urlpatterns
 
-
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'TranscendenceBackend.settings')
 
 application = ProtocolTypeRouter({
