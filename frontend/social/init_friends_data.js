@@ -25,6 +25,46 @@ export async function get_data(url_parameter)
     return response_data;
 }
 
+export async function addOutRequest(list_name, player_ws_obj)
+{
+    const playerList = document.getElementById(list_name);
+    if (DEBUGPRINTS) console.log("data player: ", player_ws_obj)
+
+    if (player_ws_obj == null)
+        return
+
+    const li = document.createElement('li');
+    li.classList.add('friend-item');
+
+    const img = document.createElement('img');
+
+    const userInfo = await getUserInfo(player_ws_obj.to_user_username)
+    if (DEBUGPRINTS) console.log("player_ws_obj: ", player_ws_obj)
+
+    if (DEBUGPRINTS) console.log("data player: ", userInfo)
+    img.src = userInfo.avatar || "./media/default.jpeg";
+    
+    // img.alt = player_ws_obj.from_user;
+
+    const nameTag = document.createElement('span');
+    nameTag.textContent = `${player_ws_obj.to_user_username}`;
+    nameTag.classList.add('player-name-tag');
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('friend-buttons');
+
+    const cancelBtn = document.createElement('button');
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => cancelRequest(player_ws_obj.to_user_id));
+
+    buttonContainer.appendChild(cancelBtn);
+    li.appendChild(img);
+    li.appendChild(nameTag);
+    li.appendChild(buttonContainer);
+    playerList.appendChild(li);
+}
+
+
 export function populateOutRequest(list_name, data, dynamic_addition_bool) {
     const playerList = document.getElementById(list_name);
 
@@ -71,6 +111,52 @@ export function populateOutRequest(list_name, data, dynamic_addition_bool) {
     })
 }
 
+
+export async function addInRequest(list_name, player_ws_obj)
+{
+    const playerList = document.getElementById(list_name);
+
+    if (player_ws_obj == null)
+        return
+
+    const li = document.createElement('li');
+    li.classList.add('friend-item');
+
+    const img = document.createElement('img');
+
+    const userInfo = await getUserInfo(player_ws_obj.from_user_username)
+    if (DEBUGPRINTS) console.log("player_ws_obj: ", player_ws_obj)
+
+    if (DEBUGPRINTS) console.log("data player: ", userInfo)
+    img.src = userInfo.avatar || "./media/default.jpeg";
+    // img.alt = player_ws_obj.from_user;
+
+    const nameTag = document.createElement('span');
+    nameTag.textContent = `${player_ws_obj.from_user_username}`;
+    nameTag.classList.add('friend-name-tag');
+
+    const buttonContainer = document.createElement('div');
+    buttonContainer.classList.add('friend-buttons');
+
+    const acceptBtn = document.createElement('button');
+    acceptBtn.textContent = 'Accept';
+
+    console.log("from_user_id:", player_ws_obj.from_user_id, typeof player_ws_obj.from_user_id);
+    acceptBtn.addEventListener('click', () => acceptRequest(player_ws_obj.from_user_id));
+
+    const declineBtn = document.createElement('button');
+    declineBtn.textContent = 'Decline';
+    declineBtn.addEventListener('click', () => declineRequest(player_ws_obj.from_user_id));
+
+    buttonContainer.appendChild(acceptBtn);
+    buttonContainer.appendChild(declineBtn);
+
+    li.appendChild(img);
+    li.appendChild(nameTag);
+    li.appendChild(buttonContainer);
+    playerList.appendChild(li);
+}
+
 export function populateInRequest(list_name, data, dynamic_addition_bool) {
     const playerList = document.getElementById(list_name);
     if (DEBUGPRINTS) console.log("data populateInRequest", data)
@@ -103,6 +189,8 @@ export function populateInRequest(list_name, data, dynamic_addition_bool) {
 
         const acceptBtn = document.createElement('button');
         acceptBtn.textContent = 'Accept';
+
+        console.log("player.id:", player.id, typeof player.id);
         acceptBtn.addEventListener('click', () => acceptRequest(player.id));
 
         const declineBtn = document.createElement('button');
@@ -117,4 +205,30 @@ export function populateInRequest(list_name, data, dynamic_addition_bool) {
         li.appendChild(buttonContainer);
         playerList.appendChild(li);
     });
+}
+
+export function removeInOrOutRequest(list_name_A, list_name_B = null, player_ws_obj) {
+	const username = player_ws_obj?.to_user_username || player_ws_obj?.from_user_username;
+	if (!username) return;
+
+	const removeFromList = (listId) => {
+		const list = document.getElementById(listId);
+		if (!list) return;
+
+		const items = list.querySelectorAll('li');
+		for (const item of items) {
+			const nameTag = item.querySelector('.player-name-tag');
+			if (nameTag && nameTag.textContent === username) {
+				list.removeChild(item);
+				if (DEBUGPRINTS) console.log(`Removed ${username} from ${listId}`);
+				break;
+			}
+		}
+	};
+
+	removeFromList(list_name_A);
+
+	if (list_name_B ){
+		removeFromList(list_name_B)
+	}
 }

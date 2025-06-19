@@ -56,27 +56,44 @@ function updateUserNameTagHTML(username)
 
 export async function addFriendInList(friend)
 {
-		const li = document.createElement('li')
+	const existing = document.querySelector(`li[data-friend="${friend.name || friend}"]`);
 
-		const img = document.createElement('img')
+	if (existing) {
+		if (DEBUGPRINTS) console.log("Friend already in list:", friend);
+		return; // Already in the list
+	}
 
-		const data = await getUserInfo(friend)
-		if (DEBUGPRINTS) console.log("adding avatar", data)
+	const li = document.createElement('li')
 
-		img.src = data.avatar || "./media/default.jpeg";
+	const img = document.createElement('img')
 
-		if (DEBUGPRINTS) console.log("adding friend", friend)
-		
-		const nameTag = document.createElement('span');
-		nameTag.textContent = friend.name || friend;
-		nameTag.style.marginTop = '5px';
-		nameTag.style.fontSize = '0.9em';
+	const data = await getUserInfo(friend)
+	if (DEBUGPRINTS) console.log("adding avatar", data)
 
-		img.addEventListener('click', async () =>  {
-			OpenRoom(friend)
-		})
-		li.appendChild(img)
-		li.appendChild(nameTag);
+	img.src = data.avatar || "./media/default.jpeg";
 
-		list.appendChild(li)
+	if (DEBUGPRINTS) console.log("adding friend", friend)
+	
+	const nameTag = document.createElement('span');
+	nameTag.textContent = friend.name || friend;
+	nameTag.style.marginTop = '5px';
+	nameTag.style.fontSize = '0.9em';
+
+	img.addEventListener('click', async () =>  {
+		OpenRoom(friend)
+	})
+	li.appendChild(img)
+	li.appendChild(nameTag);
+
+	list.appendChild(li)
+}
+
+export function removeFriendInList(friend) {
+	const li = document.querySelector(`li[data-friend="${friend.name || friend}"]`);
+	if (li) {
+		li.remove();
+		if (DEBUGPRINTS) console.log("Removed friend from list:", friend);
+	} else if (DEBUGPRINTS) {
+		console.log("Friend not found in list:", friend);
+	}
 }

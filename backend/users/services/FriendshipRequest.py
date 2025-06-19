@@ -28,24 +28,24 @@ class FriendshipRequestService:
             FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
         
         
-        # WebSocket notification
+        # WebSocket live update
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
-            f"user_{to_user.id}",
+            f"user_{str(to_user.id)}",
             {
                 "type": "new_incoming_friend_request",
                 "payload": {
-                    "from_user_id": from_user.id,
-                    "from_user_username": from_user.username,
+                    "from_user_id": str(from_user.id),
+                    "from_user_username": str(from_user.username),
                 }
             }
         )
         async_to_sync(channel_layer.group_send)(
-            f"user_{from_user.id}",
+            f"user_{str(from_user.id)}",
             {
                 "type": "new_outgoing_friend_request",
                 "payload": {
-                    "to_user_id": to_user.id,
+                    "to_user_id": str(to_user.id),
                     "to_user_username": to_user.username,
                 }
             }
@@ -71,11 +71,11 @@ class FriendshipRequestService:
         channel_layer = get_channel_layer()
         for user, friend in [(request.from_user, to_user), (to_user, request.from_user)]:
             async_to_sync(channel_layer.group_send)(
-                f"user_{user.id}",
+                f"user_{str(user.id)}",
                 {
                     "type": "new_friend",
                     "payload": {
-                        "friend_id": friend.id,
+                        "friend_id": str(friend.id),
                         "friend_username": friend.username,
                     }
                 }
@@ -94,6 +94,29 @@ class FriendshipRequestService:
             raise ValueError('Cannot reject not pending friendship request')
         request.status = 'rejected'
         request.save()
+    
+        # WebSocket live update
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(to_user.id)}",
+            {
+                "type": "rejected_friend_request",
+                "payload": {
+                    "from_user_id": str(request.from_user.id),
+                    "from_user_username": str(request.from_user.username),
+                }
+            }
+        )
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(request.from_user.id)}",
+            {
+                "type": "rejected_friend_request",
+                "payload": {
+                    "to_user_id": str(to_user.id),
+                    "to_user_username": to_user.username,
+                }
+            }
+        )
 
     @staticmethod
     @transaction.atomic
@@ -108,6 +131,29 @@ class FriendshipRequestService:
             raise ValueError('Cannot cancel not pending friendship request')
         request.status = 'canceled'
         request.save()
+    
+        # WebSocket live Update
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(request.to_user.id)}",
+            {
+                "type": "cancelled_friend_request",
+                "payload": {
+                    "from_user_id": str(request.from_user.id),
+                    "from_user_username": str(request.from_user.username),
+                }
+            }
+        )
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(request.from_user.id)}",
+            {
+                "type": "cancelled_friend_request",
+                "payload": {
+                    "to_user_id": str(request.to_user.id),
+                    "to_user_username": request.to_user.username,
+                }
+            }
+        )
 
     @staticmethod
     @transaction.atomic
@@ -143,3 +189,25 @@ class FriendshipRequestService:
             raise ValueError('No accepted friendship request found')
         request.save()
         user.friends.remove(friend)
+
+        # WebSocket live Update
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(request.to_user.id)}",
+            {
+                "type": "breakoff_friendship",
+                "payload": {
+                    "from_user_id": str(request.from_user.id),
+                    "from_user_username": str(request.from_user.username),
+                }
+            }
+        )
+        async_to_sync(channel_layer.group_send)(
+            f"user_{str(request.from_user.id)}",
+            {
+                "type": "breakoff_friendship",
+                "payload": {
+                    "friend": str(request.to_user.username),
+                }
+            }
+        )

@@ -22,12 +22,6 @@ export function hideLoginModal () {
     document.getElementById('login-message').innerHTML = ''
     document.getElementById("login-form").reset()
     loginModal.hide()
-
-    // const accessToken = checkToken(getUserToken().access)
-    // hideOrShowSocialMenu(accessToken)
-    // setTimeout( () => {
-    //     window.location.reload()
-    // }, 1000);
 }
 
 loginForm.onsubmit = async (e) => {

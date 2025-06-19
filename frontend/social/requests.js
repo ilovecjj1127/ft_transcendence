@@ -25,7 +25,6 @@ export async function cancelRequest(request_id)
     if (DEBUGPRINTS) console.log("PATCH: /api/users/friendship_request/cancel/, status: ", response.status)
     const response_data = await response.json()
     if (DEBUGPRINTS) console.log("response_data: ", response_data)
-    location.reload();
 }
 
 export async function declineRequest(request_id)
@@ -40,7 +39,6 @@ export async function declineRequest(request_id)
     });
     const response_data = await response.json()
     if (DEBUGPRINTS) console.log("response_data: ", response_data)
-    location.reload();
 }
 
 export async function acceptRequest(request_id)
@@ -55,8 +53,8 @@ export async function acceptRequest(request_id)
     });
     if (DEBUGPRINTS) console.log("PATCH: /api/users/friendship_request/accept, status: ", response.status)
     const response_data = await response.json()
-    location.reload();
 }
+
 // open room, chat
 sendRequestToChatButton.addEventListener('click', async (event) => {
     event.preventDefault(); // Prevents the page from reloading
@@ -72,7 +70,6 @@ sendRequestToChatButton.addEventListener('click', async (event) => {
     OpenRoom(friend = username)
     
     if (DEBUGPRINTS) console.log("after OpenRoom log")
-    
 
 	// const requestBody = JSON.stringify({ username: document.querySelector("input[name='username']").value, message: document.querySelector("input[name='username']").value})
     // if (DEBUGPRINTS) console.log("hi send")
@@ -115,5 +112,4 @@ async function post(url, body_data, statusDiv) {
     setTimeout(() => {
         statusDiv.innerHTML = "<b>Status:</b>";
     }, 5000);
-    // location.reload();
 }

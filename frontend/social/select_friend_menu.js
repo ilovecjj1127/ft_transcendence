@@ -21,6 +21,8 @@ export default function openSelectFriend(frienda)
 
 export async function removeFriend(username)
 {
+    if (DEBUGPRINTS) console.log("callling removeFriend: ")
+
     const response = await fetch(`http://${window.location.host}/api/users/remove_friend/`, {
         method: "POST",
         headers: {

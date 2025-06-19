@@ -89,10 +89,15 @@ invitePlayerForGame.addEventListener('click', async function () {
 
 removeFriendElem.addEventListener('click', function () {
 
-let playername = document.querySelector('.chatbox-message-name').textContent.trim();
+        let playername = document.querySelector('.chatbox-message-name').textContent.trim();
         if (DEBUGPRINTS) console.log("removing player as friend;  ", playername)
-removeFriend(playername)
-chatBox.classList.remove('show')
+        try {
+                removeFriend(playername);
+        } catch (err) {
+                console.error("Error in removeFriend:", err);
+                console.trace();
+        }
+        // chatBox.classList.remove('show')
 
 })
 
