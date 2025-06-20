@@ -215,10 +215,10 @@ export function populateInRequest(list_name, data) {
     });
 }
 
-export function removeInOrOutRequest(list_name_A, list_name_B, data) {
+export function removeInOrOutRequest(list_name_A, list_name_B, username) {
 	// const username = player_ws_obj?.to_user_username || player_ws_obj?.from_user_username;
 
-    const username = data.to_user_username ?? data.from_user_username ?? data.friend_username
+    // const username = data.to_user_username ?? data.from_user_username ?? data.friend_username
 
     console.log("remove from list:", username);
 	// if (!username) return;
