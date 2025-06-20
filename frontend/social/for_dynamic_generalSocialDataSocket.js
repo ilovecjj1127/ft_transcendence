@@ -70,7 +70,7 @@ async function set_GeneralSocialDataSocket_EventFunctions(socket) {
 				break;
 
 			case "rejected_friend_request": // host_user matches new friend pair, in backend?
-				removeInOrOutRequest("incoming-requests", "outgoing-requests", data.payload)
+				removeInOrOutRequest("incoming-requests", "outgoing-requests", data.payload.from_user_username ?? data.payload.to_user_username)
 				break;
 
             case "cancelled_friend_request": // host_user matches new friend pair, in backend?
