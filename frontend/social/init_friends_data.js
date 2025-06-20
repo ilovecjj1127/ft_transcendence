@@ -71,11 +71,10 @@ export async function addOutRequest(list_name, player_ws_obj)
 }
 
 
-export function populateOutRequest(list_name, data, dynamic_addition_bool) {
+export function populateOutRequest(list_name, data) {
     const playerList = document.getElementById(list_name);
 
-    if (dynamic_addition_bool == false)
-        playerList.innerHTML = ""; // Clear existing content
+    playerList.innerHTML = ""; // Clear existing content
 
     if (DEBUGPRINTS) console.log("data populateOutRequest", data)
 
@@ -104,7 +103,8 @@ export function populateOutRequest(list_name, data, dynamic_addition_bool) {
     
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('friend-buttons');
-    
+        console.log("player.id:", player.id, typeof player.id);
+
         const cancelBtn = document.createElement('button');
         cancelBtn.textContent = 'Cancel';
         cancelBtn.addEventListener('click', () => cancelRequest(player.id));
@@ -166,12 +166,11 @@ export async function addInRequest(list_name, player_ws_obj)
     playerList.appendChild(li);
 }
 
-export function populateInRequest(list_name, data, dynamic_addition_bool) {
+export function populateInRequest(list_name, data) {
     const playerList = document.getElementById(list_name);
     if (DEBUGPRINTS) console.log("data populateInRequest", data)
 
-    if (dynamic_addition_bool == false)
-        playerList.innerHTML = ""; // Clear existing content
+    playerList.innerHTML = ""; // Clear existing content
     if (data == null)
         return
 
@@ -219,6 +218,7 @@ export function populateInRequest(list_name, data, dynamic_addition_bool) {
 export function removeInOrOutRequest(list_name_A, list_name_B = null, player_ws_obj) {
 	const username = player_ws_obj?.to_user_username || player_ws_obj?.from_user_username;
 	if (!username) return;
+    console.log("remove from list:", username);
 
 	const removeFromList = (listId) => {
 		const list = document.getElementById(listId);

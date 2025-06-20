@@ -49,6 +49,20 @@ class GeneralSocialConsumer(AsyncWebsocketConsumer):
             "type": "new_friend",
             "payload": event["payload"]
         }))
+        
+    # async def cancelled_friend_request(self, event):
+    #     # You can choose what to do — e.g., send a message to the client, or just pass
+    #     await self.send(text_data=json.dumps({
+    #         "type": "cancelled_friend_request",
+    #         "message": "Friendship request was cancelled"
+    #     }))
+    async def cancelled_friend_request(self, event):
+        payload = event.get("payload", {})
+        
+        await self.send(text_data=json.dumps({
+            "type": "cancelled_friend_request",
+            "payload": payload,
+        }))
 
     @database_sync_to_async
     def get_authenticated_user(self, scope):
