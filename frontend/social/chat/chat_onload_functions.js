@@ -64,6 +64,7 @@ export async function addFriendInList(friend)
 	}
 
 	const li = document.createElement('li')
+	li.setAttribute('data-friend', friend.name || friend);
 
 	const img = document.createElement('img')
 
@@ -89,11 +90,26 @@ export async function addFriendInList(friend)
 }
 
 export function removeFriendInList(friend) {
-	const li = document.querySelector(`li[data-friend="${friend.name || friend}"]`);
-	if (li) {
-		li.remove();
-		if (DEBUGPRINTS) console.log("Removed friend from list:", friend);
-	} else if (DEBUGPRINTS) {
-		console.log("Friend not found in list:", friend);
+	
+	// const li = document.getElementById("friend-list");
+	// const li = document.querySelector(`li[data-friend="${friend.name || friend}"]`);
+	
+	const username = friend.name || friend;
+	const item = document.querySelector(`li[data-friend="${username}"]`);
+	
+	if (DEBUGPRINTS) console.log("removeFriendInList(), item found:", item, " with username: ", username);
+	
+	if (item && item.parentElement) {
+		item.parentElement.removeChild(item);
+		if (DEBUGPRINTS) console.log(`Removed friend from list: ${username}`);
+	} else {
+		if (DEBUGPRINTS) console.log(`Friend not found in list: ${username}`);
 	}
+
+	// if (li) {
+	// 	li.remove();
+	// 	if (DEBUGPRINTS) console.log("Removed friend from list:", friend);
+	// } else if (DEBUGPRINTS) {
+	// 	console.log("Friend not found in list:", friend);
+	// }
 }

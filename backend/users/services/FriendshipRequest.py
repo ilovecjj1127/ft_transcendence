@@ -94,7 +94,7 @@ class FriendshipRequestService:
             raise ValueError('Cannot reject not pending friendship request')
         request.status = 'rejected'
         request.save()
-    
+
         # WebSocket live update
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
@@ -131,9 +131,10 @@ class FriendshipRequestService:
             raise ValueError('Cannot cancel not pending friendship request')
         request.status = 'canceled'
         request.save()
-    
+
         # WebSocket live Update
         channel_layer = get_channel_layer()
+        print("print.. cancelled friend request registered")
         async_to_sync(channel_layer.group_send)(
             f"user_{str(request.to_user.id)}",
             {

@@ -64,6 +64,14 @@ class GeneralSocialConsumer(AsyncWebsocketConsumer):
             "payload": payload,
         }))
 
+    async def breakoff_friendship(self, event):
+        payload = event.get("payload", {})
+        
+        await self.send(text_data=json.dumps({
+            "type": "breakoff_friendship",
+            "payload": payload,
+        }))
+
     @database_sync_to_async
     def get_authenticated_user(self, scope):
         user = scope["user"]

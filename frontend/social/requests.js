@@ -27,9 +27,9 @@ export async function cancelRequest(request_id)
     if (DEBUGPRINTS) console.log("response_data: ", response_data)
 }
 
-export async function declineRequest(request_id)
+export async function rejectRequest(request_id)
 {
-    const response = await fetch(`http://${window.location.host}/api/users/friendship_request/decline/`, {
+    const response = await fetch(`http://${window.location.host}/api/users/friendship_request/reject/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",

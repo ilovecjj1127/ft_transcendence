@@ -48,7 +48,10 @@ async function set_GeneralSocialDataSocket_EventFunctions(socket) {
                 break;
 
             case "new_outgoing_friend_request":		// host_user --> other_user
+
+                // for single element;
                 // addOutRequest("outgoing-requests", data.payload);
+
                 const url2 = `http://${window.location.host}/api/users/me/`
                 let data2 = null
                 data2 = await get_data(url2);
@@ -62,7 +65,8 @@ async function set_GeneralSocialDataSocket_EventFunctions(socket) {
                 break;
 
 			case "breakoff_friendship": // host_user matches new friend pair, in backend?
-				removeFriendInList(data.payload.friend_username)
+				// either friend or from_user_username
+                removeFriendInList(data.payload.from_user_username ?? data.payload.friend)
 				break;
 
 			case "rejected_friend_request": // host_user matches new friend pair, in backend?

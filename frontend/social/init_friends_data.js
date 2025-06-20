@@ -1,7 +1,7 @@
 import { showLoginModal } from "../utils/modals.js"
 import { getUserToken } from "../utils/userData.js";
 import { DEBUGPRINTS } from "../config.js"
-import { cancelRequest, declineRequest, acceptRequest } from "./requests.js"
+import { cancelRequest, rejectRequest, acceptRequest } from "./requests.js"
 import { getUserInfo } from "../utils/userData.js";
 
 let url;
@@ -48,7 +48,7 @@ export async function addOutRequest(list_name, player_ws_obj)
 
     const nameTag = document.createElement('span');
     nameTag.textContent = `${player_ws_obj.to_user_username}`;
-    nameTag.classList.add('player-name-tag');
+    nameTag.classList.add('friend-name-tag');
 
     const buttonContainer = document.createElement('div');
     buttonContainer.classList.add('friend-buttons');
@@ -99,7 +99,7 @@ export function populateOutRequest(list_name, data) {
     
         const nameTag = document.createElement('span');
         nameTag.textContent = `${player.to_user}`;
-        nameTag.classList.add('player-name-tag');
+        nameTag.classList.add('friend-name-tag');
     
         const buttonContainer = document.createElement('div');
         buttonContainer.classList.add('friend-buttons');
@@ -153,12 +153,12 @@ export async function addInRequest(list_name, player_ws_obj)
     console.log("from_user_id:", player_ws_obj.from_user_id, typeof player_ws_obj.from_user_id);
     acceptBtn.addEventListener('click', () => acceptRequest(player_ws_obj.from_user_id));
 
-    const declineBtn = document.createElement('button');
-    declineBtn.textContent = 'Decline';
-    declineBtn.addEventListener('click', () => declineRequest(player_ws_obj.from_user_id));
+    const rejectBtn = document.createElement('button');
+    rejectBtn.textContent = 'Reject';
+    rejectBtn.addEventListener('click', () => rejectRequest(player_ws_obj.from_user_id));
 
     buttonContainer.appendChild(acceptBtn);
-    buttonContainer.appendChild(declineBtn);
+    buttonContainer.appendChild(rejectBtn);
 
     li.appendChild(img);
     li.appendChild(nameTag);
@@ -201,12 +201,12 @@ export function populateInRequest(list_name, data) {
         console.log("player.id:", player.id, typeof player.id);
         acceptBtn.addEventListener('click', () => acceptRequest(player.id));
 
-        const declineBtn = document.createElement('button');
-        declineBtn.textContent = 'Decline';
-        declineBtn.addEventListener('click', () => declineRequest(player.id));
+        const rejectBtn = document.createElement('button');
+        rejectBtn.textContent = 'Reject';
+        rejectBtn.addEventListener('click', () => rejectRequest(player.id));
 
         buttonContainer.appendChild(acceptBtn);
-        buttonContainer.appendChild(declineBtn);
+        buttonContainer.appendChild(rejectBtn);
 
         li.appendChild(img);
         li.appendChild(nameTag);
@@ -215,19 +215,25 @@ export function populateInRequest(list_name, data) {
     });
 }
 
-export function removeInOrOutRequest(list_name_A, list_name_B = null, player_ws_obj) {
-	const username = player_ws_obj?.to_user_username || player_ws_obj?.from_user_username;
-	if (!username) return;
+export function removeInOrOutRequest(list_name_A, list_name_B, data) {
+	// const username = player_ws_obj?.to_user_username || player_ws_obj?.from_user_username;
+
+    const username = data.to_user_username ?? data.from_user_username ?? data.friend_username
+
     console.log("remove from list:", username);
+	// if (!username) return;
 
 	const removeFromList = (listId) => {
 		const list = document.getElementById(listId);
+        console.log("remove {username} from {list}:", username, list);
+
 		if (!list) return;
 
 		const items = list.querySelectorAll('li');
 		for (const item of items) {
-			const nameTag = item.querySelector('.player-name-tag');
-			if (nameTag && nameTag.textContent === username) {
+			const nameTag = item.querySelector('.friend-name-tag')
+			console.log("item(of li list), nameTag, nameTage.textContent, username", item, nameTag, nameTag.textContent, username)
+            if (nameTag && nameTag.textContent === username) {
 				list.removeChild(item);
 				if (DEBUGPRINTS) console.log(`Removed ${username} from ${listId}`);
 				break;
