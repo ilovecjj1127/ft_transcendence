@@ -60,3 +60,7 @@ export function getUsername () {
 export function getUserId () {
     return (localStorage.getItem("id"))
 }
+
+export function getFriends () {
+    return (localStorage.getItem("friends"))
+}

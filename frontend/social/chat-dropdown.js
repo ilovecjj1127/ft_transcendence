@@ -2,6 +2,7 @@ import { router } from "../app.js"
 import { closeChatOpen, getFriendDataSet } from "./chat.js"
 import { checkToken, deleteTokenReload } from "../utils/token.js"
 import { getUserToken } from "../utils/userData.js"
+import { sendInviteMessage } from "./chat-socket.js"
 
 const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
 const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
@@ -112,6 +113,8 @@ async function inviteForGame() {
 		});
 		if (response.status == 401) deleteTokenReload()
 		if (response.ok) {
+			const data = await response.json()
+			sendInviteMessage(data.game.id)
 			return true
 		} else {
 			inviteBtn.innerText = "Error"

@@ -206,7 +206,7 @@
 	object-fit: cover;
   	display: block;
 	border: solid;
-	border-color: yellowgreen;
+	/* border-color: yellowgreen; */
 }
 
 #friends-list img:hover {
@@ -215,7 +215,7 @@
 
 .notify-dot {
 	position: absolute;
-	display: block;
+	display: none;
 	background-color: yellow;
 	width: 30%;
 	height: 30%;

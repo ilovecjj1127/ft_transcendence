@@ -1,3 +1,4 @@
+import { removeGameNotification } from "../../../social/notification-storage.js";
 import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
 import { checkToken, deleteTokenReload} from "../../../utils/token.js"
 import { getUsername, getUserToken } from "../../../utils/userData.js"
@@ -129,6 +130,7 @@ async function startGame (game) {
         gameInfo.player1 = game.player1_username || getUsername()
         gameInfo.player2 = game.player2_username || getUsername()
     }
+    removeGameNotification(game.id)
     localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
     location.hash = '/pong/onlineplayer/onlinegame'
 }

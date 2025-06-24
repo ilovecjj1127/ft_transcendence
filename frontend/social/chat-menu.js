@@ -1,6 +1,8 @@
 import { checkToken } from "../utils/token.js"
 import { getUserToken, saveUserInfo } from "../utils/userData.js"
 import { populateFriendList } from "./chat.js"
+import { showNotification } from "./notification-socket.js"
+import { fillGameNotification } from "./notification-storage.js"
 
 const requestPanel = document.getElementById("request-panel")
 const requestButton = document.getElementById("request-friend-btn")
@@ -14,6 +16,7 @@ requestButton.addEventListener('click', () => {
     if (!requestPanel.classList.contains('show')) {
         if (newFriendPanel.classList.contains('show')) newFriendPanel.classList.remove('show')
         requestPanel.classList.add('show')
+        showNotification(false)
     } else {
         requestPanel.classList.remove('show')
     }
@@ -58,6 +61,7 @@ export async function populateRequestList(tabId) {
     if (requestData) {
          if (tabId == "received-tab") {
             fillReceived()
+            fillGameNotification()
         } else { //sent tab
             fillSent()
         }
@@ -71,10 +75,10 @@ export async function populateRequestList(tabId) {
 export function fillReceived() {
 
     const requests = JSON.parse(localStorage.getItem("received"))
+    const list = document.querySelector(`#received-tab ul`)
+    list.innerHTML = ''
     if (requests.length > 0) {
-
-        const list = document.querySelector(`#received-tab ul`)
-        list.innerHTML = ''
+        
         requests.forEach(request => {
             const li = document.createElement('li')
             li.innerText = request['from_user']
@@ -107,6 +111,7 @@ export function fillReceived() {
             list.appendChild(li)
         })
     }
+
 }
 
 //fill sent request dinamically

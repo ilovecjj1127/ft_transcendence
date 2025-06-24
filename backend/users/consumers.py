@@ -14,9 +14,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
     async def connect(self):
         self.user = self.scope['user']
-        print(f"[NotificationConsumer] User on connect: {self.user} ({type(self.user)})")
         if self.user.is_anonymous:
-            print("[NotificationConsumer] Anonymous user, closing connection")
             await self.close()
             return
         self.redis = self.scope['redis_pool']

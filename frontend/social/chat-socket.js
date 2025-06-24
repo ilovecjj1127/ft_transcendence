@@ -62,7 +62,7 @@ export async function createWebSocket (chatId, li) {
             if (event.key === 'Enter' && event.shiftKey) {
                 event.preventDefault()
                 if (isValid(textarea.value)) {
-                sendMessage(textarea.value)
+                    sendMessage(textarea.value)
                 }
             }
         })
@@ -120,7 +120,41 @@ export async function createWebSocket (chatId, li) {
                 scrollBottom()
         }
 
+        function writeGameInvite (user) {
+                const today = new Date()
+                let msg
+                if (user == getUsername()) {
+                    msg = `
+                        <div class="chatbox-message-item sent">
+                            <span class="chatbox-message-item-text">
+                                ${message.trim().replace(/\n/g, '<br>\n')}
+                            </span>
+                            <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
+                        </div>
+                    `
+                    
+                    //reset the input 
+                    chatboxForm.style.alignItems = 'center'
+                    textarea.rows = 1
+                    textarea.focus()
+                    textarea.value = ''
+                    //  chatBoxNoMessage.style.display = 'none'
 
+                } else {
+                    msg = `
+                        <div class="chatbox-message-item received">
+                            <span class="chatbox-message-item-text">
+                                ${message.trim().replace(/\n/g, '<br>\n')}
+                            </span>
+                            <span class="chatbox-message-item-time">${addZero(today.getHours())}:${addZero(today.getMinutes())}</span>
+                        </div>
+                    `
+                }
+                
+                //insert the message into the chatbox    
+                chatboxMessageWrapper.insertAdjacentHTML('beforeend', msg)
+                scrollBottom()
+        }
 
 
         function scrollBottom () {
@@ -140,4 +174,12 @@ export function closeActiveWebsocket () {
         activeSocket.close()
         activeSocket = null
     }
+}
+
+export function sendInviteMessage (gameId) {
+    activeSocket.send(JSON.stringify ({
+        message: `I invited you for a game!
+        
+        The game has ID = ${gameId}`
+    }))
 }

@@ -23,8 +23,8 @@ export async function onLogin () {
     const getInfo = await saveUserInfo()
     if (getInfo) {
         createMenuProfile()
-        populateFriendList()
-        populateRequestList("received-tab")
-        createNotificationSocket()
+        await populateFriendList()
+        await populateRequestList("received-tab")
+        await createNotificationSocket()
     }
 }

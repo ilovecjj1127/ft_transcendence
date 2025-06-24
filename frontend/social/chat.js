@@ -49,7 +49,6 @@ export async function populateFriendList() {
 						friendChatOpen = friend
 						friendOpenDataSet = li.dataset
 						updateChat(friend, li.dataset.img, li)
-
 					}
 				}
 			})
@@ -64,14 +63,15 @@ async function updateChat (friend, imgSrc, li) {
 	const chatId = await getCreateChat(friend)
 	li.dataset.chatId = chatId
 	createWebSocket(chatId)
-
+	li.querySelector(".notify-dot").style.display = "none"
 	let chatboxContent = document.querySelector('.chatbox-message-content')
 	chatboxContent.innerHTML = ''
 	let chatName = document.querySelector('.chatbox-message-name')
 	let chatImg = document.querySelector('.chatbox-message-image')
+	let status = document.querySelector('.chatbox-message-status')
+	status.innerText = li.dataset.status == "1" ? "online" : "offline"
 	chatName.innerText = friend
 	imgSrc != null ? chatImg.src = imgSrc : chatImg.src = "/media/default.jpeg"
-	//get and update chat content
 	
 	chatBox.classList.add('show')
 }
