@@ -1,12 +1,14 @@
 import { createMenuProfile } from "./profile-toggle.js"
-import { saveUserInfo, getUserToken } from "./userData.js"
+import { saveUserInfo, getUserToken, getLanguage } from "./userData.js"
 import { moveFaces } from "./bg-animation.js"
 import { populateRequestList } from "../social/chat-menu.js"
 import { populateFriendList } from "../social/chat.js"
 import { createNotificationSocket } from "../social/notification-socket.js"
+import { applyTranslations } from '../multilang/multi-lang.js'
 
 export async function onloadInit () {
     const accessToken = getUserToken().access
+    applyTranslations(getLanguage())
     
     if (accessToken) {
         onLogin()
@@ -28,3 +30,5 @@ export async function onLogin () {
         await createNotificationSocket()
     }
 }
+
+

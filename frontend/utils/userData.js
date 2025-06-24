@@ -64,3 +64,8 @@ export function getUserId () {
 export function getFriends () {
     return (localStorage.getItem("friends"))
 }
+
+export function getLanguage () {
+    let lang = localStorage.getItem('appLanguage') || 'en'
+    return lang
+}

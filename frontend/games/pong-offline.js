@@ -1,5 +1,7 @@
 import Paddle from "./paddle.js"
 import Ball from "./ball.js"
+import { translations } from "../multilang/dictionary.js"
+import { getLanguage } from "../utils/userData.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
@@ -148,12 +150,12 @@ export default class PongOffline {
 
         const winnerMessage = document.createElement('p')
         if (this.score1 == this.winScore)
-            winnerMessage.innerText = 'Player 1 Won'
+            winnerMessage.innerText = translations[getLanguage()]['player1Won']
         else {
             if (this.mode == "multi")
-                winnerMessage.innerText = 'Player 2 Won'
+                winnerMessage.innerText = translations[getLanguage()]['player2Won']
             else
-                winnerMessage.innerText = 'Computer Won'       
+                winnerMessage.innerText = translations[getLanguage()]['computerWon']    
         }
         winnerContainer.appendChild(winnerMessage)
         overlay.appendChild(winnerContainer)

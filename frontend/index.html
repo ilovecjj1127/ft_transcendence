@@ -46,26 +46,26 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">Login</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel" data-i18n="login"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="login-form">
                         <div class="mb-3">
-                            <label for="login-name" class="col-form-label">Username</label>
+                            <label for="login-name" class="col-form-label" data-i18n="username"></label>
                             <input type="text" class="form-control" id="username">
                         </div>
                         <div class="mb-3">
-                            <label for="password-text" class="col-form-label">Password</label>
+                            <label for="password-text" class="col-form-label" data-i18n="password"></label>
                             <input type="password" class="form-control" id="password">
                         </div>
                     </form>
                     <div id="login-message"></div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="login">Login</button>
-                <button type="button" class="btn btn-success" id="register-button">Register</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close"></button>
+                <button type="button" class="btn btn-primary" id="login" data-i18n="login"></button>
+                <button type="button" class="btn btn-success" id="register-button" data-i18n="register"></button>
                 </div>
             </div>
         </div>
@@ -76,29 +76,29 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="registerModalLabel">Register</h1>
+                    <h1 class="modal-title fs-5" id="registerModalLabel" data-i18n="register"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="register-form">
                         <div class="mb-3">
-                            <label for="register-name" class="col-form-label">Username</label>
+                            <label for="register-name" class="col-form-label" data-i18n="username"></label>
                             <input type="text" class="form-control" id="register-username">
                         </div>
                         <div class="mb-3">
-                            <label for="register-password" class="col-form-label">Password</label>
+                            <label for="register-password" class="col-form-label" data-i18n="password"></label>
                             <input type="password" class="form-control" id="register-password">
                         </div>
                         <div class="mb-3">
-                            <label for="confirm-password" class="col-form-label">Confirm Password</label>
+                            <label for="confirm-password" class="col-form-label" data-i18n="confirmPassword"></label>
                             <input type="password" class="form-control" id="confirm-password">
                         </div>
                     </form>
                     <div id="register-message"></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="register-submit">Register</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close"></button>
+                    <button type="button" class="btn btn-primary" id="register-submit" data-i18n="register"></button>
                 </div>
             </div>
         </div>
@@ -122,8 +122,8 @@
         </button>
         <div id="request-panel">
             <div class="tab-bar">
-                <button class="tab-btn active" data-tab="received-tab">Received</button>
-                <button class="tab-btn" data-tab="sent-tab">Sent</button>
+                <button class="tab-btn active" data-tab="received-tab" data-i18n="received"></button>
+                <button class="tab-btn" data-tab="sent-tab" data-i18n="sent"></button>
             </div>
             <div class="tab-content" id="received-tab">
                 <ul id="received-list">
@@ -135,9 +135,9 @@
             </div>
         </div>
         <div id="new-friend-panel">
-            <span><strong>Send a new friend request</strong></span>
-            <input type="text" class="form-control" id="new-friend-username" placeholder="Type here the name">
-            <div id="new-friend-msg">User not found</div>
+            <span data-i18n="sendFriendRequest"></span>
+            <input type="text" class="form-control" id="new-friend-username" data-i18n-placeholder="friendSearchPlaceholder"/>
+            <div id="new-friend-msg" data-i18n="userNotFound"></div>
         </div>
         <div id="friends-list-container">
             <ul id="friends-list"></ul>
@@ -152,8 +152,8 @@
 				<div class="chatbox-message-profile">
 					<img class="chatbox-message-image">
 					<div>
-						<h4 class="chatbox-message-name">Name NAME</h4>
-						<p class="chatbox-message-status">online</p>
+						<h4 class="chatbox-message-name"></h4>
+						<p class="chatbox-message-status"></p>
 					</div>
 				</div>
                 <div class="chatbox-header-actions">
@@ -161,13 +161,13 @@
                         <i class='bx bx-dots-vertical-rounded chatbox-message-dropdown-toggle' ></i>
                         <ul class="chatbox-message-dropdown-menu">
                             <li>
-                                <a href="#" id="chat-profile">Profile</a>
+                                <a href="#" id="chat-profile" data-i18n="profile"></a>
                             </li>
                             <li>
-                                <a href="#" id="chat-invite">Invite</a>
+                                <a href="#" id="chat-invite" data-i18n="invite"></a>
                             </li>
                             <li>
-                                <a href="#" id="chat-remove">Remove</a>
+                                <a href="#" id="chat-remove" data-i18n="remove"></a>
                             </li>
                         </ul>
                     </div>
@@ -181,7 +181,7 @@
 			</div>
 			<div class="chatbox-message-bottom">
 				<form action="#" class="chatbox-message-form">
-					<textarea rows="1" placeholder="Type message..." class="chatbox-message-input"></textarea>
+					<textarea rows="1" data-i18n-placeholder="chatPlaceholder" class="chatbox-message-input"></textarea>
 					<button type="submit" class="chatbox-message-submit"><i class='bx bxs-send' ></i></button>
 				</form>
 			</div>
@@ -212,8 +212,8 @@
                     <div id="otp-message"></div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="otp-submit">Submit</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close"></button>
+                <button type="button" class="btn btn-primary" id="otp-submit" data-i18n="submit"></button>
                 </div>
             </div>
         </div>
@@ -224,7 +224,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="staticBackdropLabel">QR Code</h1>
+                    <h1 class="modal-title fs-5" id="staticBackdropLabel" data-i18n="qrCode"></h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -232,8 +232,8 @@
                     <div id="qr-message"></div>
                 </div>
                 <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="qr-next">Next</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-i18n="close"></button>
+                <button type="button" class="btn btn-primary" id="qr-next" data-i18n="next"></button>
                 </div>
             </div>
         </div>

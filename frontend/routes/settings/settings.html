@@ -2,29 +2,29 @@
     <button id="twofa-button">Enable 2FA</button>
     <button id="close-button"></button>
     <div id="name-container">
-        <span id="settings-username">Username</span>
+        <span id="settings-username" data-i18n="Username"></span>
     </div>
     <div id="img-container">
         <img id="settings-img" src="./media/default.jpeg" alt="Profile">
         <input type="file" id="image-upload" accept="image/*" style="display: none;">
-        <div id="upload-error">Image upload failed</div>
+        <div id="upload-error" data-i18n="imageUploadFailed"></div>
     </div>
     <div id="password-change-container">
         <form id="password-change">
             <div class="entry">
-                <label for="old-password">Old Password</label>
+                <label for="old-password" data-i18n="oldPwd"></label>
                 <input type="password" class="pwd-change-input" id="old-password">
             </div>
             <div class="entry">
-                <label for="new-password">New Password</label>
+                <label for="new-password" data-i18n="newPwd"></label>
                 <input type="password" class="pwd-change-input" id="new-password">
             </div>
             <div class="entry">
-                <label for="re-password">Confirm Password</label>
+                <label for="re-password" data-i18n="confirmPwd">C</label>
                 <input type="password" class="pwd-change-input" id="confirm-password-change">
             </div>
             <div id="change-message"></div>
-            <button type="button" class="confirm-button" id="confirm">Change Password</button>
+            <button type="button" class="confirm-button" id="confirm" data-i18n="changePwd"></button>
         </form>
     </div>
 </div>
