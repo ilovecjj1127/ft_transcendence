@@ -41,12 +41,16 @@ export function setChatSocketEventFunctions(chatSocket)
         else
                 format = "received"
 
-        var match = data.message.match(/^hi do you want to play game\?, game-id = (\d+)$/);
+        var match = data.message.match(/^hi do you want to play game\?, game-id = (\d+), winning score = (\d+)$/);
         if (DEBUGPRINTS) console.log("Hi printing match; ", match);
 
         var gameId = null
+        var gameScore = null
         if (match)
-                gameId = match[1];  // this is the number as a string
+        {
+            gameId = match[1];  // this is the number as a string
+            gameScore = match[2];
+        }
 
         format_and_put_Reply(data, format, gameId)
 
@@ -58,7 +62,7 @@ export function setChatSocketEventFunctions(chatSocket)
                     button.addEventListener('click', () => {
                         const gameInfo = {}
                         gameInfo.gameId = gameId
-                        // gameInfo.winScore = game.winning_score
+                        gameInfo.winScore = gameScore
 
                         // gameInfo.player1 = localStorage.getItem("user")
                         // gameInfo.player2 = currentUser

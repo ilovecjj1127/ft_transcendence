@@ -73,12 +73,10 @@ invitePlayerForGame.addEventListener('click', async function () {
         const game_id = await createGameWithPlayer(playerId)
 
         if (DEBUGPRINTS) console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
-        const gameInfo = {}
-        gameInfo.gameId = localStorage.getItem("gameId")
-        localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
+
 
         const date = new Date()
-        const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}`;
+        const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}, winning score = ${JSON.parse(localStorage.getItem("gameInfo")).winScore}`;
         getChatSocket().send(JSON.stringify({
         'message' : message,
         'date': date
