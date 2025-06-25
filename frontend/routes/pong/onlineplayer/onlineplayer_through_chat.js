@@ -36,7 +36,8 @@ export async function createGameWithPlayer(PlayerId) {
         
             alert("game created " + data.game.id)
 
-            function setGameData()
+
+            function setGameData(Data)
             {
                 localStorage.setItem("gameId", data.game.id)
                 
@@ -46,7 +47,6 @@ export async function createGameWithPlayer(PlayerId) {
 
                 localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
             }
-
             setGameData()
 
             startGame(data.game)

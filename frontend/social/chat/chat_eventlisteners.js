@@ -66,17 +66,34 @@ blockOrUnblockButton.addEventListener('click', async function () {
         }
 })
 
-invitePlayerForGame.addEventListener('click', async function () {
-
+invitePlayerForGame.addEventListener('click', async function (e) {
+        e.preventDefault();
         const playerId = localStorage.getItem("chatbox-playerId")
         const friendname = document.querySelector(".chatbox-message-name")
         const game_id = await createGameWithPlayer(playerId)
 
         if (DEBUGPRINTS) console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
 
+        
+        var gameInfoStr = localStorage.getItem("gameInfo")
+
+        if (gameInfoStr == null){
+                if (DEBUGPRINTS) console.log("gameInfoStr is null")
+                location.hash = ""
+                return;
+        }
+
+        const gameInfo = JSON.parse(gameInfoStr)
+        const storedScore = gameInfo?.winScore;
+
+        if (storedScore == null) {
+                if (DEBUGPRINTS) console.log("storedScore is null")
+                location.hash = ""
+                return;
+        }
 
         const date = new Date()
-        const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}, winning score = ${JSON.parse(localStorage.getItem("gameInfo")).winScore}`;
+        const message = `hi do you want to play game?, game-id = ${localStorage.getItem("gameId")}, winning score = ${storedScore}`;
         getChatSocket().send(JSON.stringify({
         'message' : message,
         'date': date
