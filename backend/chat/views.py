@@ -11,6 +11,7 @@ from users.serializers.UserProfile import SuccessResponseSerializer
 from .serializers import ChatGetOrCreateSerializer
 from .services import ChatRoomService
 
+BACKEND_DEBUG_PRINT = None
 
 def room(request, room_id):
     username_to_chat_with = request.GET.get("username_to_chat_with", "unknown") 
@@ -40,10 +41,18 @@ class ChatGetOrCreateView(APIView):
             chatroom, created = ChatRoomService.get_or_create_chat(
                 user1=user1, username=username
             )
+
+            if BACKEND_DEBUG_PRINT: print("blocked_by", chatroom.blocked_by)
+            if chatroom.blocked_by != None:
+                blocked_by_id = chatroom.blocked_by.id
+            else:
+                blocked_by_id = None
+            if BACKEND_DEBUG_PRINT: print("blocked_by id", blocked_by_id)
+
             return Response(
                 {
                     "chat_room_id": chatroom.id,
-                    "blocked_by": chatroom.blocked_by,
+                    "blocked_by": blocked_by_id,
                     "is_newly_created": created
                 }, status=status.HTTP_200_OK)
         except ValidationError as e:
