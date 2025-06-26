@@ -11,10 +11,11 @@ export const init = () => {
     localStorage.removeItem("userSearched")
     // if (DEBUG) if (DEBUGPRINTS) console.log("user: ", user)
     getUserSearched(user)
+    username.innerText = user
 
     function closeStats () {
         deleteStatsEvents()
-        location.hash = '/stats'
+        location.hash = '/'
     }
 
     // get user stats and save it in stats variable
@@ -34,13 +35,62 @@ export const init = () => {
         if (searchUser.ok)
         {
             const userSearched = await searchUser.json()
-            username.innerText = userSearched.username
             profileImg.src = userSearched.avatar
-        } else {
-            if (DEBUGPRINTS) console.log("user search error")
+            getUserHistory()
+       } else {
+            console.log("user search error")
         }
     }
-            
+
+    async function getUserHistory() {
+        const isTokenValid = await checkToken()
+        if (!isTokenValid) return
+
+        const historyResponse = await fetch(`http://${window.location.host}/api/games/history/?username=${user}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+        });
+        if (historyResponse.status == 401) deleteTokenReload()
+        if (historyResponse.ok) {
+            const history = await historyResponse.json()
+            console.log(history)
+            for (const game in history) {
+                createEntry(history[game])
+            }
+        }
+        else
+        {
+            const history = document.getElementById("users-history-list")
+            const li = document.createElement('li')
+            const details = document.createElement('div')
+            details.innerText = "Error retrieving history"
+            li.appendChild(details)
+            history.appendChild(li)
+        }
+    }
+
+    function createEntry(game) {
+        const history = document.getElementById("users-history-list")
+        const li = document.createElement('li')
+        const details = document.createElement('div')
+        details.classList.add('users-game-details')
+        const result = document.createElement('span')
+        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        const opponent = document.createElement('span')
+        game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
+            opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"
+        const score = document.createElement('span')
+        score.innerText = game.score_own + " - " + game.score_opponent
+        details.appendChild(result)
+        details.appendChild(opponent)
+        details.appendChild(score)
+        li.appendChild(details)
+        history.appendChild(li)
+    }
+
     function deleteStatsEvents() {
         closeBtn.removeEventListener('click', closeStats)
     }
