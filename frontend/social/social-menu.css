@@ -222,6 +222,7 @@ div#social-menu-container{
     height: 70%;
     border-radius: 50%;
     cursor: pointer;
+	border-width: 6px;
 }
 
 #friends-list img:hover {

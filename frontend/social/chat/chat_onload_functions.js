@@ -56,8 +56,16 @@ function updateUserNameTagHTML(username)
 
 export async function addFriendInList(friend)
 {
-	const existing = document.querySelector(`li[data-friend="${friend.name || friend}"]`);
+	if (friend)
+	{
+		friend = friend.replace(/[\[\]"]/g, '');
+		if (friend.name)
+			friend.name = friend.replace(/[\[\]"]/g, '');
+	}
+	// if (DEBUGPRINTS) console.log("friend; ", friend, "friend.name; ", friend.name, "cleaned; ", cleaned);
 
+	const existing = document.querySelector(`li[data-friend="${friend || friend.name}"]`);
+	
 	if (existing) {
 		if (DEBUGPRINTS) console.log("Friend already in list:", friend);
 		return; // Already in the list
@@ -66,12 +74,17 @@ export async function addFriendInList(friend)
 	const li = document.createElement('li')
 	li.setAttribute('data-friend', friend.name || friend);
 
+
+    let status = document.querySelector('.chatbox-message-status')
+    status.innerText = li.dataset.status == "1" ? "online" : "offline"
+
 	const img = document.createElement('img')
 
 	const data = await getUserInfo(friend)
 	if (DEBUGPRINTS) console.log("adding avatar", data)
 
 	img.src = data.avatar || "./media/default.jpeg";
+	img.style.borderColor = "grey";
 
 	if (DEBUGPRINTS) console.log("adding friend", friend)
 	

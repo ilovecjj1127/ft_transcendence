@@ -14,6 +14,11 @@ export function scrollBottom () {
 }
 
 export function updateChat (friend) {
+
+    // let status = document.querySelector('.chatbox-message-status')
+    // status.innerText = li.dataset.status == "1" ? "online" : "offline"
+    // chatName.innerText = friend
+
     chatBox.classList.add('show')
 }
 

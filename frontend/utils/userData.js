@@ -23,7 +23,9 @@ export async function saveUserInfo () {
         localStorage.setItem("id", userData.id)
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
-        localStorage.setItem("friends", userData.friends)
+        localStorage.setItem("friends", JSON.stringify(userData.friends))
+        localStorage.setItem("received", JSON.stringify(userData.received_requests))
+        localStorage.setItem("sent", JSON.stringify(userData.sent_requests))
         if (DEBUGPRINTS) console.log("2fa enabled: ", userData.is_2fa_enabled)
         setTimeout( () => {}, 2000)
         document.getElementById('profile-img').src = userData.avatar 
@@ -68,6 +70,15 @@ export function getUserId () {
 
 export function getUserFriendlist () {
     return (localStorage.getItem("friends"))
+}
+
+export function getFriends () {
+    return (localStorage.getItem("friends"))
+}
+
+export function getLanguage () {
+    let lang = localStorage.getItem('appLanguage') || 'en'
+    return lang
 }
 
 export async function getUserInfo(username) {

@@ -166,8 +166,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
         #         .aget(id=self.room_id)
         # if self.room.blocked_by:
 
-
-
         self.room = await database_sync_to_async(ChatRoom.objects.get)(id=self.room_id)
         blocked_by = await database_sync_to_async(lambda: self.room.blocked_by)()
         if blocked_by:

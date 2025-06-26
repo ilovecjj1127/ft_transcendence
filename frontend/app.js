@@ -102,8 +102,6 @@ window.addEventListener('load', async () => {
     //all tasks to do at first load of the page
     onloadInit()
 
-    // startRandomTimerForMessage()
-
     //load initial route
     router()
 });
