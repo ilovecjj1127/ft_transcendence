@@ -1,6 +1,6 @@
 #friends-container {
     position: fixed;
-    display: flex;
+    display: none;
     height: 100%;
     width: 3%;
     background-color: transparent;

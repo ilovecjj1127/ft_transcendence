@@ -1,8 +1,9 @@
 import { checkToken } from "../utils/token.js"
-import { getUserToken, saveUserInfo } from "../utils/userData.js"
+import { getUserToken, saveUserInfo, getLanguage} from "../utils/userData.js"
 import { populateFriendList } from "./chat.js"
 import { showNotification } from "./notification-socket.js"
 import { fillGameNotification } from "./notification-storage.js"
+import { translations } from "../multilang/dictionary.js"
 
 const requestPanel = document.getElementById("request-panel")
 const requestButton = document.getElementById("request-friend-btn")
@@ -67,7 +68,7 @@ export async function populateRequestList(tabId) {
         }
     } else {
         const list = document.querySelector(`#${tabId} ul`)
-        list.innerHTML = '<li>Error loading data</li>'
+        list.innerHTML = `<li>${translations[getLanguage()]['loadError']}</li>`
     }
 }
 
@@ -86,7 +87,7 @@ export function fillReceived() {
             const btnContainer = document.createElement('div')
             
             const acceptBtn = document.createElement('button')
-            acceptBtn.innerText = "Accept"
+            acceptBtn.innerText = translations[getLanguage()]['accept']
             acceptBtn.addEventListener('click', async () => {
                 const checkRequest = await handleRequest(li.dataset.id, li, list, acceptBtn, "accept")
                 if (checkRequest) {
@@ -100,7 +101,7 @@ export function fillReceived() {
             })
             
             const declineBtn = document.createElement('button')
-            declineBtn.innerText = "Decline"
+            declineBtn.innerText = translations[getLanguage()]['decline']
             declineBtn.addEventListener('click', async () => {
                 await handleRequest(li.dataset.id, li, list, declineBtn, "reject")
             })
@@ -129,7 +130,7 @@ function fillSent() {
             const btnContainer = document.createElement('div')
             
             const cancelBtn = document.createElement('button')
-            cancelBtn.innerText = "Cancel"
+            cancelBtn.innerText = translations[getLanguage()]['cancel']
             cancelBtn.addEventListener('click', () => {
                 console.log("cancel pressed")
                 handleRequest(li.dataset.id, li, list, cancelBtn, "cancel")
@@ -162,12 +163,12 @@ async function handleRequest (id, li, list, btn, url) {
         list.removeChild(li)
         return true
     } else {
-        btn.innerText = "Error"
+        btn.innerText = translations[getLanguage()]['error']
         btn.style.backgroundColor = "red"
         btn.style.color = "white"
         btn.disabled = true
         setTimeout( () => {
-            btn.innerText = "Cancel"
+            btn.innerText = translations[getLanguage()]['cancel']
             btn.style.backgroundColor = "white"
             btn.style.color = "black"
             btn.disabled = false
@@ -208,7 +209,7 @@ async function sendRequest(user) {
     });
     if (response.status == 401) deleteTokenReload()
     if (response.ok) {
-        responseMsg.innerText = "Request sent correctly"
+        responseMsg.innerText = translations[getLanguage()]['sentRequest']
         responseMsg.style.color = "green"
         responseMsg.style.display = 'block'
         setTimeout( () => {
@@ -216,7 +217,7 @@ async function sendRequest(user) {
         }, 3000)
         populateRequestList('sent-tab')
     } else {
-        responseMsg.innerText = "Error sending request"
+        responseMsg.innerText = translations[getLanguage()]['errorSent']
         responseMsg.style.color = "red"
         responseMsg.style.display = 'block'
         setTimeout( () => {

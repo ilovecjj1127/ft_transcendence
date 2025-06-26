@@ -1,8 +1,9 @@
 import { router } from "../app.js"
 import { closeChatOpen, getFriendDataSet } from "./chat.js"
 import { checkToken, deleteTokenReload } from "../utils/token.js"
-import { getUserToken } from "../utils/userData.js"
+import { getUserToken, getLanguage } from "../utils/userData.js"
 import { sendInviteMessage } from "./chat-socket.js"
+import { translations } from "../multilang/dictionary.js"
 
 const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
 const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
@@ -64,12 +65,12 @@ async function removeFriend (friendName) {
 			closeChatOpen()
 		}			
 	} else {
-        removeBtn.innerText = "Error"
+        removeBtn.innerText = translations[getLanguage()]['error']
         removeBtn.style.backgroundColor = "red"
        	removeBtn.style.color = "white"
         removeBtn.disabled = true
         setTimeout( () => {
-            removeBtn.innerText = "Remove"
+            removeBtn.innerText = translations[getLanguage()]['remove']
             removeBtn.style.backgroundColor = "white"
             removeBtn.style.color = "black"
             removeBtn.disabled = false
@@ -117,12 +118,12 @@ async function inviteForGame() {
 			sendInviteMessage(data.game.id)
 			return true
 		} else {
-			inviteBtn.innerText = "Error"
+			inviteBtn.innerText = translations[getLanguage()]['error']
 			inviteBtn.style.backgroundColor = "red"
 			inviteBtn.style.color = "white"
 			inviteBtn.disabled = true
 			setTimeout( () => {
-				inviteBtn.innerText = "Remove"
+				inviteBtn.innerText = translations[getLanguage()]['invite']
 				inviteBtn.style.backgroundColor = "white"
 				inviteBtn.style.color = "black"
 				inviteBtn.disabled = false

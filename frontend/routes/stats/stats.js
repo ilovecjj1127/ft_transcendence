@@ -1,5 +1,6 @@
-import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
+import { getUserToken, getUserAvatar, getUsername, getLanguage } from "../../utils/userData.js"
 import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { translations } from "../../multilang/dictionary.js"
 
 export const init = () => {
     const username = document.getElementById('stats-username')
@@ -80,7 +81,7 @@ export const init = () => {
             const history = document.getElementById("stats-history-list")
             const li = document.createElement('li')
             const details = document.createElement('div')
-            details.innerText = "Error retrieving history"
+            details.innerText = translations[getLanguage()]['histError']
             li.appendChild(details)
             history.appendChild(li)
         }
@@ -92,7 +93,7 @@ export const init = () => {
         const details = document.createElement('div')
         details.classList.add('stats-game-details')
         const result = document.createElement('span')
-        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        game.is_winner ? result.innerText = translations[getLanguage()]['win'] : result.innerText = translations[getLanguage()]['loss']
         const opponent = document.createElement('span')
         game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
             opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"
@@ -145,11 +146,11 @@ export const init = () => {
             document.getElementById('win-rate').textContent = stats.win_percentage
             document.getElementById('avg-points').textContent = stats.avgerage_points_per_game
         } else {
-            document.getElementById('total-games').textContent = "unknown"
-            document.getElementById('won-games').textContent = "unknown"
-            document.getElementById('lost-games').textContent = "unknown"
-            document.getElementById('win-rate').textContent = "unknown"
-            document.getElementById('avg-points').textContent = "unknown"
+            document.getElementById('total-games').textContent =  translations[getLanguage()]['uknown']
+            document.getElementById('won-games').textContent = translations[getLanguage()]['uknown']
+            document.getElementById('lost-games').textContent = translations[getLanguage()]['uknown']
+            document.getElementById('win-rate').textContent = translations[getLanguage()]['uknown']
+            document.getElementById('avg-points').textContent = translations[getLanguage()]['uknown']
         }
     }
 

@@ -1,5 +1,5 @@
 import {onloadInit} from "./utils/onload.js"
-
+import { applyTranslations } from "./multilang/multi-lang.js";
 
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
@@ -67,11 +67,13 @@ const routes = {
     '/pong/tournament/tournamentgame': 'pong/tournament/tournamentgame',
 };
 
-export const router = () => {
+export const router = async () => {
     const hash = location.hash.slice(1) || '/';
     const route = routes[hash] || routes[hash.split('/')[0]]
     if (route) {
-        loadRoute(route);
+        await loadRoute(route);
+        const lang = localStorage.getItem('lang') || 'en';
+        applyTranslations(lang);
     } else {
         document.getElementById('app').innerHTML = '<h1>404 - Page Not Found</h1>';
     }

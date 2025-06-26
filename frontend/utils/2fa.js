@@ -42,7 +42,7 @@ export async function showQrModal () {
         qrImageUrl = data.qr_code
     } else {
         const message = document.getElementById("qr-message")
-        message.innerHTML = "<p class='text-danger'>QR code failed to load. Close and try again.</p>"
+        message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['qrError']}</p>`
     }
     
     //show QR img
@@ -140,12 +140,12 @@ async function setup_twofa (otpcode) {
     });
     if (response.status == 401) deleteTokenReload()
     if (response.ok) {
-            message.innerHTML = "<p class='text-success'>2fa succefully setup.</p>"
+            message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['tfaSucc']}</p>`
             setTimeout( () => {
                 otpCodeModal.hide()
             }, 2000)
     } else {
 
-        message.innerHTML = "<p class='text-danger'>2fa failed setup. Close and try again.</p>"
+        message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['tfaError']}</p>`
     }
 }

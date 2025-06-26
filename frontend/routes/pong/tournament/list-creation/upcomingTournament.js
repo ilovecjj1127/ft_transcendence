@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
-import { getUserToken, getUsername } from "../../../../utils/userData.js"
+import { getUserToken, getUsername, getLanguage} from "../../../../utils/userData.js"
+import { translations } from "../../../../multilang/dictionary.js" 
 
 //list of upcoming tournament where user is registered but not yet started (show/upcoming)
 // use this to pick created by user by id and give the possibility to cancel
@@ -9,7 +10,7 @@ export function createUpcomingTour (container) {
     listContainer.classList.add('dropdown')
     const listBtn = document.createElement('button')
     listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Upcoming Tournaments"
+    listBtn.innerText = translations[getLanguage()]['upTour']
     const list = document.createElement('ul')
     list.classList.add('dropdown-list')
 
@@ -38,7 +39,7 @@ async function requestList (list, listContainer) {
             const data = await listResponse.json()
             if (data.length === 0) {
                 const noTournamentsMessage = document.createElement('p')
-                noTournamentsMessage.textContent = "No upcoming tournaments available."
+                noTournamentsMessage.textContent = translations[getLanguage()]['noUpcoming']
                 list.appendChild(noTournamentsMessage);
             } else {
             data.forEach((tour) => {
@@ -51,13 +52,13 @@ async function requestList (list, listContainer) {
                     
                     if (tour.players.length >= tour.min_players) {
                         const startButton = document.createElement('button')
-                        startButton.innerText = "Start"
+                        startButton.innerText = translations[getLanguage()]['start']
                         startButton.addEventListener('click', () => startTournament(tour.id, li, startButton))
                         btnContainer.appendChild(startButton)
                     }
                     
                     const cancelButton = document.createElement('button')
-                    cancelButton.innerText = "Cancel"
+                    cancelButton.innerText = translations[getLanguage()]['cancel']
                     btnContainer.appendChild(cancelButton)
                     cancelButton.addEventListener('click', () => cancelTournament(tour.id, li, cancelButton))
                     li.appendChild(btnContainer)
@@ -67,7 +68,7 @@ async function requestList (list, listContainer) {
         }
         } else {
             const li = document.createElement()
-            li.textContent = "Error retrieving Tournament. Try again later"
+            li.textContent = translations[getLanguage()]['tourError']
             list.appendChild(li)
         }
         list.classList.toggle('show')
@@ -97,7 +98,7 @@ async function cancelTournament (id, li, button) {
     if (cancelResponse.ok) {
         li.remove()
     } else {
-        button.innerText = "Error"
+        button.innerText = translations[getLanguage()]['error']
         button.style.backgroundColor = "red"
         button.style.color = "white"
         button.disabled = true
@@ -123,7 +124,7 @@ async function startTournament (id, li, button) {
     if (startResponse.ok) {
         li.remove()
     } else {
-        button.innerText = "Error"
+        button.innerText = translations[getLanguage()]['error']
         button.style.backgroundColor = "red"
         button.style.color = "white"
         button.disabled = true

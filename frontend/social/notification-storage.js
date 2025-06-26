@@ -1,3 +1,6 @@
+import { getLanguage } from "../utils/userData.js"
+import { translations } from "../multilang/dictionary.js"
+
 export function saveGameNotification (gameId, opponent) {
     let notifications = JSON.parse(localStorage.getItem("game-notifier")) || []
 
@@ -28,7 +31,7 @@ export function fillGameNotification () {
 
     notifications.forEach(({gameId, opponent}) => {
         const li = document.createElement('li')
-        li.innerText = `${opponent} has started game ${gameId} with you`
+        li.innerText = `${opponent} ${translations[getLanguage()]['startedMsg']} ${gameId} ${translations[getLanguage()]['withU']}`
         li.dataset.gameId = gameId
         const btnContainer = document.createElement('div')
         const removeBtn = document.createElement('button')

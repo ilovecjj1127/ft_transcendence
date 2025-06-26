@@ -13,3 +13,9 @@ export function applyTranslations(lang) {
     if (t[key]) el.placeholder = t[key]
   })
 }
+
+document.getElementById('languageSelect').addEventListener('change', (e) => {
+  const selectedLang = e.target.value;
+  localStorage.setItem('appLanguage', selectedLang); // Save selected language
+  location.reload(); // Reload page to reapply translation
+});

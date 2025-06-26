@@ -1,6 +1,6 @@
 import PongOffline from "../../../games/pong-offline.js";
-import { translations } from "../multilang/dictionary.js"
-import { getLanguage } from "../../utils/userData.js";
+import { translations } from "../../../multilang/dictionary.js"
+import { getLanguage } from "../../../utils/userData.js";
 
 let Pong
 

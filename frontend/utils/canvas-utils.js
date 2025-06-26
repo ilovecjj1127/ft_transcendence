@@ -1,12 +1,14 @@
 import { handleLogin } from "./login.js"
+import { getLanguage } from "./userData.js"
+import { translations } from "../multilang/dictionary.js"
 
 export function createNotLoggedMessage(overlay) {
     const msgContainer = document.createElement('div')
     msgContainer.id = 'not-logged-container'
     const span = document.createElement('span')
-    span.innerHTML = "You are not logged in, log in to use this service"
+    span.innerHTML =  translations[getLanguage()]['notLogged']
     const loginButton = document.createElement('button')
-    loginButton.innerText = "Login"
+    loginButton.innerText = translations[getLanguage()]['login']
 
     loginButton.addEventListener('click', async () => {
         let logged = await handleLogin() //login function

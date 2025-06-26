@@ -9,7 +9,7 @@ import { applyTranslations } from '../multilang/multi-lang.js'
 export async function onloadInit () {
     const accessToken = getUserToken().access
     applyTranslations(getLanguage())
-    
+    setLanguageSelect()
     if (accessToken) {
         onLogin()
     } else {
@@ -24,6 +24,7 @@ export async function onloadInit () {
 export async function onLogin () {
     const getInfo = await saveUserInfo()
     if (getInfo) {
+        toggleFriendsContainer('flex')
         createMenuProfile()
         await populateFriendList()
         await populateRequestList("received-tab")
@@ -32,3 +33,13 @@ export async function onLogin () {
 }
 
 
+
+function toggleFriendsContainer(show) {
+    const friendsContainer = document.getElementById('friends-container');
+    friendsContainer.style.display = show ? 'flex' : 'none'
+    document.body.classList.toggle('friends-visible', show)
+}
+
+function setLanguageSelect() {
+    document.getElementById('languageSelect').value = getLanguage()
+}

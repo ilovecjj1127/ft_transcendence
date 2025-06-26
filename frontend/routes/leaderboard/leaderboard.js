@@ -44,7 +44,7 @@ function createEntry(player, name) {
     const list = document.getElementById('players-list')
     const li = document.createElement('li')
     const playerName = document.createElement('strong')
-    playerName.innerText = name.toUpperCase() ||  translations[getLanguage()]['unknownPlayer']
+    playerName.innerText = name.toUpperCase() || translations[getLanguage()]['unknownPlayer']
     li.appendChild(playerName)
     createDiv("Ranking:", `${player.ranking}`, li)
     createDiv("Game count:", `${player.game_count}`, li)

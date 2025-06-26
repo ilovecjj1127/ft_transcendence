@@ -1,5 +1,6 @@
-import { getUserToken } from "../../utils/userData.js"
+import { getUserToken, getLanguage } from "../../utils/userData.js"
 import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { translations } from "../../multilang/dictionary.js"
 
 export const init = () => {
     const username = document.getElementById('users-username')
@@ -65,7 +66,7 @@ export const init = () => {
             const history = document.getElementById("users-history-list")
             const li = document.createElement('li')
             const details = document.createElement('div')
-            details.innerText = "Error retrieving history"
+            details.innerText = translations[getLanguage()]['histError']
             li.appendChild(details)
             history.appendChild(li)
         }
@@ -77,7 +78,7 @@ export const init = () => {
         const details = document.createElement('div')
         details.classList.add('users-game-details')
         const result = document.createElement('span')
-        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        game.is_winner ? result.innerText = translations[getLanguage()]['win'] : result.innerText = translations[getLanguage()]['loss']
         const opponent = document.createElement('span')
         game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
             opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"

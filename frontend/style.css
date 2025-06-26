@@ -208,3 +208,14 @@ body {
 	border-radius: 5px;
 	outline: none;
 }
+
+#languageSelect {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transition: right 0.3s ease;
+}
+
+.friends-visible #languageSelect {
+  right: 3%;
+}

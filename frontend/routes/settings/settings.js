@@ -1,6 +1,7 @@
-import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
+import { getUserToken, getUserAvatar, getUsername, getLanguage } from "../../utils/userData.js"
 import { checkToken, deleteTokenReload } from "../../utils/token.js"
 import { showQrModal } from "../../utils/2fa.js" 
+import { translations } from "../../multilang/dictionary.js"
 
 export const init = () => {
     
@@ -109,7 +110,7 @@ export const init = () => {
         message.innerHTML = ''
         
         if (new_password != confirmPassword){
-            message.innerHTML = "<p class='text-danger'>Failed. New password do not match.</p>"
+            message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['pwdMatch']}</p>`
             clearInputs()
         }
         else {
@@ -125,11 +126,11 @@ export const init = () => {
             });
             if (response.status == 401) deleteTokenReload()
             if (response.ok) {
-                message.innerHTML = "<p class='text-success'>Password changed.</p>"
+                message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['pwdChange']}</p>`
                 clearInputs()
             } else {
                 const errorData = await response.json()
-                const errorMessage = errorData.new_password || "Password change failed. Please check your credentials."
+                const errorMessage = errorData.new_password || translations[getLanguage()]['pwdError']
                 message.innerHTML = `<p class='text-danger'>${errorMessage}</p>`
                 clearInputs()
             }

@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
-import { getUserId, getUserToken } from "../../../../utils/userData.js"
+import { getUserId, getUserToken, getLanguage} from "../../../../utils/userData.js"
+import { translations } from "../../../../multilang/dictionary.js"
 
 //list of joinable tournaments (show/registration)
 export function createOpenRegistration (container) {
@@ -8,7 +9,7 @@ export function createOpenRegistration (container) {
     listContainer.classList.add('dropdown')
     const listBtn = document.createElement('button')
     listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Registration open"
+    listBtn.innerText = translations[getLanguage()]['openReg']
     const list = document.createElement('ul')
     list.classList.add('dropdown-list')
 
@@ -37,7 +38,7 @@ async function requestList (list, listContainer) {
         const data = await listResponse.json()
         if (data.length === 0) {
             const noTournamentsMessage = document.createElement('p')
-            noTournamentsMessage.textContent = "No tournaments available for registration."
+            noTournamentsMessage.textContent = translations[getLanguage()]['noTour']
             list.appendChild(noTournamentsMessage)
         } else {
             data.forEach((tour) => {
@@ -46,7 +47,7 @@ async function requestList (list, listContainer) {
                 li.innerHTML = `${tour.name} 
                 - players ${tour.players.length}/${tour.max_players}`
                 const button = document.createElement('button')
-                button.innerText = "Register"
+                button.innerText = translations[getLanguage()]['register']
                 li.appendChild(button)
                 list.appendChild(li)
                 button.addEventListener('click', () => registerTournament(tour.id, button))
@@ -54,7 +55,7 @@ async function requestList (list, listContainer) {
         }
     } else {
         const li = document.createElement()
-        li.textContent = "Error retrieving Tournament. Try again later"
+        li.textContent = translations[getLanguage()]['tourError']
         list.appendChild(li)
     }
 
@@ -90,7 +91,7 @@ async function registerTournament (id, button) {
             button.style.color = "white"
             button.disabled = true
         } else {
-            button.innerText = "Error"
+            button.innerText = translations[getLanguage()]['error']
             button.style.backgroundColor = "red"
             button.style.color = "white"
             button.disabled = true
@@ -108,12 +109,12 @@ async function createJoinModal() {
         const aliasInput = document.createElement('input')
         aliasInput.id = 'alias-input'
         const exitMessage = document.createElement('p')
-        exitMessage.innerText = 'Choose your alias for the tournament'
+        exitMessage.innerText = translations[getLanguage()]['setAlias']
         
         
         const registerButton = document.createElement('button')
         registerButton.id = 'reg-button'
-        registerButton.innerText = 'Register'
+        registerButton.innerText = translations[getLanguage()]['register']
         registerButton.addEventListener('click', () => {
             const alias = aliasInput.value
             joinModal.remove()
@@ -122,7 +123,7 @@ async function createJoinModal() {
         
         const cancelButton = document.createElement('button')
         cancelButton.id = 'cancel-reg'
-        cancelButton.innerText = 'Cancel'
+        cancelButton.innerText = translations[getLanguage()]['cancel']
         cancelButton.addEventListener('click', () => {
             joinModal.remove()
             resolve(null)
