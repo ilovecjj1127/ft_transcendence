@@ -6,6 +6,7 @@ import random
 from channels.db import database_sync_to_async
 
 from ..constants import X_MAX, Y_MAX, INITIAL_VELOCITY, PADDLE_HEIGHT
+from ..utils import notify_about_player_waiting_in_game
 
 
 class Action(str, Enum):
@@ -33,6 +34,7 @@ class PongServiceBase:
             await self.redis.set(f'game/{self.game_id}', json.dumps(game_state))
             await self.redis.set(f'game/{self.game_id}/paddle1_action', Action.STOP)
             await self.redis.set(f'game/{self.game_id}/paddle2_action', Action.STOP)
+            await notify_about_player_waiting_in_game(self.game_id, self._get_opponent(), user.username)
         elif str(self.player_num) not in connected_players:
             game_state = json.loads(await self.redis.get(f'game/{self.game_id}'))
             await self.start_game()
@@ -116,3 +118,11 @@ class PongServiceBase:
         game_state["ball_direction_x"] = direction_x
         game_state["ball_direction_y"] = direction_y
         game_state["ball_velocity"] = INITIAL_VELOCITY
+
+    def _get_opponent(self) -> str:
+        if self.game.player1 is None or self.game.player2 is None:
+            return ""
+        if self.player_num == 1:
+            return self.game.player2.username
+        else:
+            return self.game.player1.username

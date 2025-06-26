@@ -174,6 +174,7 @@ SPECTACULAR_SETTINGS = {
     'SERVE_INCLUDE_SCHEMA': False,
 }
 
+REDIS_URL = os.getenv('REDIS_URL', 'redis:/redis:6379/0')
 REDIS_HOST = os.getenv("REDIS_HOST", "transcendence_redis")  # Defaults to service name
 REDIS_PORT = os.getenv("REDIS_PORT", "6379")  # Defaults to service name
 
