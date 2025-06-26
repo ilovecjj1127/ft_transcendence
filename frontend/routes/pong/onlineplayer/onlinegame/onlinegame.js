@@ -1,5 +1,5 @@
 import PongOnline from "../../../../games/pong-online.js"
-import { translations } from "../../../multilang/dictionary.js";
+import { translations } from "../../../../multilang/dictionary.js";
 import { getLanguage } from "../../../../utils/userData.js";
 let Pong
 
