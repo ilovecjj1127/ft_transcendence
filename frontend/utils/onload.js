@@ -18,6 +18,8 @@ export async function onloadInit () {
 
         initGeneralSocialDataSocket()
 
+        // await initNotificationSocket()
+
         hideOrShowSocialMenu(accessToken)
 
         updateSocialRequestsData()
@@ -29,7 +31,7 @@ export async function onloadInit () {
         hideOrShowSocialMenu(accessToken)
         location.hash = '/'
     }
-
+    // in else?
     createMenuProfile()
 
     moveFaces()

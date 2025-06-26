@@ -84,6 +84,7 @@ export const router = () => {
     if (DEBUGPRINTS) console.log("route: ", route)
     if (route) {
         loadRoute(route);
+        // applyTranslations(getLanguage());
     } else {
         document.getElementById('app').innerHTML = '<h1>404 - Page Not Found</h1>';
     }
