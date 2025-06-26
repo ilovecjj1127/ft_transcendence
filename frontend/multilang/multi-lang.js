@@ -1,6 +1,6 @@
 import { translations } from "./dictionary.js"
 
-export function applyTranslations(lang) {
+export async function applyTranslations(lang) {
   const t = translations[lang]
 
   document.querySelectorAll('[data-i18n]').forEach(el => {

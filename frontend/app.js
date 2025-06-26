@@ -1,5 +1,6 @@
 import {onloadInit} from "./utils/onload.js"
 import { applyTranslations } from "./multilang/multi-lang.js";
+import { getLanguage } from "./utils/userData.js";
 
 //Dynamically load HTML, JS, and CSS for each route
 const loadRoute = async (route) => {
@@ -72,8 +73,7 @@ export const router = async () => {
     const route = routes[hash] || routes[hash.split('/')[0]]
     if (route) {
         await loadRoute(route);
-        const lang = localStorage.getItem('lang') || 'en';
-        applyTranslations(lang);
+        applyTranslations(getLanguage());
     } else {
         document.getElementById('app').innerHTML = '<h1>404 - Page Not Found</h1>';
     }
@@ -87,4 +87,6 @@ window.addEventListener('load', () => {
 
     //load initial route
     router()
+
+    // applyTranslations(getLanguage())
 });

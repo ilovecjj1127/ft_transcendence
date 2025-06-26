@@ -1,5 +1,6 @@
-import { getUsername, getUserToken } from "../utils/userData.js"
+import { getUsername, getUserToken, getLanguage } from "../utils/userData.js"
 import { checkToken } from "../utils/token.js"
+import { translations } from "../multilang/dictionary.js"
 
 let activeSocket = null
 
@@ -178,8 +179,6 @@ export function closeActiveWebsocket () {
 
 export function sendInviteMessage (gameId) {
     activeSocket.send(JSON.stringify ({
-        message: `I invited you for a game!
-        
-        The game has ID = ${gameId}`
+        message: `${translations[getLanguage()]['inviteMsg']} ${gameId}`
     }))
 }

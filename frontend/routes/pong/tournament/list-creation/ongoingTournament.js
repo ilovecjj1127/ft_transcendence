@@ -38,7 +38,7 @@ async function requestList (list, listContainer) {
             const data = await listResponse.json()
             if (data.length == 0) {
                 const noTournamentsMessage = document.createElement('p')
-                noTournamentsMessage.textContent = "No ongoing tournaments available."
+                noTournamentsMessage.textContent = translations[getLanguage()]['noTourOn']
                 list.appendChild(noTournamentsMessage)
             } else {
             data.forEach((tour) => {

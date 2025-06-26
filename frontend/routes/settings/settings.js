@@ -33,8 +33,6 @@ export const init = () => {
     function changeProfileImg(event) {
         const file = event.target.files[0];
         if (file) {
-
-            //change avatar API
             changeAvatar(file).then((ok) => {
                 if (ok) {
 
