@@ -6,16 +6,17 @@
     justify-content: flex-start;
     align-items: center;
     background-color: var(--app-blue);
-    color: black;
     border-radius: 10px;
     padding: 20px;
     position: relative;
+    color:#facf45;
+
 }
 
 #users-img-container {
     position: absolute;
     top: 4rem;
-    right: 4rem;
+    right: 3rem;
     width: 20rem;
     height: 20rem;
 }
@@ -38,7 +39,9 @@
 #users-username {
     font-size: 3rem;
     font-weight: bold;
-    color: white;
+    font-family: "rixvideogame-pro", sans-serif;
+    letter-spacing: 5px;
+    /* color: white; */
 }
 
 /* Close button styling */
@@ -70,4 +73,44 @@
 
 #users-close-button:hover {
     background-color: #c0392b;
+}
+
+#users-history-container {
+    position: absolute;
+    background-color: transparent;
+    /* color: white; */
+    top: 11rem;
+    left: 4rem;
+    border: none;
+    height: 60%;
+    width: 40%;
+    overflow-y: auto;
+}
+
+#users-history-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#users-history-list li {
+    display: flex;  /* Flex layout for list item */
+    justify-content: space-between;  /* Space out left (game details) and right (status & button) */
+    align-items: center;
+    padding: 8px;
+    /* color: white; */
+    background-color: rgba(0, 0, 0, 0);
+    margin: 4px 0;
+    border: solid;
+    border-radius: 5px;
+    width: 100%;
+}
+
+#users-history-container::-webkit-scrollbar {
+    width: 0px;
+}
+
+.users-game-details {
+    display: flex;
+    flex: 1;
+    justify-content: space-between;
 }

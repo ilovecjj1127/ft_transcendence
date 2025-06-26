@@ -33,8 +33,22 @@ export async function createGameWithPlayer(PlayerId) {
         });
         if (response.ok) {
             const data = await response.json()
+        
             alert("game created " + data.game.id)
-            localStorage.setItem("gameId", data.game.id)
+
+
+            function setGameData(Data)
+            {
+                localStorage.setItem("gameId", data.game.id)
+                
+                const gameInfo = {}
+                gameInfo.gameId = localStorage.getItem("gameId")
+                gameInfo.winScore = score
+
+                localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
+            }
+            setGameData()
+
             startGame(data.game)
 
             if (DEBUGPRINTS) console.log("gameid ;", data.game.id)
@@ -49,6 +63,8 @@ export async function createGameWithPlayer(PlayerId) {
         location.hash = '/'
     }
 }
+
+
 
 // with help from chatgpt
 

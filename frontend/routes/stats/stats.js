@@ -10,6 +10,7 @@ export const init = () => {
     closeBtn.innerHTML = `<i class='bx bx-x-circle'></i>`
 
     getUserStats()
+    getUserHistory()
     if (getUserAvatar())
         profileImg.src = getUserAvatar()
 
@@ -47,11 +48,64 @@ export const init = () => {
         {
             const stats = await statsRequest.json()
             setStatsValues(stats)
+
+            
+
         } else {
             setStatsValues(null)
         }
     }
- 
+
+    async function getUserHistory() {
+        const isTokenValid = await checkToken()
+        const user = getUsername()
+        if (!isTokenValid) return
+
+        const historyResponse = await fetch(`http://${window.location.host}/api/games/history/?username=${user}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${getUserToken().access}`
+            },
+        });
+        if (historyResponse.status == 401) deleteTokenReload()
+        if (historyResponse.ok) {
+            const history = await historyResponse.json()
+            console.log(history)
+            for (const game in history) {
+                createEntry(history[game])
+            }
+        }
+        else
+        {
+            const history = document.getElementById("stats-history-list")
+            const li = document.createElement('li')
+            const details = document.createElement('div')
+            details.innerText = "Error retrieving history"
+            li.appendChild(details)
+            history.appendChild(li)
+        }
+    }
+
+    function createEntry(game) {
+        const history = document.getElementById("stats-history-list")
+        const li = document.createElement('li')
+        const details = document.createElement('div')
+        details.classList.add('stats-game-details')
+        const result = document.createElement('span')
+        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        const opponent = document.createElement('span')
+        game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
+            opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"
+        const score = document.createElement('span')
+        score.innerText = game.score_own + " - " + game.score_opponent
+        details.appendChild(result)
+        details.appendChild(opponent)
+        details.appendChild(score)
+        li.appendChild(details)
+        history.appendChild(li)
+    }
+    
     //check if user exist with HEAD request
     async function searchUser (user) {
         const isTokenValid = await checkToken()
