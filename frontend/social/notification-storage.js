@@ -2,9 +2,13 @@
 // import { translations } from "../multilang/dictionary.js"
 // code copied from carlo/notifi
 
+import { DEBUGPRINTS } from "@/config.js"
+import { colors } from "@/config.js"
+
 export function saveGameNotification (gameId, opponent) {
     let notifications = JSON.parse(localStorage.getItem("game-notifier")) || []
 
+    if ( DEBUGPRINTS ) console.log("%csaveGameNotification(); ", `color: yellow`, notifications, "typeof; ", typeof notifications)
     const isDuplicate = notifications.some(notifier => notifier.gameId == gameId)
     if (!isDuplicate) {
         notifications.push({gameId, opponent})

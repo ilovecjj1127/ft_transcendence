@@ -103,6 +103,10 @@ export async function addFriendInList(friend)
 	nameTag.style.fontSize = '0.9em';
 
 	img.addEventListener('click', async () =>  {
+		const notifyDot = document.createElement('div')
+		notifyDot.classList.add('notify-dot')
+		li.querySelector(".notify-dot").style.display = "none"
+
 		OpenRoom(friend)
 	})
 	li.appendChild(img)

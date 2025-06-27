@@ -22,10 +22,10 @@ export async function createNotificationSocket () {
             usernames: friends
         }));
     }
-
+    
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("Notification Socket onmessage, data; ", event.data)
+        console.log("%cNotification Socket onmessage, data; ", `color: yellow`, event.data, typeof event.data)
         switch (data.type) {
             case "user_status_update":
                 handleUserStatusUpdate(data.update)
@@ -52,7 +52,7 @@ export async function createNotificationSocket () {
 
 function handleUserStatusUpdate(updates) {
     const friendsList = document.getElementById("friends-list").querySelectorAll("li")
-    console.log("handleUserStatusUpdate () , updates; ", updates)
+    console.log("%chandleUserStatusUpdate () , updates; ", `color: yellow`, updates)
 
     friendsList.forEach((li) => {
         const user = li.dataset.friend
@@ -78,10 +78,14 @@ function handleUserStatusUpdate(updates) {
 
 function handleUnreadChats(unreadChats) {
     const friendsList = document.getElementById("friends-list").querySelectorAll("li")
+    console.log("%chandleUnreadChats () , friendlist; ", `color: yellow`, friendsList, "unread chats; ", `color: yellow`, unreadChats)
 
     friendsList.forEach((li) => {
+        console.log("%chandleUnreadChats () , li; ", `color: yellow`, li, "li.user ", `color: yellow`, li.dataset.user)
+        
         const user = li.dataset.user
         const dot = li.querySelector(".notify-dot")
+        console.log("%chandleUnreadChats () , dot ", dot)
         if (unreadChats.includes(user)) {
             dot.style.display = "block"
         }
@@ -91,22 +95,24 @@ function handleUnreadChats(unreadChats) {
 function handleGameInvite(opponent, gameId) {
     saveGameNotification(gameId, opponent)
     //add notification effects
-    showNotification(true)
+    showGameInviteNotification(true)
 }
 
-export function showNotification (show) {
-    const requestPanel = document.getElementById("request-panel")
+export function showGameInviteNotification (show) {
+    const requestPanel = document.getElementById("show-requests")
     const button = document.getElementById("request-friend-btn")
-    if (show) {
+    console.log("%showGameInviteNotification () , elems to change; ", `color: yellow`, requestPanel, button)
 
-        if (!requestPanel.classList.contains('show')) {
-            let isYellow = false;
-    
-            notificationId = setInterval(() => {
-                button.style.backgroundColor = isYellow ? 'yellow' : 'var(--app-blue)'
-                isYellow = !isYellow;
-            }, 500);
-        }
+    if (show) {
+        requestPanel.backgroundColor = 'yellow'
+        // if (!requestPanel.classList.contains('show')) {
+        //     let isYellow = true;
+
+        //     notificationId = setInterval(() => {
+        //         button.style.backgroundColor = isYellow ? 'yellow' : 'var(--app-blue)'
+        //         isYellow = !isYellow;
+        //     }, 500);
+        // }
     } else {
         clearInterval(notificationId)
         button.style.backgroundColor = 'var(--app-blue)'
