@@ -39,7 +39,7 @@ export async function onLogin (accessToken) {
         await updateSocialRequestsData()
 
         await createNotificationSocket()
-        await initGeneralSocialDataSocket()
+        // await initGeneralSocialDataSocket()
 
         // toggleFriendsContainer('flex')
         // await populateRequestList("received-tab")
