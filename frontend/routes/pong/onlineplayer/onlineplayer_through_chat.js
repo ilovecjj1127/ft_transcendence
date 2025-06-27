@@ -9,12 +9,16 @@ export async function createGameWithPlayer(PlayerId) {
     // overlay.innerHTML = ''
     // overlay.style.display = 'flex';
     // overlay.style.zIndex = 1000;
-    const score = await createScoreModal_v2_for_chat()
+
+    // const score = await createScoreModal_v2_for_chat()
+    const score = await createScoreModal()
+    //!!!! trying to fix with using same .css as other instance such as carlos part
+
+
 
     const scoreModal = document.getElementById('score-modal')
 
-    if (DEBUGPRINTS) console.log("overlay: ", overlay, "scoreModal: ", scoreModal)
-
+    // if (DEBUGPRINTS) console.log("overlay: ", overlay, "scoreModal: ", scoreModal)
 
     if (score) {
         const isTokenValid = await checkToken()
@@ -36,9 +40,9 @@ export async function createGameWithPlayer(PlayerId) {
         
             alert("game created " + data.game.id)
 
-            setGameData()
+            // setGameData(data, score)
 
-            startGame(data.game)
+            // startGame(data.game)
 
             if (DEBUGPRINTS) console.log("gameid ;", data.game.id)
             return data.game.id
@@ -53,13 +57,13 @@ export async function createGameWithPlayer(PlayerId) {
     }
 }
 
-function setGameData(data_)
+function setGameData(data_, score_)
 {
     localStorage.setItem("gameId", data_.game.id)
     
     const gameInfo = {}
     gameInfo.gameId = localStorage.getItem("gameId")
-    gameInfo.winScore = score
+    gameInfo.winScore = score_
 
     localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
 }
