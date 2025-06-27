@@ -5,10 +5,10 @@ import { createScoreModal } from "./onlineplayer.js"
 import { startGame } from "./onlineplayer.js"
 
 export async function createGameWithPlayer(PlayerId) {
-    const overlay = document.querySelector('.overlay')
-    overlay.innerHTML = ''
-    overlay.style.display = 'flex';
-    overlay.style.zIndex = 1000;
+    // const overlay = document.querySelector('.overlay')
+    // overlay.innerHTML = ''
+    // overlay.style.display = 'flex';
+    // overlay.style.zIndex = 1000;
     const score = await createScoreModal_v2_for_chat()
 
     const scoreModal = document.getElementById('score-modal')
@@ -36,17 +36,6 @@ export async function createGameWithPlayer(PlayerId) {
         
             alert("game created " + data.game.id)
 
-
-            function setGameData(Data)
-            {
-                localStorage.setItem("gameId", data.game.id)
-                
-                const gameInfo = {}
-                gameInfo.gameId = localStorage.getItem("gameId")
-                gameInfo.winScore = score
-
-                localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
-            }
             setGameData()
 
             startGame(data.game)
@@ -64,7 +53,16 @@ export async function createGameWithPlayer(PlayerId) {
     }
 }
 
+function setGameData(data_)
+{
+    localStorage.setItem("gameId", data_.game.id)
+    
+    const gameInfo = {}
+    gameInfo.gameId = localStorage.getItem("gameId")
+    gameInfo.winScore = score
 
+    localStorage.setItem("gameInfo", JSON.stringify(gameInfo))
+}
 
 // with help from chatgpt
 

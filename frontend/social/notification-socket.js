@@ -116,5 +116,5 @@ export function showGameInviteNotification (show) {
     } else {
         clearInterval(notificationId)
         button.style.backgroundColor = 'var(--app-blue)'
-    }        
+    }
 }
