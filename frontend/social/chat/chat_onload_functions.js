@@ -34,6 +34,8 @@ export function populateFriendList() {
 		if (DEBUGPRINTS) console.log("typeof = ", typeof friendList)
 
 		friendList.forEach(friend => {
+			if (DEBUGPRINTS) console.log("friendList.ForEach; len > 0?; ", JSON.parse(friend).length > 0);
+			if (JSON.parse(friend).length > 0)
 				addFriendInList(friend)
 		});
 }
@@ -56,13 +58,14 @@ function updateUserNameTagHTML(username)
 
 export async function addFriendInList(friend)
 {
+	if (DEBUGPRINTS) console.log("friend; ", friend, "friend.name; ", friend.name);
 	if (friend)
 	{
 		friend = friend.replace(/[\[\]"]/g, '');
 		if (friend.name)
 			friend.name = friend.replace(/[\[\]"]/g, '');
 	}
-	// if (DEBUGPRINTS) console.log("friend; ", friend, "friend.name; ", friend.name, "cleaned; ", cleaned);
+	if (DEBUGPRINTS) console.log("friend; ", friend, "friend.name; ", friend.name);
 
 	const existing = document.querySelector(`li[data-friend="${friend || friend.name}"]`);
 	
@@ -86,6 +89,9 @@ export async function addFriendInList(friend)
 	img.src = data.avatar || "./media/default.jpeg";
 	img.style.borderColor = "grey";
 
+	const notifyDot = document.createElement('div')
+	notifyDot.classList.add('notify-dot')
+
 	if (DEBUGPRINTS) console.log("adding friend", friend)
 	
 	const nameTag = document.createElement('span');
@@ -98,7 +104,7 @@ export async function addFriendInList(friend)
 	})
 	li.appendChild(img)
 	li.appendChild(nameTag);
-
+	li.appendChild(notifyDot)
 	list.appendChild(li)
 }
 

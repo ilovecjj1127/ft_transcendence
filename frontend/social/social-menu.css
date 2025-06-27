@@ -225,6 +225,18 @@ div#social-menu-container{
 	border-width: 6px;
 }
 
+.notify-dot {
+	position: absolute;
+	display: none;
+	background-color: yellow;
+	width: 30%;
+	height: 30%;
+	z-index: 100;
+	top: 80%;
+	left: 10%;
+	border-radius: 50%;
+}
+
 #friends-list img:hover {
     scale: 110%;
 }
