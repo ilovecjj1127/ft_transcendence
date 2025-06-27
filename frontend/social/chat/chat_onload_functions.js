@@ -27,17 +27,20 @@ export function populateFriendList() {
 
 		try {
 				friendList = friendList.split(',');
+				if (DEBUGPRINTS) console.log("friendList len; ", friendList.length)
 		} catch (e) {
 				console.error("Failed to parse friend list", e);
 				friendList = [];
 		}
 		if (DEBUGPRINTS) console.log("typeof = ", typeof friendList)
 
-		friendList.forEach(friend => {
-			if (DEBUGPRINTS) console.log("friendList.ForEach; len > 0?; ", JSON.parse(friend).length > 0);
-			if (JSON.parse(friend).length > 0)
+		if (friendList.length > 0)
+		{
+			friendList.forEach(friend => {
+				if (DEBUGPRINTS) console.log("friend; ", friend, "typeof; ", typeof friend);
 				addFriendInList(friend)
-		});
+			});
+		}
 }
 
 export async function updateSocialRequestsData ()
