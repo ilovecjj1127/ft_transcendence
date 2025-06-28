@@ -23,13 +23,16 @@ let friendChatOpen = null
 import { getChatSocket } from '@chat/chatSocketState.js';
 import { setChatSocket } from '@chat/chatSocketState.js';
 import { closeChatSocket } from '@chat/chatSocketState.js';
+import { debugWrap } from "../../../utils/debug/wrappers.js";
 
-export async function OpenRoom(friend)
+export const OpenRoom = debugWrap(true, OpenRoom_original_func, "OpenRoom", "orange");
+
+export async function OpenRoom_original_func(friend)
 {
 	//here change id with whatever
 	if (DEBUGPRINTS) console.log("click on img friend; ", friend)
         if (DEBUGPRINTS) console.log("chatBox; ", chatBox)
-			const token = getUserToken().access
+        const token = getUserToken().access
 		
         if (getChatSocket() != null)
         {
@@ -99,4 +102,5 @@ closeChat.addEventListener('click', function (){
         
         if (DEBUGPRINTS) console.log("closeChat button clicked")
         if (DEBUGPRINTS) console.log("closing socket")
+        localStorage.setItem("chatbox-playerId", "")
 })

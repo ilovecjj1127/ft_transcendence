@@ -11,11 +11,14 @@ import { getUserInfo } from "@utils/userData.js"
 import { populateInRequest } from "@social/init_friends_data.js"
 import { populateOutRequest } from "@social/init_friends_data.js"
 import { OpenRoom } from "@chat/live_chatbox/open_chatbox.js"
+import { debugWrap } from "@utils/debug/wrappers.js"
+
 
 const list = document.getElementById("friends-list")
 
-export function populateFriendList() {
+export const populateFriendList = debugWrap(false, populateFriendList_original_func, "populateFriendList", "orange");
 
+export function populateFriendList_original_func() {
 		let friendList = getUserFriendlist()
 		if (DEBUGPRINTS) console.log("friendlist = ", friendList)
 		if (friendList == null) {
@@ -33,9 +36,17 @@ export function populateFriendList() {
 				friendList = [];
 		}
 		if (DEBUGPRINTS) console.log("typeof = ", typeof friendList)
+		if (DEBUGPRINTS) console.log("aaa a ", friendList[0][0], friendList[0])
 
 		if (friendList.length > 0)
 		{
+			const checkfirst_raw = friendList[0].replace(/[\[\]"]/g, "").trim();
+			if (DEBUGPRINTS) console.log("checkfirst_raw ", checkfirst_raw)
+			if (checkfirst_raw === "") // check for empty string
+			{
+				if (DEBUGPRINTS) console.log("first is empty")
+				return
+			}
 			friendList.forEach(friend => {
 				if (DEBUGPRINTS) console.log("friend; ", friend, "typeof; ", typeof friend);
 				addFriendInList(friend)

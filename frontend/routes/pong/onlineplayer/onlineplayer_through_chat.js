@@ -10,8 +10,8 @@ export async function createGameWithPlayer(PlayerId) {
     // overlay.style.display = 'flex';
     // overlay.style.zIndex = 1000;
 
-    // const score = await createScoreModal_v2_for_chat()
-    const score = await createScoreModal()
+    const score = await createScoreModal_v2_for_chat()
+    // const score = await createScoreModal()
     //!!!! trying to fix with using same .css as other instance such as carlos part
 
 
@@ -40,7 +40,7 @@ export async function createGameWithPlayer(PlayerId) {
         
             alert("game created " + data.game.id)
 
-            // setGameData(data, score)
+            setGameData(data, score)
 
             // startGame(data.game)
 

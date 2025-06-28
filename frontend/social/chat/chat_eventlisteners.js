@@ -15,6 +15,7 @@ import { removeFriend } from "@social/select_friend_menu.js"
 import { createGameWithPlayer } from "../../routes/pong/onlineplayer/onlineplayer_through_chat.js"
 import { DEBUGPRINTS } from "@/config.js"
 import { getUserToken } from "@/utils/userData.js"
+import { debugWrap } from "../../utils/debug/wrappers.js"
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')
@@ -66,13 +67,13 @@ blockOrUnblockButton.addEventListener('click', async function () {
         }
 })
 
-invitePlayerForGame.addEventListener('click', async function (e) {
+invitePlayerForGame.addEventListener('click', debugWrap(true, async function (e) {
         e.preventDefault();
         const playerId = localStorage.getItem("chatbox-playerId")
         const friendname = document.querySelector(".chatbox-message-name")
         const game_id = await createGameWithPlayer(playerId)
 
-        if (DEBUGPRINTS) console.log("inviting player; ", friendname.innerHTML, "playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
+        if (DEBUGPRINTS) console.log("inviting player; ", friendname.innerHTML, ", playerId; ", playerId, "to game; ", localStorage.getItem("gameId"))
 
         
         var gameInfoStr = localStorage.getItem("gameInfo")
@@ -98,9 +99,8 @@ invitePlayerForGame.addEventListener('click', async function (e) {
         'message' : message,
         'date': date
         }));
-        localStorage.setItem("chatbox-playerId", "")
         scrollBottom()
-})
+}, "invitePlaterForGame.addEventListener", "orange"));
 
 removeFriendElem.addEventListener('click', function () {
 
