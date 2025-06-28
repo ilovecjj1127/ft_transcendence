@@ -1,12 +1,16 @@
 import { getUserToken, getFriends } from "@/utils/userData.js";
 import { checkToken } from "../utils/token.js";
 import { saveGameNotification } from "./notification-storage.js";
+import { DEBUGSOCKET } from "@/config.js";
+import { debugWrap } from "@/utils/debug/wrappers.js"
+
+import { specialPrintFunction } from "@/utils/debug/debug_extra_utils.js"
 
 let notificationId = null
 // code copied from carlo/notifi
 export async function createNotificationSocket () {
     const isTokenValid = await checkToken()
-    console.log("createNotificationSocket () called ")
+    if (DEBUGSOCKET) console.log("createNotificationSocket () called ")
 
     if (!isTokenValid) return 
 
@@ -14,7 +18,7 @@ export async function createNotificationSocket () {
     const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/?token=${token}`)
     
     socket.onopen = () => {
-        console.log("Notification Socket onopen ")
+        specialPrintFunction(DEBUGSOCKET, "createNotificationSocket; socket.onopen ", "yellow")
 
         const friends = JSON.parse(getFriends())
         socket.send(JSON.stringify({
@@ -22,10 +26,12 @@ export async function createNotificationSocket () {
             usernames: friends
         }));
     }
-    
+
     socket.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        console.log("%cNotification Socket onmessage, data; ", `color: yellow`, event.data, typeof event.data)
+        specialPrintFunction(DEBUGSOCKET, "createNotificationSocket; socket.onmessage, data;  " + data + " typeof data; " + typeof event.data, "yellow")
+
+        // if (DEBUGSOCKET) console.log("%cNotification Socket onmessage, data; ", `color: yellow`, data, typeof data)
         switch (data.type) {
             case "user_status_update":
                 handleUserStatusUpdate(data.update)
@@ -42,22 +48,26 @@ export async function createNotificationSocket () {
     };
 
     socket.onerror = (err) => {
-        console.log(err)
+        if (DEBUGSOCKET) console.log(err)
     }
 
     socket.onclose = function (event) {
-        console.log("socket close", event)
+        specialPrintFunction(DEBUGSOCKET, "createNotificationSocket; socket.onclose " + event, "yellow")
+        // if (DEBUGSOCKET) console.log("socket close", event)
     }
 }
 
-function handleUserStatusUpdate(updates) {
+export const handleUserStatusUpdate = debugWrap(false, handleUserStatusUpdate_original_func, "handleUserStatusUpdate", "orange", DEBUGSOCKET);
+
+
+function handleUserStatusUpdate_original_func(updates) {
     const friendsList = document.getElementById("friends-list").querySelectorAll("li")
-    console.log("%chandleUserStatusUpdate () , updates; ", `color: yellow`, updates)
+    // if (DEBUGSOCKET) console.log("%chandleUserStatusUpdate () , updates; ", `color: yellow`, updates)
 
     friendsList.forEach((li) => {
         const user = li.dataset.friend
         const img = li.querySelector("img")
-        console.log("friendlist; ", friendsList, "user; ", user)
+        // if (DEBUGSOCKET) console.log("friendlist; ", friendsList, "user; ", user)
 
         if (user in updates) {
     
@@ -70,23 +80,29 @@ function handleUserStatusUpdate(updates) {
             status.innerText = li.dataset.status == "1" ? "online" : "offline"
 
             img.style.border = `6px solid ${isOnline ? "yellowgreen" : "grey"}`;
-            console.log("img; ", img, "isOnline; ", isOnline, "img.style.borderColor; ", img.style.borderColor)
+            // if (DEBUGSOCKET) console.log("img; ", img, "isOnline; ", isOnline, "img.style.borderColor; ", img.style.borderColor)
 
         }
     })
 }
 
-function handleUnreadChats(unreadChats) {
+export const handleUnreadChats = debugWrap(false, handleUnreadChats_original_func, "handleUnreadChats", "orange", DEBUGSOCKET);
+
+function handleUnreadChats_original_func(unreadChats) {
     const friendsList = document.getElementById("friends-list").querySelectorAll("li")
-    console.log("%chandleUnreadChats () , friendlist; ", `color: yellow`, friendsList, "unread chats; ", `color: yellow`, unreadChats)
+    // if (DEBUGSOCKET)console.log("%chandleUnreadChats () , friendlist; ", `color: yellow`, friendsList, "unread chats; ", `color: yellow`, unreadChats)
 
     friendsList.forEach((li) => {
-        console.log("%chandleUnreadChats () , li; ", `color: yellow`, li, "li.user ", `color: yellow`, li.dataset.user)
-        
+        // if (DEBUGSOCKET) console.log("%chandleUnreadChats () , li; ", `color: yellow`, li, "li.user ", `color: yellow`, li.dataset.user)
+
         const user = li.dataset.user
         const dot = li.querySelector(".notify-dot")
-        console.log("%chandleUnreadChats () , dot ", dot)
+        // if (DEBUGSOCKET) console.log("dot; ", dot)
+        // if (DEBUGSOCKET) console.log("unreadChats; ", unreadChats)
+        // if (DEBUGSOCKET) console.log("user; ", user)
+
         if (unreadChats.includes(user)) {
+            // if (DEBUGSOCKET) console.log("dot.style.display; ", dot.style.display)
             dot.style.display = "block"
         }
     })
@@ -98,10 +114,12 @@ function handleGameInvite(opponent, gameId) {
     showGameInviteNotification(true)
 }
 
-export function showGameInviteNotification (show) {
+export const showGameInviteNotification = debugWrap(false, showGameInviteNotification_original_func, "showGameInviteNotification", "orange", DEBUGSOCKET);
+
+export function showGameInviteNotification_original_func (show) {
     const requestPanel = document.getElementById("show-requests")
     const button = document.getElementById("request-friend-btn")
-    console.log("%showGameInviteNotification () , elems to change; ", `color: yellow`, requestPanel, button)
+    if (DEBUGSOCKET) console.log("%showGameInviteNotification () , elems to change; ", `color: yellow`, requestPanel, button)
 
     if (show) {
         requestPanel.backgroundColor = 'yellow'

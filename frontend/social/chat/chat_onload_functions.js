@@ -16,7 +16,7 @@ import { debugWrap } from "@utils/debug/wrappers.js"
 
 const list = document.getElementById("friends-list")
 
-export const populateFriendList = debugWrap(false, populateFriendList_original_func, "populateFriendList", "orange");
+export const populateFriendList = debugWrap(false, populateFriendList_original_func, "populateFriendList", "orange", DEBUGPRINTS);
 
 export function populateFriendList_original_func() {
 		let friendList = getUserFriendlist()
@@ -106,6 +106,8 @@ export async function addFriendInList(friend)
 	const notifyDot = document.createElement('div')
 	notifyDot.classList.add('notify-dot')
 
+	request_and_set_UserAttributes_in_ElementData(friend, img, li)
+
 	if (DEBUGPRINTS) console.log("adding friend", friend)
 	
 	const nameTag = document.createElement('span');
@@ -124,6 +126,35 @@ export async function addFriendInList(friend)
 	li.appendChild(nameTag);
 	li.appendChild(notifyDot)
 	list.appendChild(li)
+}
+
+import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { getUserToken } from "../../utils/userData.js"
+
+async function request_and_set_UserAttributes_in_ElementData(user, profileImg, li) {
+	const isTokenValid = await checkToken()
+
+	if (!isTokenValid) return
+
+	const searchUser = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
+		method: "GET",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${getUserToken().access}`
+		},
+	});
+	if (searchUser.status == 401) deleteTokenReload()
+	if (searchUser.ok)
+	{
+		const userSearched = await searchUser.json()
+		li.dataset.user = user
+		li.dataset.id = userSearched.id
+		li.dataset.img = userSearched.avatar
+		profileImg.src = userSearched.avatar
+		console.log("searchUser.ok    userSearched; ", userSearched)
+	} else {
+		profileImg.src = "./media/default.jpeg"
+	}
 }
 
 export function removeFriendInList(friend) {

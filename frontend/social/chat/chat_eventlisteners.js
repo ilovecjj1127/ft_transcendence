@@ -100,7 +100,7 @@ invitePlayerForGame.addEventListener('click', debugWrap(true, async function (e)
         'date': date
         }));
         scrollBottom()
-}, "invitePlaterForGame.addEventListener", "orange"));
+}, "invitePlaterForGame.addEventListener", "orange", DEBUGPRINTS));
 
 removeFriendElem.addEventListener('click', function () {
 

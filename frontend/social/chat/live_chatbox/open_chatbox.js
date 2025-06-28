@@ -25,7 +25,7 @@ import { setChatSocket } from '@chat/chatSocketState.js';
 import { closeChatSocket } from '@chat/chatSocketState.js';
 import { debugWrap } from "../../../utils/debug/wrappers.js";
 
-export const OpenRoom = debugWrap(true, OpenRoom_original_func, "OpenRoom", "orange");
+export const OpenRoom = debugWrap(true, OpenRoom_original_func, "OpenRoom", "orange", DEBUGPRINTS);
 
 export async function OpenRoom_original_func(friend)
 {
