@@ -54,7 +54,7 @@ registerForm.onsubmit = async (e) => {
         confirmPassword.value = ""
         return
     }
-
+    console.log("test; ", password, confirmPassword, typeof password, typeof confirmPassword)
     const response = await fetch(`http://${window.location.host}/api/users/register/`, {
         method: "POST",
         headers: {
