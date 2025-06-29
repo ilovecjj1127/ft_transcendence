@@ -105,7 +105,7 @@ class NotificationConsumer(AsyncWebsocketConsumer):
                             "update": status_update
                         }
                     )
-                await asyncio.sleep(3)
+                await asyncio.sleep(30)
         except asyncio.CancelledError:
             pass
 

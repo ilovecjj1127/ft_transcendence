@@ -91,6 +91,6 @@ export async function getUserInfo(username) {
     });
     const response_data = await response.json()
 
-    console.log("avatar: ", response_data.avatar)
+    // if (DEBUGPRINTS) console.log("avatar: ", response_data.avatar)
     return response_data;
 }

@@ -1,5 +1,11 @@
 import { DEBUGPRINTS } from "@/config.js"
 
+
+function getTimeStamp() {
+	const now = new Date();
+	return now.toTimeString().split(" ")[0]; // "HH:MM:SS"
+}
+
 export function debugWrap(awaitbool = true, func, name = "Function", color = "orange", DEBUGVARIABLE) {
 	return async function(...args) {
 		if (typeof func !== "function") {
@@ -7,7 +13,8 @@ export function debugWrap(awaitbool = true, func, name = "Function", color = "or
 			return;
 		}
 		
-		if (DEBUGVARIABLE) console.log(`%c START ${name}()`, `color: ${color}; font-weight: bold`);
+		let time = getTimeStamp();
+		if (DEBUGVARIABLE) console.log(`%c[${time}] START ${name}()`, `color: ${color}; font-weight: bold`);
 		
 		let result;
 		if (awaitbool)
@@ -15,8 +22,9 @@ export function debugWrap(awaitbool = true, func, name = "Function", color = "or
 		else
 			result = func.apply(this, args);
 
-		if (DEBUGVARIABLE) console.log(`%c END ${name}()`, `color: ${color}; font-weight: bold`);
-		
+		time = getTimeStamp();
+		if (DEBUGVARIABLE) console.log(`%c[${time}] END ${name}()`, `color: ${color}; font-weight: bold`);
+
 		return result;
 	}
 }

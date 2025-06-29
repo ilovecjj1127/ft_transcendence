@@ -151,7 +151,7 @@ async function request_and_set_UserAttributes_in_ElementData(user, profileImg, l
 		li.dataset.id = userSearched.id
 		li.dataset.img = userSearched.avatar
 		profileImg.src = userSearched.avatar
-		console.log("searchUser.ok    userSearched; ", userSearched)
+		if (DEBUGPRINTS) console.log("searchUser.ok    userSearched; ", userSearched)
 	} else {
 		profileImg.src = "./media/default.jpeg"
 	}
