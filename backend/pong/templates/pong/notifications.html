@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>User Status Checker</title>
+</head>
+<body>
+  <h1>Online Status Checker</h1>
+  <pre id="output"></pre>
+
+  <script>
+    const token = localStorage.getItem('accessToken');
+    const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/?token=${token}`);
+
+    const output = document.getElementById("output");
+
+    // When connected
+    socket.onopen = function () {
+      console.log("WebSocket connected");
+
+      // Send list of usernames to monitor
+      const trackedUsers = ["alice", "bob", "cathy", "nnn"];
+      socket.send(JSON.stringify({
+        type: "user_status_update",
+        usernames: trackedUsers
+      }));
+    };
+
+    // When a message is received
+    socket.onmessage = function (event) {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "user_status_update") {
+        // data.update = {"alice": true, "bob": false}
+        for (const [username, isOnline] of Object.entries(data.update)) {
+          const status = isOnline ? "🟢 online" : "⚪ offline";
+          output.textContent += `${username}: ${status}\n`;
+        }
+      } else if (data.type === "unread_chats") {
+        // data.unread_chats = ["alice", "bob"]
+        output.textContent += `Unread chats: ${data.unread_chats.join(", ")}\n`;
+      } else if (data.type === "player_is_waiting") {
+        output.textContent += `Player ${data.opponent} is waiting for you in the game ${data.game_id}\n`;
+      }
+    };
+
+    // Handle errors
+    socket.onerror = function (error) {
+      console.error("WebSocket error:", error);
+    };
+
+    // Handle close
+    socket.onclose = function (event) {
+      console.warn("WebSocket closed:", event.code);
+    };
+  </script>
+</body>
+</html>
