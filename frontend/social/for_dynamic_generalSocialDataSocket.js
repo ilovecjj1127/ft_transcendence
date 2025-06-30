@@ -19,6 +19,7 @@ export async function initGeneralSocialDataSocket()
             // `ws://${window.location.host}/ws/chat/general_social_data_socket_on_backend/?token=${token}`
     );
 
+    
 	socket.onopen = function(e) {
 		console.log("[WS OPEN] Connection established.");
 		// Optional: Authenticate via message
