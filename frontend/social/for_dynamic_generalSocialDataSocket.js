@@ -16,7 +16,7 @@ export async function initGeneralSocialDataSocket()
 {
 	const token = getUserToken().access;
     const socket = new WebSocket(
-            `ws://${window.location.host}/ws/chat/general_social_data_socket_on_backend/?token=${token}`
+            // `ws://${window.location.host}/ws/chat/general_social_data_socket_on_backend/?token=${token}`
     );
 
 	socket.onopen = function(e) {
