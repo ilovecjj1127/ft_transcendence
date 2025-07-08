@@ -33,6 +33,9 @@ export async function createNotificationSocket () {
         console.log(data)
         // if (DEBUGSOCKET) console.log("%cNotification Socket onmessage, data; ", `color: yellow`, data, typeof data)
         switch (data.type) {
+            case "friendship_request":
+                handleFriendshipRequest(data);
+                break;
             case "user_status_update":
                 handleUserStatusUpdate(data.update)
                 break;
@@ -56,6 +59,42 @@ export async function createNotificationSocket () {
         // if (DEBUGSOCKET) console.log("socket close", event)
     }, "socket.onclose", "red", DEBUGSOCKET);
 }
+
+
+async function handleFriendshipRequest(data) {
+    const request_status = data.request_status;
+    const username = data.username;
+
+    switch (request_status) {
+        case "new": {
+            const url = `http://${window.location.host}/api/users/me/`;
+            const userData = await get_data(url);
+            if (userData) populateInRequest("incoming-requests", userData);
+            break;
+        }
+
+        case "accepted": {
+            removeInOrOutRequest("incoming-requests", "outgoing-requests", username);
+            addFriendInList(username);
+            break;
+        }
+
+        case "rejected":
+        case "canceled": {
+            removeInOrOutRequest("incoming-requests", "outgoing-requests", username);
+            break;
+        }
+
+        case "break_off": {
+            removeFriendInList(username);
+            break;
+        }
+
+        default:
+            console.warn("Unknown friendship_request status:", request_status);
+    }
+}
+
 
 export const handleUserStatusUpdate = debugWrap(false, handleUserStatusUpdate_original_func, "handleUserStatusUpdate", "orange", DEBUGSOCKET);
 
