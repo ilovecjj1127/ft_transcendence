@@ -1,5 +1,5 @@
 import BlockGame from "../../games/block-game.js";
-import { translations } from "../multilang/dictionary.js"
+import { translations } from "../../multilang/dictionary.js"
 import { getLanguage } from "../../utils/userData.js";
 
 let Block
