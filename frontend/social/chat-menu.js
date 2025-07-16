@@ -3,6 +3,7 @@ import { getUserToken, saveUserInfo, getLanguage} from "../utils/userData.js"
 import { populateFriendList } from "./chat.js"
 import { showNotification } from "./notification-socket.js"
 import { fillGameNotification } from "./notification-storage.js"
+import { fillFriendNotification } from "./notification-friends.js"
 import { translations } from "../multilang/dictionary.js"
 
 const requestPanel = document.getElementById("request-panel")
@@ -62,7 +63,7 @@ export async function populateRequestList(tabId) {
     if (requestData) {
          if (tabId == "received-tab") {
             fillReceived()
-            fillGameNotification()
+
         } else { //sent tab
             fillSent()
         }
@@ -78,6 +79,8 @@ export function fillReceived() {
     const requests = JSON.parse(localStorage.getItem("received"))
     const list = document.querySelector(`#received-tab ul`)
     list.innerHTML = ''
+    fillGameNotification()
+    fillFriendNotification()
     if (requests.length > 0) {
         
         requests.forEach(request => {

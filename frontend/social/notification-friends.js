@@ -1,20 +1,26 @@
-import { getLanguage } from "../utils/userData.js"
+import { getLanguage, saveUserInfo } from "../utils/userData.js"
 import { translations } from "../multilang/dictionary.js"
 import { populateFriendList } from "./chat.js"
 
-export function saveFriendNotification (id, user, status) {
+export async function saveFriendNotification (id, user, status) {
+    if (status == "accepted" || status == "break_off"){
+        await saveUserInfo()
+        await populateFriendList()
+    }
+
     let notifications = JSON.parse(localStorage.getItem("friend-notifier")) || []
 
     const isDuplicate = notifications.some(notifier => notifier.id == id)
     const toAdd = !isDuplicate && status != "new"
+
     if (toAdd) {
         notifications.push({id, user, status})
         localStorage.setItem("friend-notifier", JSON.stringify(notifications))
     }
 }
 
-export function removeFriendNotification (id) { 
-    let notifications = JSON.parse(localStorage.getItem("friends-notifier")) || []
+export function removeFriendNotification (id) {
+    let notifications = JSON.parse(localStorage.getItem("friend-notifier")) || []
     notifications = notifications.filter(notifier => notifier.id != id)
 
     const list = document.querySelector(`#received-tab ul`)
@@ -24,7 +30,7 @@ export function removeFriendNotification (id) {
         if (li.dataset.id == id) list.removeChild(li)
     })
 
-    localStorage.setItem("game-notifier", JSON.stringify(notifications))
+    localStorage.setItem("friend-notifier", JSON.stringify(notifications))
 }
 
 export function fillFriendNotification () {
@@ -54,7 +60,7 @@ export function fillFriendNotification () {
         removeBtn.innerText = "✖"
 
         removeBtn.addEventListener("click", () => {
-            removeFriendNotification(gameId)
+            removeFriendNotification(id)
         })
         btnContainer.appendChild(removeBtn)
         li.appendChild(btnContainer)
@@ -69,7 +75,6 @@ function handleAccepted(user, li, id) {
     entries.forEach (entry => {
         if (entry.dataset.id == id) sentList.removeChild(entry)
     })
-    populateFriendList()
 }
 
 function handleRejected(user, li, id) {
@@ -82,8 +87,7 @@ function handleRejected(user, li, id) {
 }
 
 function handleBreakOff(user, li) {
-    li.innerText = `${user} ${translations[getLanguage()]['breakOff']}`
-    populateFriendList()   
+    li.innerText = `${user} ${translations[getLanguage()]['breakOff']}` 
 }
 
 function handleCanceled(user, li) {

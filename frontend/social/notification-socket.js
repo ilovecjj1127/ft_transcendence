@@ -2,7 +2,7 @@ import { getUserToken, getFriends } from "../utils/userData.js";
 import { checkToken } from "../utils/token.js";
 import { saveGameNotification } from "./notification-storage.js";
 import { saveFriendNotification } from "./notification-friends.js";
-
+import { populateFriendList } from "./chat.js";
 let notificationId = null
 
 export async function createNotificationSocket () {
