@@ -1,6 +1,7 @@
 import { getUserToken, getFriends } from "../utils/userData.js";
 import { checkToken } from "../utils/token.js";
 import { saveGameNotification } from "./notification-storage.js";
+import { saveFriendNotification } from "./notification-friends.js";
 
 let notificationId = null
 
@@ -30,6 +31,9 @@ export async function createNotificationSocket () {
                 break;
             case "player_is_waiting":
                 handleGameInvite(data.opponent, data.game_id)
+                break;
+            case "friendship_request":
+                handleFriendRequests(data.request_id, data.username, data.request_status)
                 break;
             default:
                 console.warn("Unknown message type:", data)
@@ -73,7 +77,11 @@ function handleUnreadChats(unreadChats) {
 
 function handleGameInvite(opponent, gameId) {
     saveGameNotification(gameId, opponent)
-    //add notification effects
+    showNotification(true)
+}
+
+function handleFriendRequests(id, user, status) {
+    saveFriendNotification(id, user, status)
     showNotification(true)
 }
 

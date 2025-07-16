@@ -101,7 +101,11 @@ export const translations = {
     inviteMsg: `I invited you for a game!
     
     The game has ID = `,
-    enable2fa: "Enable 2FA"
+    enable2fa: "Enable 2FA",
+    acceptReq: "accepted your friend request",
+    declineReq: "declined your friend request",
+    breakOff: "removed you from friend list",
+    cancelReq: "canceled the friend request"
   },
   it: {
     login: "Accedi",
@@ -205,7 +209,11 @@ export const translations = {
     inviteMsg: `Ti ho invitato per una partita!
         
         La partita ha ID = `,
-    enable2fa: "Attiva 2FA"
+    enable2fa: "Attiva 2FA",
+    acceptReq: "accepted your friend request",
+    declineReq: "declined your friend request",
+    breakOff: "removed you from friend list",
+    cancelReq: "canceled the friend request"
   }
 };
 
