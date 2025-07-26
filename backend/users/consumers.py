@@ -79,6 +79,14 @@ class NotificationConsumer(AsyncWebsocketConsumer):
             'opponent': event['opponent']
         }))
 
+    async def send_friendship_request_notification(self, event: dict):
+        await self.send(text_data=json.dumps({
+            'type': 'friendship_request',
+            'request_id': event['request_id'],
+            'username': event['username'],
+            'request_status': event['request_status']
+        }))
+
     async def _get_users_statuses(self, usernames: list[str]) -> dict[str, bool]:
         users_statuses = {}
         for username in usernames:
