@@ -31,7 +31,6 @@ export function isTokenExpired(token)
 }
 
 export function deleteTokenReload () {
-    alert("User unauthorized. Logging out.")
     localStorage.clear()
     window.location.href ='/'
 }
@@ -63,13 +62,10 @@ export async function checkToken () {
     const token = getUserToken().access
     if (token) {
         if (isTokenExpired(token)){
-            alert('access token expired')
             if(isTokenExpired(getUserToken().refresh)){
-                alert('refresh token is expired')
                 deleteTokenReload()
                 return false
             }
-            alert("refresh token not expired")
             return (await refreshAccessToken())
         }
         return true

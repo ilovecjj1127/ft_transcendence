@@ -24,8 +24,7 @@ body {
 	
 	color: white;
 	background-color: black;
-	
-	/* maybe not needed */
+
 	text-rendering: optimizeSpeed;
 	line-height: 1.5;
 	font-family: 'Poppins', sans-serif;
@@ -145,7 +144,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Ensures the background doesn't interfere with user interaction */
+    pointer-events: none;
     z-index: -1;
   
   .face {
@@ -194,7 +193,6 @@ body {
 #otp-container {
 	width: 100%;
 	display:flex;
-	/* flex-direction: row; */
 	justify-content: center;
 	gap:10px;
 }
@@ -214,8 +212,9 @@ body {
 	top: 0;
 	right: 0;
 	transition: right 0.3s ease;
+	z-index: 99;
 }
 
 .friends-visible #languageSelect {
-  right: 3%;
+  right: 57px;
 }

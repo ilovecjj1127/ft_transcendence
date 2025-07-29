@@ -115,7 +115,7 @@ async function createGamesList (list) {
             list.appendChild(li)
         })        
     } else {
-        alert("Cannot retrieve ready game list!");
+        console.log("Cannot retrieve ready game list");
     }
 }
 
@@ -149,7 +149,6 @@ async function joinGame (game, button) {
     });
     if (response.status == 401) deleteTokenReload()
     if (response.ok) {
-        alert("game joined " +  game.id )
         startGame(game)
         return true
     } else {

@@ -32,10 +32,7 @@
             if (response.ok) {
                 const data = await response.json();
                 localStorage.setItem("access_token", data.access);
-                alert("Login successful! Access token saved.");
                 window.location.reload();
-            } else {
-                alert("Login failed. Check your credentials.");
             }
         };
     </script>

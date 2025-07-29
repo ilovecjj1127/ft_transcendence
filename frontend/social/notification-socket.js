@@ -2,8 +2,9 @@ import { getUserToken, getFriends } from "../utils/userData.js";
 import { checkToken } from "../utils/token.js";
 import { saveGameNotification } from "./notification-storage.js";
 import { saveFriendNotification } from "./notification-friends.js";
-import { populateFriendList } from "./chat.js";
+
 let notificationId = null
+let socketOpen = null
 
 export async function createNotificationSocket () {
     const isTokenValid = await checkToken()
@@ -13,11 +14,8 @@ export async function createNotificationSocket () {
     const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/?token=${token}`)
     
     socket.onopen = () => {
-        const friends = JSON.parse(getFriends())
-        socket.send(JSON.stringify({
-            type: "user_status_update",
-            usernames: friends
-        }));
+        socketOpen = socket
+        updateFriendsBackend()
     }
 
     socket.onmessage = (event) => {
@@ -46,13 +44,14 @@ export async function createNotificationSocket () {
 
     socket.onclose = function (event) {
         console.log("socket close", event)
+        socketOpen = null
     }
 }
 
 function handleUserStatusUpdate(updates) {
     const friendsList = document.getElementById("friends-list").querySelectorAll("li")
 
-    friendsList.forEach((li) => {
+    friendsList.forEach((li) => {    
         const user = li.dataset.user
         const img = li.querySelector("img")
         if (user in updates) {
@@ -102,4 +101,15 @@ export function showNotification (show) {
         clearInterval(notificationId)
         button.style.backgroundColor = 'var(--app-blue)'
     }        
+}
+
+export function updateFriendsBackend () {
+    const friends = JSON.parse(getFriends())
+    
+    if (socketOpen) {
+        socketOpen.send(JSON.stringify({
+            type: "user_status_update",
+            usernames: friends
+        }));
+    }
 }

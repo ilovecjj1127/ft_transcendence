@@ -2,11 +2,12 @@
     position: fixed;
     display: none;
     height: 100%;
-    width: 3%;
+    width: 57px;
     background-color: transparent;
     top:0;
     right:0;
     flex-direction: column;
+	z-index: 99;
 }
 
 #add-friend-btn {
@@ -231,6 +232,7 @@
     position: fixed;
     bottom: 0;
     right: 4%;
+	z-index: 99;
 
     --blue: #335DFF;
 	--grey: #F5F5F5;

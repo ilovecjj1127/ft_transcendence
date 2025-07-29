@@ -1,17 +1,18 @@
 import { getLanguage, saveUserInfo } from "../utils/userData.js"
 import { translations } from "../multilang/dictionary.js"
 import { populateFriendList } from "./chat.js"
+import { updateFriendsBackend } from "./notification-socket.js"
 
 export async function saveFriendNotification (id, user, status) {
+
     if (status == "accepted" || status == "break_off"){
         await saveUserInfo()
         await populateFriendList()
+        updateFriendsBackend()
     }
 
     let notifications = JSON.parse(localStorage.getItem("friend-notifier")) || []
-
-    const isDuplicate = notifications.some(notifier => notifier.id == id)
-    const toAdd = !isDuplicate && status != "new"
+    const toAdd = status != "new"
 
     if (toAdd) {
         notifications.push({id, user, status})
@@ -19,7 +20,7 @@ export async function saveFriendNotification (id, user, status) {
     }
 }
 
-export function removeFriendNotification (id) {
+export function removeFriendNotification (id, status, user) {
     let notifications = JSON.parse(localStorage.getItem("friend-notifier")) || []
     notifications = notifications.filter(notifier => notifier.id != id)
 
@@ -27,7 +28,7 @@ export function removeFriendNotification (id) {
 
     const entries = list.querySelectorAll('li')
     entries.forEach(li => {
-        if (li.dataset.id == id) list.removeChild(li)
+        if (li.dataset.id == id && li.dataset.status == status && li.dataset.user == user ) list.removeChild(li)
     })
 
     localStorage.setItem("friend-notifier", JSON.stringify(notifications))
@@ -51,16 +52,18 @@ export function fillFriendNotification () {
                 handleBreakOff(user, li)
                 break;
             case "canceled":
-                handleCanceled(user, li)
+                handleCanceled(user, li, id)
                 break;
         }
         li.dataset.id = id
+        li.dataset.status = status
+        li.dataset.user = user
         const btnContainer = document.createElement('div')
         const removeBtn = document.createElement('button')
         removeBtn.innerText = "✖"
 
         removeBtn.addEventListener("click", () => {
-            removeFriendNotification(id)
+            removeFriendNotification(id, status, user)
         })
         btnContainer.appendChild(removeBtn)
         li.appendChild(btnContainer)
@@ -90,7 +93,7 @@ function handleBreakOff(user, li) {
     li.innerText = `${user} ${translations[getLanguage()]['breakOff']}` 
 }
 
-function handleCanceled(user, li) {
+function handleCanceled(user, li, id) {
     li.innerText = `${user} ${translations[getLanguage()]['cancelReq']}`
     const receivedList = document.querySelector(`#received-tab ul`)
     const entries = receivedList.querySelectorAll('li')

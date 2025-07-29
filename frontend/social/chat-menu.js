@@ -5,6 +5,7 @@ import { showNotification } from "./notification-socket.js"
 import { fillGameNotification } from "./notification-storage.js"
 import { fillFriendNotification } from "./notification-friends.js"
 import { translations } from "../multilang/dictionary.js"
+import { updateFriendsBackend } from "./notification-socket.js"
 
 const requestPanel = document.getElementById("request-panel")
 const requestButton = document.getElementById("request-friend-btn")
@@ -55,7 +56,6 @@ tabButtons.forEach(button => {
 });
 
 // populate the list of requests to update
-//TRY TO USE THIS FUNCTION TO UPDATE REQUEST ON NOTIFICATION
 export async function populateRequestList(tabId) {
 
     const requestData = await saveUserInfo()
@@ -64,7 +64,7 @@ export async function populateRequestList(tabId) {
          if (tabId == "received-tab") {
             fillReceived()
 
-        } else { //sent tab
+        } else {
             fillSent()
         }
     } else {
@@ -95,10 +95,10 @@ export function fillReceived() {
                 const checkRequest = await handleRequest(li.dataset.id, li, list, acceptBtn, "accept")
                 if (checkRequest) {
                     const check = await saveUserInfo()
-                    if (check) 
+                    if (check)
                     {
-                        populateFriendList()
-                        console.log("friend added in list")
+                        await populateFriendList()
+                        updateFriendsBackend()
                     }
                 }
             })
@@ -171,7 +171,7 @@ async function handleRequest (id, li, list, btn, url) {
         btn.style.color = "white"
         btn.disabled = true
         setTimeout( () => {
-            btn.innerText = translations[getLanguage()]['cancel']
+            btn.innerText = translations[getLanguage()][url]
             btn.style.backgroundColor = "white"
             btn.style.color = "black"
             btn.disabled = false

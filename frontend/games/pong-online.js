@@ -128,7 +128,7 @@ export default class PongOnline {
         }
 
         if (data.type == "disconnect") {
-            //alert(data.message)
+            console.log(data.message)
         }
         
         if (data.type == "end_of_the_game")

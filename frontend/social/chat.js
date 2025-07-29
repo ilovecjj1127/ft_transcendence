@@ -34,7 +34,7 @@ export async function populateFriendList() {
 			const img = document.createElement('img')
 			const notifyDot = document.createElement('div')
 			notifyDot.classList.add('notify-dot')
-			getUser(friend, img, li)
+			await getUser(friend, img, li)
 			img.addEventListener('click', () => {
 				if (friendChatOpen && friendChatOpen == friend) {
 					closeChatOpen()
