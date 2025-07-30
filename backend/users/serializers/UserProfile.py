@@ -32,7 +32,7 @@ class MyProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ['username', 'avatar','is_2fa_enabled',
+        fields = ['username', 'avatar','is_2fa_enabled', 'language',
                   'friends', 'received_requests', 'sent_requests']
 
     def get_friends(self, obj) -> list[str]:
@@ -66,3 +66,9 @@ class AvatarField(serializers.ImageField):
 
 class AvatarSerializer(serializers.Serializer):
     avatar = AvatarField()
+
+
+class LanguageChangeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = UserProfile
+        fields = ['language']
