@@ -19,6 +19,15 @@ class UserProfile(AbstractUser):
     )
     otp_secret = models.CharField(max_length=32, blank=True, null=True)
     is_2fa_enabled = models.BooleanField(default=False)
+    language = models.CharField(
+        max_length = 10,
+        choices=[ 
+            ('en', 'English'),
+            ('it', 'Italian'),
+            ('ru', 'Russian')
+        ],
+        default = 'en'
+    )
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
