@@ -109,12 +109,10 @@ export default class PongOnline {
         }
     }
 
-    // Handle WebSocket messages
     handleOnmessage(event) {
         const data = JSON.parse(event.data);
 
         if (data.type === "possitions_update") {
-            // Update paddle position from the server
             this.paddle1.y = data.paddle1_y;
             this.paddle2.y = data.paddle2_y;
             this.ball.x = data.ball_x;

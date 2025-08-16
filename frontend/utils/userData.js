@@ -24,7 +24,6 @@ export async function saveUserInfo () {
         document.getElementById('profile-img').src = userData.avatar 
         return true
     } else {
-        console.log("error saving user info")
         return false
     }
 }

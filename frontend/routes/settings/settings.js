@@ -65,10 +65,8 @@ export const init = () => {
         });
         if (response.status == 401) deleteTokenReload()
         if (response.ok) {
-            console.log("uploaded correctly")
             return true
         } else {
-            console.log("failed to upload avatar")
             uploadError.style.display = 'block'
             setTimeout( () => {
                 uploadError.style.display = 'none'
@@ -136,7 +134,6 @@ export const init = () => {
     }
 
     twofaButton.addEventListener('click', () => {
-        console.log("button clicked")
         showQrModal()
     })
     

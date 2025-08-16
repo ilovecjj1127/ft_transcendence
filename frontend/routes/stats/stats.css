@@ -63,11 +63,11 @@
 }
 
 #stats-close-button i {
-    font-size: 20px;  /* Icon size */
-    margin: 0;        /* Remove default margin */
+    font-size: 20px;
+    margin: 0;
     color: white;
-    line-height: 1;    /* Ensure vertical alignment */
-    text-align: center; /* Horizontal centering */
+    line-height: 1;
+    text-align: center;
 }
 
 #stats-close-button:hover {
@@ -106,7 +106,6 @@
 }
 
 #stats-list li {
-    /* color:aliceblue; */
     margin: 10px 0;
 }
 
@@ -115,14 +114,13 @@
 }
 
 #stats-list li span {
-    color: #3498db; /* Customize the value color */
+    color: #3498db;
     padding: 10px;
 }
 
 #stats-history-container {
     position: absolute;
     background-color: transparent;
-    /* color: white; */
     top: 11rem;
     right: 4rem;
     border: none;
@@ -137,17 +135,38 @@
 }
 
 #stats-history-list li {
-    display: flex;  /* Flex layout for list item */
-    justify-content: space-between;  /* Space out left (game details) and right (status & button) */
+    position: relative;
+    display: flex;
+    justify-content: space-between;
     align-items: center;
     padding: 8px;
-    /* color: white; */
-    background-color: rgba(0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.1);
     margin: 4px 0;
-    border: solid;
+    border: solid 1px rgba(255, 255, 255, 0.2);
     border-radius: 5px;
     width: 100%;
+    transition: background-color 0.3s ease;
 }
+
+#stats-history-list li:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.date-box {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 5px 10px;
+    font-size: 14px;
+    border-radius: 5px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    white-space: nowrap;
+    z-index: 9999;
+}
+
+
 
 #stats-history-container::-webkit-scrollbar {
     width: 0px;

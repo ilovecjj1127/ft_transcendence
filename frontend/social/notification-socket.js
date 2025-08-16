@@ -100,7 +100,7 @@ export function showNotification (show) {
     } else {
         clearInterval(notificationId)
         button.style.backgroundColor = 'var(--app-blue)'
-    }        
+    }
 }
 
 export function updateFriendsBackend () {

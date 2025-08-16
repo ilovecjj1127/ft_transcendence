@@ -89,6 +89,19 @@ export const init = () => {
         details.appendChild(score)
         li.appendChild(details)
         history.appendChild(li)
+        
+        const dateBox = document.createElement('div')
+        dateBox.classList.add('date-box')
+        const date = new Date(game.finished_at * 1000)
+        dateBox.innerText = date.toLocaleString()
+        li.appendChild(dateBox)
+
+        li.addEventListener('mouseover', () => {
+            dateBox.style.opacity = 1
+        })
+        li.addEventListener('mouseleave', () => {
+            dateBox.style.opacity = 0;
+        })
     }
 
     function deleteStatsEvents() {

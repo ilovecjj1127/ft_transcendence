@@ -105,7 +105,11 @@ export const translations = {
     acceptReq: "accepted your friend request",
     declineReq: "declined your friend request",
     breakOff: "removed you from friend list",
-    cancelReq: "canceled the friend request"
+    cancelReq: "canceled the friend request",
+    block: "Block",
+    unblock: "Unblock",
+    blockMsg: "The user blocked the chat",
+    unblockMsg: "The chat is now available"
   },
   it: {
     login: "Accedi",
@@ -210,10 +214,14 @@ export const translations = {
         
         La partita ha ID = `,
     enable2fa: "Attiva 2FA",
-    acceptReq: "accepted your friend request",
-    declineReq: "declined your friend request",
-    breakOff: "removed you from friend list",
-    cancelReq: "canceled the friend request"
+    acceptReq: "ha accettato la tua richieste",
+    declineReq: "ha declinato la tua richiesta",
+    breakOff: "ti ha rimosso dagli amici",
+    cancelReq: "ha cancellato la richiesta",
+    block: "Blocca",
+    unblock: "Sblocca",
+    blockMsg: "Sei stato bloccato",
+    unblockMsg: "La chat e' ora disponibile"
   }
 };
 

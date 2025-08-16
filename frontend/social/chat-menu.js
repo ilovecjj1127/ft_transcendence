@@ -19,10 +19,10 @@ requestButton.addEventListener('click', () => {
     if (!requestPanel.classList.contains('show')) {
         if (newFriendPanel.classList.contains('show')) newFriendPanel.classList.remove('show')
         requestPanel.classList.add('show')
-        showNotification(false)
     } else {
         requestPanel.classList.remove('show')
     }
+    showNotification(false)
 })
 
 
@@ -135,7 +135,6 @@ function fillSent() {
             const cancelBtn = document.createElement('button')
             cancelBtn.innerText = translations[getLanguage()]['cancel']
             cancelBtn.addEventListener('click', () => {
-                console.log("cancel pressed")
                 handleRequest(li.dataset.id, li, list, cancelBtn, "cancel")
             })
             

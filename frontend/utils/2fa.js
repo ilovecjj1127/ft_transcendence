@@ -22,11 +22,9 @@ export async function showQrModal () {
     qrModal.show()
 
     
-    //send request for QR, if ok show the img, otherwise show error msg
     const isTokenValid = await checkToken()
     if (!isTokenValid) {
-    console.log("token not valid")
-    return
+        return
     }
 
     const response = await fetch(`http://${window.location.host}/api/users/setup_2fa/`, {
@@ -126,7 +124,6 @@ otpform.onsubmit = async (e) => {
 async function setup_twofa (otpcode) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) {
-        console.log("token not valid")
         return
     }
     const message = document.getElementById("otp-message")

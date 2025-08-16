@@ -1,8 +1,8 @@
 import { router } from "../app.js"
 import { closeChatOpen, getFriendDataSet } from "./chat.js"
 import { checkToken, deleteTokenReload } from "../utils/token.js"
-import { getUserToken, getLanguage } from "../utils/userData.js"
-import { sendInviteMessage } from "./chat-socket.js"
+import { getUserToken, getLanguage, getUsername } from "../utils/userData.js"
+import { sendInviteMessage, sendBlockUnlockMessage} from "./chat-socket.js"
 import { translations } from "../multilang/dictionary.js"
 
 const dropDownToggle = document.querySelector('.chatbox-message-dropdown-toggle')
@@ -10,6 +10,7 @@ const dropDownMenu = document.querySelector('.chatbox-message-dropdown-menu')
 const profileBtn = document.getElementById("chat-profile")
 const removeBtn = document.getElementById("chat-remove")
 const inviteBtn = document.getElementById("chat-invite")
+const blockBtn = document.getElementById("chat-block")
 
 dropDownToggle.addEventListener('click', function () {
         dropDownMenu.classList.toggle('show')
@@ -31,6 +32,49 @@ profileBtn.addEventListener('click', (e) => {
 	}
 	location.hash = '/users'
 })
+
+blockBtn.addEventListener('click', (e)=> {
+	e.preventDefault()
+	const chatId = getFriendDataSet().chatId
+	blockPlayer(chatId)
+})
+
+async function blockPlayer (chatId) {
+	const isTokenValid = await checkToken()
+	if (!isTokenValid) return
+	
+	const response = await fetch(`http://${window.location.host}/api/chat/block_or_unblock/?chatroom_id=${chatId}`, {
+		method: "PATCH",
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": `Bearer ${getUserToken().access}`
+		},
+	});
+	if (response.status == 401) deleteTokenReload()
+	if (response.ok) {
+		const data = await response.json()
+		const li = document.querySelector(`#friends-list li[data-chat-id="${chatId}"]`);		
+		if (li.dataset.block == 'null') {
+			li.dataset.block = getUsername()
+			blockBtn.innerText = translations[getLanguage()]['unblock']
+			closeChatOpen()
+		}else{
+			li.dataset.block = 'null'
+			blockBtn.innerText = translations[getLanguage()]['block']
+		}
+	} else {
+        blockBtn.innerText = translations[getLanguage()]['error']
+        blockBtn.style.backgroundColor = "red"
+       	blockBtn.style.color = "white"
+        blockBtn.disabled = true
+        setTimeout( () => {
+            blockBtn.innerText = translations[getLanguage()]['block']
+           	blockBtn.style.backgroundColor = "white"
+            blockBtn.style.color = "black"
+            blockBtn.disabled = false
+        }, 3000)
+	}
+}
 
 removeBtn.addEventListener('click', (e) => {
     e.preventDefault();
@@ -92,9 +136,7 @@ inviteBtn.addEventListener('click', async (e) => {
 			
 })
 
-//atm score not implemented
 async function inviteForGame() {
-	//const score = await createScoreModal()
 	const score  = 10
 	const playerId = getFriendDataSet().id
 	if (score) {

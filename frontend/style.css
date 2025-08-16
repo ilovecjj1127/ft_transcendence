@@ -69,6 +69,7 @@ body {
 	left: 2rem;
 	width: 4rem;
 	height: 4rem;
+	z-index: 99;
 }
 
 .profile-toggle {

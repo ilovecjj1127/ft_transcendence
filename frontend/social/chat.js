@@ -1,6 +1,8 @@
 import { checkToken, deleteTokenReload } from "../utils/token.js"
-import { getUserToken } from "../utils/userData.js"
+import { getUsername, getUserToken } from "../utils/userData.js"
 import { createWebSocket, closeActiveWebsocket } from "./chat-socket.js"
+import { getLanguage } from "../utils/userData.js"
+import { translations } from "../multilang/dictionary.js"
 
 const list = document.getElementById("friends-list")
 const chatBox = document.querySelector('.chatbox-message-wrapper')
@@ -60,7 +62,7 @@ export async function populateFriendList() {
 }
 
 async function updateChat (friend, imgSrc, li) {
-	const chatId = await getCreateChat(friend)
+	const chatId = await getCreateChat(friend, li)
 	li.dataset.chatId = chatId
 	createWebSocket(chatId)
 	li.querySelector(".notify-dot").style.display = "none"
@@ -101,7 +103,7 @@ async function getUser(user, profileImg, li) {
 	}
 }
 
-async function getCreateChat(user) {
+async function getCreateChat(user, li) {
 		const isTokenValid = await checkToken()
 	
 	if (!isTokenValid) return
@@ -119,6 +121,13 @@ async function getCreateChat(user) {
 	{
 		const data = await openChat.json()
 		const chatId = data.chat_room_id
+		li.dataset.block = data.blocked_by
+		if (data.blocked_by == getUsername()){
+			document.getElementById("chat-block").innerText=`${translations[getLanguage()]['unblock']}`
+		}
+		else
+			document.getElementById("chat-block").innerText=`${translations[getLanguage()]['block']}`
+		
 		return chatId
 	} else {
 		return null
