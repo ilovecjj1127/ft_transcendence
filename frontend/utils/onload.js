@@ -24,6 +24,7 @@ export async function onloadInit () {
 export async function onLogin () {
     const getInfo = await saveUserInfo()
     if (getInfo) {
+        await languageCheck()
         toggleFriendsContainer('flex')
         createMenuProfile()
         await populateFriendList()
@@ -32,7 +33,14 @@ export async function onLogin () {
     }
 }
 
-
+async function languageCheck () {
+    let select = document.getElementById("languageSelect")
+    let appLang = localStorage.getItem('appLanguage')
+    if (select.value != appLang){
+        select.value = appLang
+        select.dispatchEvent(new Event("change"))
+    }
+}
 
 function toggleFriendsContainer(show) {
     const friendsContainer = document.getElementById('friends-container');
@@ -40,6 +48,6 @@ function toggleFriendsContainer(show) {
     document.body.classList.toggle('friends-visible', show)
 }
 
-function setLanguageSelect() {
+async function setLanguageSelect() {
     document.getElementById('languageSelect').value = getLanguage()
 }
