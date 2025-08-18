@@ -1,5 +1,4 @@
 from rest_framework import serializers
-from .models import ChatRoom
 from users.models import UserProfile
 
 class ChatGetOrCreateSerializer(serializers.Serializer):

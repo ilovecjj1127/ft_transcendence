@@ -1,6 +1,6 @@
 from django.urls import path
 
-from chat.views import room, ChatGetOrCreateView, ChatBlockorUnblockView
+from chat.views import ChatGetOrCreateView, ChatBlockorUnblockView
 
 
 urlpatterns = [
