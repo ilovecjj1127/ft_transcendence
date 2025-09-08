@@ -103,3 +103,11 @@ class UserProfileService:
     def update_avatar(user: UserProfile, avatar):
         user.avatar = avatar
         user.save()
+
+    @staticmethod
+    @transaction.atomic
+    def change_language(user: UserProfile, language: str):
+        if user.language == language:
+            raise ValueError('This language is already set')
+        user.language = language
+        user.save()

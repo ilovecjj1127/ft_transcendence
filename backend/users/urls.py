@@ -5,7 +5,7 @@ from .views.Authentication import LoginView, LogoutView, RefreshTokenView, \
 from .views.FriendshipRequest import BreakOffFriendshipView, FriendshipRequestView, \
     FriendshipRequestModifyView
 from .views.UserProfile import RegistrationView, UserProfileView, PasswordChangeView, \
-    MyProfileView, AvatarUploadView
+    MyProfileView, AvatarUploadView, LanguageChangeView
 
 
 urlpatterns = [
@@ -27,4 +27,5 @@ urlpatterns = [
     path('friendship_request/cancel/', FriendshipRequestModifyView.as_view(action='cancel'),
          name='cancel_friendship_request'),
     path('remove_friend/', BreakOffFriendshipView.as_view(), name='remove_friend'),
+    path('language_change/', LanguageChangeView.as_view(), name='change_language'),
 ]

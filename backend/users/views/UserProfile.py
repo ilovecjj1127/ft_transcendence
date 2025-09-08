@@ -7,7 +7,8 @@ from rest_framework.request import Request
 from rest_framework.views import APIView
 
 from ..serializers.UserProfile import RegistrationSerializer, SuccessResponseSerializer, \
-    UserProfileSerializer, PasswordChangeSerializer, MyProfileSerializer, AvatarSerializer
+    UserProfileSerializer, PasswordChangeSerializer, MyProfileSerializer, AvatarSerializer, \
+    LanguageChangeSerializer
 from ..services.UserProfile import UserProfileService
 
 
@@ -104,3 +105,25 @@ class AvatarUploadView(APIView):
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         return Response({'message': 'Avatar uploaded successfully'},
                         status=status.HTTP_200_OK)
+
+
+class LanguageChangeView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    @extend_schema(
+        summary='Change user\'s language',
+        request=LanguageChangeSerializer,
+        responses={200: SuccessResponseSerializer},
+        tags=['Users'],
+    )
+    def patch(self, request: Request) -> Response:
+        serializer = LanguageChangeSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            language = serializer.validated_data['language']
+            UserProfileService.change_language(request.user, language)
+            return Response({'message': 'Language was changed successfully'},
+                            status=status.HTTP_200_OK)
+        except ValueError as e:
+            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
