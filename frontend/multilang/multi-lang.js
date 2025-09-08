@@ -45,7 +45,7 @@ async function saveLanguage(lang) {
     return 
   }
   
-  const response = await fetch(`http://${window.location.host}/api/users/language_change/`, {
+  const response = await fetch(`https://${window.location.host}/api/users/language_change/`, {
       method: "PATCH",
       headers: {
           "Content-Type": "application/json",

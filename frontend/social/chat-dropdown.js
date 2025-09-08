@@ -43,7 +43,7 @@ async function blockPlayer (chatId) {
 	const isTokenValid = await checkToken()
 	if (!isTokenValid) return
 	
-	const response = await fetch(`http://${window.location.host}/api/chat/block_or_unblock/?chatroom_id=${chatId}`, {
+	const response = await fetch(`https://${window.location.host}/api/chat/block_or_unblock/?chatroom_id=${chatId}`, {
 		method: "PATCH",
 		headers: {
 			"Content-Type": "application/json",
@@ -86,7 +86,7 @@ async function removeFriend (friendName) {
 	const isTokenValid = await checkToken()
 	if (!isTokenValid) return
 	
-	const response = await fetch(`http://${window.location.host}/api/users/remove_friend/`, {
+	const response = await fetch(`https://${window.location.host}/api/users/remove_friend/`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",
@@ -143,7 +143,7 @@ async function inviteForGame() {
 		const isTokenValid = await checkToken()
 		if (!isTokenValid) return
 		
-		const response = await fetch(`http://${window.location.host}/api/games/create/`, {
+		const response = await fetch(`https://${window.location.host}/api/games/create/`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",

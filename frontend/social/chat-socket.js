@@ -14,7 +14,7 @@ export async function createWebSocket (chatId, li) {
         activeSocket.close()
     }
     let token = getUserToken().access
-    socket = new WebSocket(`ws://${window.location.host}/ws/chat/${chatId}/?token=${token}`)
+    socket = new WebSocket(`wss://${window.location.host}/ws/chat/${chatId}/?token=${token}`)
     activeSocket = socket
     
     

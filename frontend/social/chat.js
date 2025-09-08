@@ -83,7 +83,7 @@ async function getUser(user, profileImg, li) {
 	
 	if (!isTokenValid) return
 	
-	const searchUser = await fetch(`http://${window.location.host}/api/users/?username=${user}`, {
+	const searchUser = await fetch(`https://${window.location.host}/api/users/?username=${user}`, {
 		method: "GET",
 		headers: {
 			"Content-Type": "application/json",
@@ -108,7 +108,7 @@ async function getCreateChat(user, li) {
 	
 	if (!isTokenValid) return
 	
-	const openChat = await fetch(`http://${window.location.host}/api/chat/get_or_create/`, {
+	const openChat = await fetch(`https://${window.location.host}/api/chat/get_or_create/`, {
 		method: "POST",
 		headers: {
 			"Content-Type": "application/json",

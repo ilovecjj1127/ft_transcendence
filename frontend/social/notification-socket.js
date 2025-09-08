@@ -11,7 +11,7 @@ export async function createNotificationSocket () {
     if (!isTokenValid) return 
 
     let token = getUserToken().access
-    const socket = new WebSocket(`ws://${window.location.host}/ws/notifications/?token=${token}`)
+    const socket = new WebSocket(`wss://${window.location.host}/ws/notifications/?token=${token}`)
     
     socket.onopen = () => {
         socketOpen = socket
