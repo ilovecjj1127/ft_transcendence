@@ -1,7 +1,11 @@
 import { hideOtpModal, showOtpModal } from "./2fa.js"
 import { showLoginModal, hideLoginModal } from "./modals.js"
 import { createMenuProfile } from "./profile-toggle.js"
-import { saveUserInfo, setUserToken } from "./userData.js"
+import { saveUserInfo, setUserToken, getLanguage} from "./userData.js"
+import { populateFriendList } from "../social/chat.js"
+import { populateRequestList } from "../social/chat-menu.js"
+import { onLogin } from "./onload.js"
+import { translations } from "../multilang/dictionary.js"
 
 let loginResolver
 
@@ -34,9 +38,8 @@ export async function loginFunction (password, username) {
     } else if (response.status == 200) { //without 2fa
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        saveUserInfo()
-        createMenuProfile()
-        message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
+        onLogin()
+        message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['loginSucc']}</p>`
                 
         setTimeout( () => {
             hideLoginModal()
@@ -47,7 +50,7 @@ export async function loginFunction (password, username) {
             loginResolver = null
         }
     } else {
-        message.innerHTML = "<p class='text-danger'>Login failed. Check your credentials.</p>"
+        message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['loginError']}</p>`
         
         setTimeout( () => {
             hideLoginModal()
@@ -80,10 +83,12 @@ export async function verify_twofa (otpcode) {
     if (response.ok) {
         const data = await response.json()
         setUserToken(data.access, data.refresh)
-        saveUserInfo()
+        await saveUserInfo()
         createMenuProfile()
+        populateFriendList()
+        populateRequestList("received-tab")
         
-        message.innerHTML = "<p class='text-success'>Login successful! Access token saved.</p>"
+        message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['loginSucc']}</p>`
         
         setTimeout( () => {
             hideOtpModal()
@@ -94,7 +99,7 @@ export async function verify_twofa (otpcode) {
             loginResolver = null
         }
     } else {
-        message.innerHTML = "<p class='text-danger'>Login failed. Close and try again.</p>"
+        message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['loginError2']}</p>`
         
         setTimeout( () => {
             hideOtpModal()

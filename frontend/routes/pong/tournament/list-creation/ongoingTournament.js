@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload} from "../../../../utils/token.js"
-import { getUserId, getUserToken } from "../../../../utils/userData.js"
+import { getUserId, getUserToken, getLanguage } from "../../../../utils/userData.js"
+import { translations } from "../../../../multilang/dictionary.js"
 
 //list of ongoing tournament
 export function createOnGoingTour (container) {
@@ -8,7 +9,7 @@ export function createOnGoingTour (container) {
     listContainer.classList.add('dropdown')
     const listBtn = document.createElement('button')
     listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Ongoing Tournaments"
+    listBtn.innerText = translations[getLanguage()]['onGoing']
     const list = document.createElement('ul')
     list.classList.add('dropdown-list')
 
@@ -37,14 +38,14 @@ async function requestList (list, listContainer) {
             const data = await listResponse.json()
             if (data.length == 0) {
                 const noTournamentsMessage = document.createElement('p')
-                noTournamentsMessage.textContent = "No ongoing tournaments available."
+                noTournamentsMessage.textContent = translations[getLanguage()]['noTourOn']
                 list.appendChild(noTournamentsMessage)
             } else {
             data.forEach((tour) => {
                 const li = document.createElement('li')
                 li.textContent = tour.name
                 const button = document.createElement('button')
-                button.innerText = "Leaderboard"
+                button.innerText = translations[getLanguage()]['leader']
                 li.appendChild(button)
                 list.appendChild(li)
                 button.addEventListener('click', () => {
@@ -58,7 +59,7 @@ async function requestList (list, listContainer) {
         }
         } else {
             const li = document.createElement()
-            li.textContent = "Error retrieving Tournament. Try again later"
+            li.textContent = translations[getLanguage()]['tourError']
             list.appendChild(li)
         }
         list.classList.toggle('show')

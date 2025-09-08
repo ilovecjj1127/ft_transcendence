@@ -20,7 +20,7 @@
 
 #tournament-name {
     font-size: 3rem;
-    font-family: "rixvideogame-pro", sans-serif;
+    font-family: Monaco, monospace;
     font-weight: bold;
     color:  var(--app-yellow);
     letter-spacing: 6px;

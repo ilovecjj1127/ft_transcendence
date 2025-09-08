@@ -1,4 +1,6 @@
 import BlockGame from "../../games/block-game.js";
+import { translations } from "../../multilang/dictionary.js"
+import { getLanguage } from "../../utils/userData.js";
 
 let Block
 
@@ -14,7 +16,7 @@ export const init = () => {
 	
 	const restart = document.createElement('button')
     restart.id = 'restart-block'
-    restart.innerText = 'Restart'
+    restart.innerText =  translations[getLanguage()]['restart']
     overlay.appendChild(restart)
 	
     const backToMenu = document.createElement('div')

@@ -17,13 +17,16 @@ export async function saveUserInfo () {
         localStorage.setItem("id", userData.id)
         localStorage.setItem("username", userData.username)
         localStorage.setItem("avatar", userData.avatar)
-        localStorage.setItem("friends", userData.friends)
-        console.log("2fa enabled: ", userData.is_2fa_enabled)
+        localStorage.setItem("friends", JSON.stringify(userData.friends))
+        localStorage.setItem("received", JSON.stringify(userData.received_requests))
+        localStorage.setItem("sent", JSON.stringify(userData.sent_requests))
+        const lang = userData.language || "en"
+        localStorage.setItem("appLanguage", lang)
+        console.log(localStorage.getItem("appLanguage"))
         setTimeout( () => {}, 2000)
         document.getElementById('profile-img').src = userData.avatar 
         return true
     } else {
-        console.log("error saving user info")
         return false
     }
 }
@@ -58,4 +61,13 @@ export function getUsername () {
 
 export function getUserId () {
     return (localStorage.getItem("id"))
+}
+
+export function getFriends () {
+    return (localStorage.getItem("friends"))
+}
+
+export function getLanguage () {
+    let lang = localStorage.getItem('appLanguage') || 'en'
+    return lang
 }

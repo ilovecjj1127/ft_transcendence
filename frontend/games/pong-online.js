@@ -1,7 +1,8 @@
 import Ball from "./ball.js"
 import Paddle from "./paddle.js"
-import { getUserToken } from "../utils/userData.js"
+import { getUserToken, getLanguage } from "../utils/userData.js"
 import { checkToken } from "../utils/token.js"
+import { translations } from "../multilang/dictionary.js"
 
 const canvas = document.getElementById("gameCanvas")
 const ctx = canvas.getContext("2d")
@@ -108,12 +109,10 @@ export default class PongOnline {
         }
     }
 
-    // Handle WebSocket messages
     handleOnmessage(event) {
         const data = JSON.parse(event.data);
 
         if (data.type === "possitions_update") {
-            // Update paddle position from the server
             this.paddle1.y = data.paddle1_y;
             this.paddle2.y = data.paddle2_y;
             this.ball.x = data.ball_x;
@@ -127,7 +126,7 @@ export default class PongOnline {
         }
 
         if (data.type == "disconnect") {
-            //alert(data.message)
+            console.log(data.message)
         }
         
         if (data.type == "end_of_the_game")
@@ -147,9 +146,9 @@ export default class PongOnline {
         if (!this.player1) this.player1 = "Player 1"
         if (!this.player2) this.player2 = "Player 2"
         if (winner == '1')
-            winnerMessage.innerText = "The winner is \n" + this.player1
+            winnerMessage.innerText = translations[getLanguage()]['winnerIs'] + this.player1
         else
-            winnerMessage.innerText = "The winner is \n" + this.player2
+            winnerMessage.innerText = translations[getLanguage()]['winnerIs'] + this.player2
         winnerContainer.appendChild(winnerMessage)
         overlay.appendChild(winnerContainer)
     }
@@ -162,7 +161,7 @@ export default class PongOnline {
         const errorContainer = document.createElement('div')
         errorContainer.id = 'end-msg-container'
         const errorMessage = document.createElement('p')
-        errorMessage.innerText = "An error occured in the game. Please exit"
+        errorMessage.innerText = translations[getLanguage()]['inGameError']
         errorContainer.appendChild(errorMessage)
         overlay.appendChild(errorContainer)
     };

@@ -20,12 +20,10 @@ export async function handleLogout (e) {
     });
     if (response.ok) {
         localStorage.clear()
-        alert("Succesfully logged out")
         setTimeout( () => {
             window.location.href ='/'
         }, 1000)
     } else {
-        alert("Logout failed, you will get logged out automatically")
         deleteTokenReload()
     }
 }

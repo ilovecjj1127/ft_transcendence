@@ -31,12 +31,14 @@ class ChatGetOrCreateView(APIView):
             chatroom, created = ChatRoomService.get_or_create_chat(
                 user1=user1, username=username
             )
+            blocked_by = chatroom.blocked_by.username if chatroom.blocked_by else None
             return Response(
-                {
-                    "chat_room_id": chatroom.id,
-                    "blocked_by": chatroom.blocked_by,
-                    "is_newly_created": created
-                }, status=status.HTTP_200_OK)
+               {
+                   "chat_room_id": chatroom.id,
+                   "blocked_by": blocked_by,
+                   "is_newly_created": created
+               }, status=status.HTTP_200_OK)
+
         except ValidationError as e:
             return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 

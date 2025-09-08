@@ -17,10 +17,10 @@
 	/* box-shadow: none; */
 	border: none;
 	/* outline-color: "red"; */
-	font-family: "rixvideogame-pro", sans-serif;
+	font-family: Monaco, monospace;
 	font-weight: 400;
 	font-style: normal;
-	font-size: 40pt;
+	font-size: 32pt;
 	
 }
 
@@ -39,7 +39,7 @@
     align-items: center;
     justify-content: center;
     gap: 50px;
-    font-family: "rixvideogame-pro", sans-serif;
+    font-family: Monaco, monospace;
     font-size: 20px;
 }
 

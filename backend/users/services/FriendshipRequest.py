@@ -1,8 +1,10 @@
+from asgiref.sync import async_to_sync 
 from django.db import transaction
 from django.db.models import Prefetch
 
 from .UserProfile import UserProfileService
 from ..models import FriendshipRequest, UserProfile
+from ..utils import notify_about_friendship_requests
 
 
 class FriendshipRequestService:
@@ -24,7 +26,13 @@ class FriendshipRequestService:
             request.status = 'pending'
             request.save()
         except FriendshipRequest.DoesNotExist:
-            FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
+            request = FriendshipRequest.objects.create(from_user=from_user, to_user=to_user)
+        async_to_sync(notify_about_friendship_requests)(
+            request_id=request.id,
+            request_status='new',
+            username=to_user.username,
+            friend_name=from_user.username
+        )
 
     @staticmethod
     @transaction.atomic
@@ -40,6 +48,12 @@ class FriendshipRequestService:
         UserProfileService.add_friend(request.from_user, to_user)
         request.status = 'accepted'
         request.save()
+        async_to_sync(notify_about_friendship_requests)(
+            request_id=request.id,
+            request_status='accepted',
+            username=request.from_user.username,
+            friend_name=to_user.username
+        )
 
     @staticmethod
     @transaction.atomic
@@ -54,12 +68,18 @@ class FriendshipRequestService:
             raise ValueError('Cannot reject not pending friendship request')
         request.status = 'rejected'
         request.save()
+        async_to_sync(notify_about_friendship_requests)(
+            request_id=request.id,
+            request_status='rejected',
+            username=request.from_user.username,
+            friend_name=to_user.username
+        )
 
     @staticmethod
     @transaction.atomic
     def cancel(request_id: int, from_user: UserProfile):
         try:
-            request = FriendshipRequest.objects.get(id=request_id)
+            request = FriendshipRequest.objects.select_related('to_user').get(id=request_id)
         except FriendshipRequest.DoesNotExist:
             raise ValueError('Friendship request not found')
         if request.from_user_id != from_user.id:
@@ -68,6 +88,12 @@ class FriendshipRequestService:
             raise ValueError('Cannot cancel not pending friendship request')
         request.status = 'canceled'
         request.save()
+        async_to_sync(notify_about_friendship_requests)(
+            request_id=request.id,
+            request_status='canceled',
+            username=request.to_user.username,
+            friend_name=from_user.username
+        )
 
     @staticmethod
     @transaction.atomic
@@ -103,3 +129,9 @@ class FriendshipRequestService:
             raise ValueError('No accepted friendship request found')
         request.save()
         user.friends.remove(friend)
+        async_to_sync(notify_about_friendship_requests)(
+            request_id=request.id,
+            request_status='break_off',
+            username=friend_name,
+            friend_name=user.username
+        )
