@@ -1,4 +1,6 @@
 import PongOnline from "../../../../games/pong-online.js";
+import { getLanguage } from "../../../../utils/userData.js";
+import { translations } from "../../../../multilang/dictionary.js";
 
 let Pong
 
@@ -20,11 +22,11 @@ export const init = () => {
         exitContainer.id = 'exit-container'
 
         const exitMessage = document.createElement('p')
-        exitMessage.innerText = 'Are you sure you want to exit the game?'
+        exitMessage.innerText = translations[getLanguage()]['exitMsg']
 
         const yesButton = document.createElement('button')
         yesButton.id = 'exit-yes'
-        yesButton.innerText = 'Yes'
+        yesButton.innerText = translations[getLanguage()]['yes']
         yesButton.addEventListener('click', () => {
             back()
             exitContainer.remove()
@@ -33,7 +35,7 @@ export const init = () => {
 
         const noButton = document.createElement('button')
         noButton.id = 'exit-no'
-        noButton.innerText = 'No'
+        noButton.innerText = translations[getLanguage()]['yes']
         noButton.addEventListener('click', () => {
             exitContainer.remove()
             backToMenu.addEventListener('click', exitCheck)

@@ -1,5 +1,6 @@
 import { checkToken, deleteTokenReload } from "../../../../utils/token.js"
-import { getUserId, getUserToken, getUsername} from "../../../../utils/userData.js"
+import { getUserId, getUserToken, getUsername, getLanguage} from "../../../../utils/userData.js"
+import { translations } from "../../../../multilang/dictionary.js"
 
 //list of next games to play (show/ready/games)
 export function createUpcomingGames (container) {
@@ -7,7 +8,7 @@ export function createUpcomingGames (container) {
     listContainer.classList.add('dropdown')
     const listBtn = document.createElement('button')
     listBtn.classList.add('dropdown-button')
-    listBtn.innerText = "Upcoming Games"
+    listBtn.innerText = translations[getLanguage()]['upGames']
     const list = document.createElement('ul')
     list.classList.add('dropdown-list')
 
@@ -36,7 +37,7 @@ async function requestList (list, listContainer) {
         const data = await listResponse.json()
         if (data.length === 0) {
             const noTournamentsMessage = document.createElement('p')
-            noTournamentsMessage.textContent = "No games available for tournaments. Come back later"
+            noTournamentsMessage.textContent = translations[getLanguage()]['noGames']
             list.appendChild(noTournamentsMessage)
         } else {
             data.forEach((game) => {
@@ -49,7 +50,7 @@ async function requestList (list, listContainer) {
                 }
                 ${game.tournament ? " - TOURNAMENT: " + game.tournament : ''}`
                 const button = document.createElement('button')
-                button.innerText = "Play"
+                button.innerText = translations[getLanguage()]['play']
                 li.appendChild(button)
                 list.appendChild(li)
                 button.addEventListener('click', ()=> playGame(game))
@@ -57,7 +58,7 @@ async function requestList (list, listContainer) {
         }
     } else {
         const li = document.createElement()
-        li.textContent = "Error retrieving Tournament. Try again later"
+        li.textContent = translations[getLanguage()]['tourError']
         list.appendChild(li)
     }
 

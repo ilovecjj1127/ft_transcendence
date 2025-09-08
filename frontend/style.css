@@ -24,8 +24,7 @@ body {
 	
 	color: white;
 	background-color: black;
-	
-	/* maybe not needed */
+
 	text-rendering: optimizeSpeed;
 	line-height: 1.5;
 	font-family: 'Poppins', sans-serif;
@@ -70,6 +69,7 @@ body {
 	left: 2rem;
 	width: 4rem;
 	height: 4rem;
+	z-index: 99;
 }
 
 .profile-toggle {
@@ -145,7 +145,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    pointer-events: none; /* Ensures the background doesn't interfere with user interaction */
+    pointer-events: none;
     z-index: -1;
   
   .face {
@@ -168,7 +168,7 @@ body {
     color: #fff;
     text-align: center;
     z-index: 5;
-	font-family: "rixvideogame-pro", sans-serif;
+	font-family: Monaco, monospace;
 	font-weight: 400;
 	font-style: normal;
 	font-size: 60pt;
@@ -194,7 +194,6 @@ body {
 #otp-container {
 	width: 100%;
 	display:flex;
-	/* flex-direction: row; */
 	justify-content: center;
 	gap:10px;
 }
@@ -207,4 +206,16 @@ body {
 	border: 1px solid #ccc;
 	border-radius: 5px;
 	outline: none;
+}
+
+#languageSelect {
+	position: absolute;
+	top: 0;
+	right: 0;
+	transition: right 0.3s ease;
+	z-index: 99;
+}
+
+.friends-visible #languageSelect {
+  right: 57px;
 }

@@ -1,17 +1,18 @@
 import { handleLogin } from "./login.js"
 import { handleLogout } from "./logout.js"
-import { getUserToken } from "./userData.js"
+import { getUserToken, getLanguage } from "./userData.js"
+import { translations } from "../multilang/dictionary.js"
 
 const profileToggle = document.querySelector('.profile-toggle')
 const dropDownMenu = document.querySelector('.profile-dropdown-menu')
 
 const loggedMenu = [
-    {id: 'stats', label: 'Statistics', link: '#'},
-    {id: 'settings', label: 'Settings', link: '#'},
-    {id: 'logout', label: 'Logout', link: '#'},
+    {id: 'stats', label: translations[getLanguage()]['stats'], link: '#'},
+    {id: 'settings', label: translations[getLanguage()]['settings'], link: '#'},
+    {id: 'logout', label: translations[getLanguage()]['logout'], link: '#'},
 ]
 
-const notLoggedMenu = [ {id: 'login', label: 'Login', link: '#'}] 
+const notLoggedMenu = [ {id: 'login', label: translations[getLanguage()]['login'], link: '#'}] 
 
 let closeTimeout
 

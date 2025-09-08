@@ -1,10 +1,12 @@
 import { createNotLoggedMessage, createBackToMenu, createRefresh } from "../../../utils/canvas-utils.js"
 import { checkToken, deleteTokenReload } from "../../../utils/token.js"
-import { getUserToken } from "../../../utils/userData.js"
+import { getUserToken, getLanguage } from "../../../utils/userData.js"
 import { createOnGoingTour } from "./list-creation/ongoingTournament.js"
 import { createOpenRegistration } from "./list-creation/openRegistration.js"
 import { createUpcomingGames } from "./list-creation/upcomingGames.js"
 import { createUpcomingTour } from "./list-creation/upcomingTournament.js"
+import { translations } from "../../../multilang/dictionary.js";
+
 
 export const init = () => {
     const overlay = document.querySelector('.overlay')
@@ -47,7 +49,7 @@ function createTourMenu (overlay) {
 function createNewTourButton (container) {
     const newTour = document.createElement('button')
     newTour.id = 'new-tour'
-    newTour.innerText = 'Create new tournament'
+    newTour.innerText = translations[getLanguage()]['createTour']
     container.appendChild(newTour)
     
     newTour.addEventListener("click", async function () {
@@ -93,11 +95,11 @@ async function createNewTourModal() {
         form.id = 'tour-form'
 
         const fields = [
-            { label: "Your Alias", id: "alias", type: "text", required: true },
-            { label: "Tournament Name", id: "tour-name", type: "text", required: true },
-            { label: "Min player (min 3)", id: "min", type: "text", required: true },
-            { label: "Max Player (max 10)", id: "max", type: "text", required: true },
-            { label: "Win Score (1 - 20)", id: "score", type: "text", required: true },
+            { label: translations[getLanguage()]['yourAlias'], id: "alias", type: "text", required: true },
+            { label: translations[getLanguage()]['tourName'], id: "tour-name", type: "text", required: true },
+            { label: translations[getLanguage()]['minPlayer'], id: "min", type: "text", required: true },
+            { label: translations[getLanguage()]['maxPlayer'], id: "max", type: "text", required: true },
+            { label: translations[getLanguage()]['winScore'], id: "score", type: "text", required: true },
         ];
 
         const inputs = {}
@@ -118,11 +120,11 @@ async function createNewTourModal() {
 
         const createTourBtn = document.createElement('button')
         createTourBtn.type = 'submit'
-        createTourBtn.innerText = 'Create'
+        createTourBtn.innerText = translations[getLanguage()]['createTour']
 
         const cancelTourBtn = document.createElement('button')
         cancelTourBtn.type = 'button'
-        cancelTourBtn.innerText = 'Cancel'
+        cancelTourBtn.innerText = translations[getLanguage()]['cancel']
         cancelTourBtn.addEventListener('click', () => {
             newTourModal.remove()
             resolve(null)

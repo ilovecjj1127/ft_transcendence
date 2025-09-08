@@ -1,6 +1,6 @@
-
+import { translations } from "../multilang/dictionary.js"
 import { checkToken, deleteTokenReload } from "../../../utils/token.js"
-import { getUserId, getUserToken } from "../../../utils/userData.js"
+import { getUserId, getUserToken, getLanguage } from "../../../utils/userData.js"
 
 export const init = () => {
 
@@ -44,7 +44,7 @@ function createEntry(player, name) {
     const list = document.getElementById('players-list')
     const li = document.createElement('li')
     const playerName = document.createElement('strong')
-    playerName.innerText = name.toUpperCase() || 'Unknown Player'
+    playerName.innerText = name.toUpperCase() || translations[getLanguage()]['unknownPlayer']
     li.appendChild(playerName)
     createDiv("Ranking:", `${player.ranking}`, li)
     createDiv("Game count:", `${player.game_count}`, li)

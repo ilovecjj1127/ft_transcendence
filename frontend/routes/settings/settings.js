@@ -1,6 +1,7 @@
-import { getUserToken, getUserAvatar, getUsername } from "../../utils/userData.js"
+import { getUserToken, getUserAvatar, getUsername, getLanguage } from "../../utils/userData.js"
 import { checkToken, deleteTokenReload } from "../../utils/token.js"
 import { showQrModal } from "../../utils/2fa.js" 
+import { translations } from "../../multilang/dictionary.js"
 
 export const init = () => {
     
@@ -32,8 +33,6 @@ export const init = () => {
     function changeProfileImg(event) {
         const file = event.target.files[0];
         if (file) {
-
-            //change avatar API
             changeAvatar(file).then((ok) => {
                 if (ok) {
 
@@ -66,10 +65,8 @@ export const init = () => {
         });
         if (response.status == 401) deleteTokenReload()
         if (response.ok) {
-            console.log("uploaded correctly")
             return true
         } else {
-            console.log("failed to upload avatar")
             uploadError.style.display = 'block'
             setTimeout( () => {
                 uploadError.style.display = 'none'
@@ -109,7 +106,7 @@ export const init = () => {
         message.innerHTML = ''
         
         if (new_password != confirmPassword){
-            message.innerHTML = "<p class='text-danger'>Failed. New password do not match.</p>"
+            message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['pwdMatch']}</p>`
             clearInputs()
         }
         else {
@@ -125,11 +122,11 @@ export const init = () => {
             });
             if (response.status == 401) deleteTokenReload()
             if (response.ok) {
-                message.innerHTML = "<p class='text-success'>Password changed.</p>"
+                message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['pwdChange']}</p>`
                 clearInputs()
             } else {
                 const errorData = await response.json()
-                const errorMessage = errorData.new_password || "Password change failed. Please check your credentials."
+                const errorMessage = errorData.new_password || translations[getLanguage()]['pwdError']
                 message.innerHTML = `<p class='text-danger'>${errorMessage}</p>`
                 clearInputs()
             }
@@ -137,7 +134,6 @@ export const init = () => {
     }
 
     twofaButton.addEventListener('click', () => {
-        console.log("button clicked")
         showQrModal()
     })
     

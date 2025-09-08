@@ -2,7 +2,7 @@
     padding: 10px;
     border-radius: 10px;
     flex-direction: column;
-    font-family: "rixvideogame-pro", sans-serif;
+    font-family: Monaco, monospace;
     font-size: 20px;
 }
 
@@ -73,7 +73,7 @@
     cursor: pointer;
     padding: 5px 10px;
     font-size: 16px;
-    width: 60px;  /* Fixed width to ensure all buttons are the same size */
+    width: 160px;  /* Fixed width to ensure all buttons are the same size */
     text-align: center; /* Ensures the button text is centered */
 }
 

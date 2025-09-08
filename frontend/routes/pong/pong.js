@@ -1,4 +1,6 @@
 import { createBackToMenu } from "../../utils/canvas-utils.js";
+import { getLanguage } from "../../utils/userData.js";
+import { translations } from "../../multilang/dictionary.js";
 
 export const init = () => {
     const overlay = document.querySelector('.overlay')
@@ -13,11 +15,16 @@ function createModeButtons (overlay) {
     const btnContainer = document.createElement('div')
     btnContainer.classList.add('mode-container')
 
-    const buttons = ["Single Player", "MultiPlayer", "Online Player", "Tournament"]
+    const buttons = [
+                    {id: 'singleplayer', label: translations[getLanguage()]['single']},
+                    {id: 'multiplayer', label: translations[getLanguage()]['multi']},
+                    {id: 'onlineplayer', label: translations[getLanguage()]['online']},
+                    {id: 'tournament', label: translations[getLanguage()]['tour']}
+                ]
     buttons.forEach(button => {
         const btn = document.createElement('button')
-        btn.textContent = button
-        btn.id = button.toLowerCase().replace(/\s+/g, '')
+        btn.textContent = button.label
+        btn.id = button.id.toLowerCase().replace(/\s+/g, '')
         btn.classList.add('pongMode')
         btnContainer.appendChild(btn)
 

@@ -1,5 +1,6 @@
-import { getUserToken } from "../../utils/userData.js"
+import { getUserToken, getLanguage } from "../../utils/userData.js"
 import { checkToken, deleteTokenReload } from "../../utils/token.js"
+import { translations } from "../../multilang/dictionary.js"
 
 export const init = () => {
     const username = document.getElementById('users-username')
@@ -56,7 +57,6 @@ export const init = () => {
         if (historyResponse.status == 401) deleteTokenReload()
         if (historyResponse.ok) {
             const history = await historyResponse.json()
-            console.log(history)
             for (const game in history) {
                 createEntry(history[game])
             }
@@ -66,7 +66,7 @@ export const init = () => {
             const history = document.getElementById("users-history-list")
             const li = document.createElement('li')
             const details = document.createElement('div')
-            details.innerText = "Error retrieving history"
+            details.innerText = translations[getLanguage()]['histError']
             li.appendChild(details)
             history.appendChild(li)
         }
@@ -78,7 +78,7 @@ export const init = () => {
         const details = document.createElement('div')
         details.classList.add('users-game-details')
         const result = document.createElement('span')
-        game.is_winner ? result.innerText = "WIN" : result.innerText = "LOSS"
+        game.is_winner ? result.innerText = translations[getLanguage()]['win'] : result.innerText = translations[getLanguage()]['loss']
         const opponent = document.createElement('span')
         game.tournament_name == "" ? opponent.innerText = " vs " + game.opponent_name :
             opponent.innerText = " vs " + game.opponent_name + "(" + game.tournament_name + ")"
@@ -89,6 +89,19 @@ export const init = () => {
         details.appendChild(score)
         li.appendChild(details)
         history.appendChild(li)
+        
+        const dateBox = document.createElement('div')
+        dateBox.classList.add('date-box')
+        const date = new Date(game.finished_at * 1000)
+        dateBox.innerText = date.toLocaleString()
+        li.appendChild(dateBox)
+
+        li.addEventListener('mouseover', () => {
+            dateBox.style.opacity = 1
+        })
+        li.addEventListener('mouseleave', () => {
+            dateBox.style.opacity = 0;
+        })
     }
 
     function deleteStatsEvents() {

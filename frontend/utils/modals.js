@@ -1,4 +1,6 @@
 import { handleLogin, loginFunction } from "./login.js"
+import { getLanguage } from "./userData.js"
+import { translations } from "../multilang/dictionary.js"
 
 const loginModal = new bootstrap.Modal('#staticBackdrop')
 const registerModal = new bootstrap.Modal(document.getElementById('registerModal'))
@@ -45,7 +47,7 @@ registerForm.onsubmit = async (e) => {
     
     if (password != confirmPassword) {
 
-        message.innerHTML = "<p class='text-danger'>The passwords differ.</p>"
+        message.innerHTML = `<p class='text-danger'>${translations[getLanguage()]['passDiff']}</p>`
         password.value = ""
         confirmPassword.value = ""
         return
@@ -61,7 +63,7 @@ registerForm.onsubmit = async (e) => {
 
     if (response.ok) {
         const data = await response.json()
-        message.innerHTML = "<p class='text-success'>Registered successful! Now you can login.</p>"
+        message.innerHTML = `<p class='text-success'>${translations[getLanguage()]['regSucc']}</p>`
                 
         setTimeout( () => {
             registerModal.hide()
@@ -69,7 +71,7 @@ registerForm.onsubmit = async (e) => {
         }, 2000)
     } else {
         const errorData = await response.json();
-        message.innerHTML = `<p class='text-danger'>Error: ${errorData.message || "An error occurred. Please try again."}</p>`;
+        message.innerHTML = `<p class='text-danger'>Error: ${errorData.message || translations[getLanguage()]['regError']}</p>`;
     }
 }
 
