@@ -22,7 +22,7 @@
 #stats-username {
     font-size: 3rem;
     font-weight: bold;
-    font-family: "rixvideogame-pro", sans-serif;
+    font-family: Monaco, monospace;
     letter-spacing: 5px;
     /* color: white; */
 }
