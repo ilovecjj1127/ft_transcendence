@@ -59,7 +59,7 @@ function createNewTourButton (container) {
             const isTokenValid = await checkToken()
             if (!isTokenValid) return
         
-            const response = await fetch(`http://${window.location.host}/api/tournament/create/`, {
+            const response = await fetch(`https://${window.location.host}/api/tournament/create/`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

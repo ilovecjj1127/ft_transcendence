@@ -21,7 +21,7 @@ export const init = () => {
 async function createLeaderBoard (tourInfo) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
-    const response = await fetch(`http://${window.location.host}/api/tournament/leaderboard/?tournament_id=${tourInfo.id}`, {
+    const response = await fetch(`https://${window.location.host}/api/tournament/leaderboard/?tournament_id=${tourInfo.id}`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

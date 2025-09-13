@@ -16,23 +16,18 @@ Including another URLconf
 """
 from django.conf import settings
 from django.conf.urls.static import static
-from django.contrib import admin
 from django.urls import include, path
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('silk/', include('silk.urls', namespace='silk')),
-    path('chat/', include('chat.urls.ws_urls')),
-    path('pong/', include('pong.urls')),
     path('api/chat/', include('chat.urls.api_urls')),
     path('api/users/', include('users.urls')),
     path('api/games/', include('games.urls.games')),
     path('api/tournament/', include('games.urls.tournament')),
     path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
     path('api/docs/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) # Need to be replaced with Nginx
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -10,7 +10,7 @@ export async function handleLogout (e) {
     const refreshToken = getUserToken().refresh
     const accessToken = getUserToken().access
 
-    const response = await fetch(`http://${window.location.host}/api/users/logout/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/logout/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

@@ -26,7 +26,7 @@ async function requestList (list, listContainer) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
 
-    const listResponse = await fetch(`http://${window.location.host}/api/tournament/show/registration/`, {
+    const listResponse = await fetch(`https://${window.location.host}/api/tournament/show/registration/`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ async function registerTournament (id, button) {
         const isTokenValid = await checkToken()
         if (!isTokenValid) return
         
-        const registrResponse = await fetch(`http://${window.location.host}/api/tournament/join/`, {
+        const registrResponse = await fetch(`https://${window.location.host}/api/tournament/join/`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

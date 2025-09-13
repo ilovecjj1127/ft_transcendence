@@ -53,7 +53,7 @@ registerForm.onsubmit = async (e) => {
         return
     }
 
-    const response = await fetch(`http://${window.location.host}/api/users/register/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/register/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

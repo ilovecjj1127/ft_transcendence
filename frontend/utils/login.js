@@ -23,7 +23,7 @@ export async function loginFunction (password, username) {
             
     message.innerHTML = ""
             
-    const response = await fetch(`http://${window.location.host}/api/users/login/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/login/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -69,7 +69,7 @@ export async function verify_twofa (otpcode) {
     const message = document.getElementById("otp-message")
     message.innerHTML = ""
     let partialToken = localStorage.getItem("partial_token")
-    const response = await fetch(`http://${window.location.host}/api/users/verify_2fa/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/verify_2fa/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",  

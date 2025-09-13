@@ -56,7 +56,7 @@ export const init = () => {
 
         const isTokenValid = await checkToken()
         if (!isTokenValid) return
-        const response = await fetch(`http://${window.location.host}/api/users/avatar/`, {
+        const response = await fetch(`https://${window.location.host}/api/users/avatar/`, {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${getUserToken().access}`
@@ -112,7 +112,7 @@ export const init = () => {
         else {
             const isTokenValid = await checkToken()
             if (!isTokenValid) return
-            const response = await fetch(`http://${window.location.host}/api/users/password_change/`, {
+            const response = await fetch(`https://${window.location.host}/api/users/password_change/`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

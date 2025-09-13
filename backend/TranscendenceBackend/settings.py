@@ -25,11 +25,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "django-insecure-qhmw3sqgew++6d8t_3nzd*#h&k42)l2z(=i*09j#_zr@1=nq=k")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+def get_allowed_hosts():
+    allowed_hosts = ['127.0.0.1', 'localhost']
+    host_ip = os.getenv('HOST_IP')
+    if host_ip:
+        allowed_hosts.append(os.getenv('HOST_IP'))
+    return allowed_hosts
 
 # ALLOWED_HOSTS = ['127.0.0.1', '10.11.1.18']
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = get_allowed_hosts()
 
 # Application definition
 
@@ -43,7 +49,6 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt.token_blacklist',
     'channels',
     'drf_spectacular',
-    'silk',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -57,8 +62,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'silk.middleware.SilkyMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',  Turn off temporary for tests without CSRF
+    'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -91,8 +95,6 @@ ASGI_APPLICATION = 'TranscendenceBackend.asgi.application'
 
 DATABASES = {
     'default': {
-        # 'ENGINE': 'django.db.backends.sqlite3',
-        # 'NAME': BASE_DIR / 'db.sqlite3',
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': os.getenv('DB_NAME'),
         'USER': os.getenv('DB_USER'),

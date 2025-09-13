@@ -150,7 +150,7 @@ async function handleRequest (id, li, list, btn, url) {
     const isTokenValid = await checkToken()
     if (!isTokenValid) return
     
-    const response = await fetch(`http://${window.location.host}/api/users/friendship_request/${url}/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/friendship_request/${url}/`, {
         method: "PATCH",
         headers: {
             "Content-Type": "application/json",
@@ -199,7 +199,7 @@ async function sendRequest(user) {
     if (!isTokenValid) return
     
     const responseMsg = document.getElementById("new-friend-msg")
-    const response = await fetch(`http://${window.location.host}/api/users/friendship_request/`, {
+    const response = await fetch(`https://${window.location.host}/api/users/friendship_request/`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",

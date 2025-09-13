@@ -16,13 +16,13 @@ class Command(BaseCommand):
         call_command('collectstatic')
 
         #Create superuser
-        if not UserProfile.objects.filter(username='admin').exists():
-            self.stdout.write('Creating superuser...')
-            UserProfile.objects.create_superuser(
-                username='admin',
-                email='admin@example.com',
-                password='admin'
-            )
+        # if not UserProfile.objects.filter(username='admin').exists():
+        #     self.stdout.write('Creating superuser...')
+        #     UserProfile.objects.create_superuser(
+        #         username='admin',
+        #         email='admin@example.com',
+        #         password='admin'
+        #     )
 
         #Create test users
         user1, user2 = None, None

@@ -1,4 +1,3 @@
-from django.shortcuts import render
 from django.core.exceptions import ValidationError
 from drf_spectacular.utils import extend_schema, OpenApiParameter
 from rest_framework import status
@@ -11,11 +10,6 @@ from users.serializers.UserProfile import SuccessResponseSerializer
 from .serializers import ChatGetOrCreateSerializer
 from .services import ChatRoomService
 
-
-def room(request, room_id):
-    return render(request, 'chat/room.html', {
-        'room_id': room_id
-    })
 
 class ChatGetOrCreateView(APIView):
     permission_classes = [IsAuthenticated]
