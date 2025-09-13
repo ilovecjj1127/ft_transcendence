@@ -159,9 +159,9 @@ async function createNewTourModal() {
 
 function validateInput(key, value) {
     if (key == "min") {
-        if (!value || value > 9 || value < 3) return false
+        if (!value || value > 10 || value < 3) return false
     } else if (key == "max") {
-        if (!value || value < 4 || value > 10) return false
+        if (!value || value < 3 || value > 10) return false
     } else if (key == 'score') {
         if (!value || value < 1 || value > 20) return false
     }

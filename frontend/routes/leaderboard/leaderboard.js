@@ -1,4 +1,4 @@
-import { translations } from "../multilang/dictionary.js"
+import { translations } from "../../multilang/dictionary.js"
 import { checkToken, deleteTokenReload } from "../../../utils/token.js"
 import { getUserId, getUserToken, getLanguage } from "../../../utils/userData.js"
 
